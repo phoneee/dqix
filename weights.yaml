@@ -1,9 +1,0 @@
-
-# Editable weight matrix for DQI probes
-tls: 0.20
-dnssec: 0.20
-headers: 0.10
-mail: 0.15
-whois: 0.10
-lighthouse: 0.10
-impersonation: 0.15

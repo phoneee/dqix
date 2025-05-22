@@ -1,1 +1,6 @@
-tls: 0.3\ndnssec: 0.25\nheaders: 0.15\nmail: 0.2\nwhois: 0.1\n
+# Level 2 – “Safe by default”
+tls:      0.30
+dnssec:   0.25   # includes delegation-hygiene penalties
+headers:  0.15   # HSTS + CSP present
+mail:     0.20   # SPF + DMARC (p≠none)
+whois:    0.10   # org/name not redacted

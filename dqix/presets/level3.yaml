@@ -1,1 +1,7 @@
-tls: 0.2\ndnssec: 0.2\nheaders: 0.1\nmail: 0.15\nwhois: 0.1\nimpersonation: 0.25\n
+# Level 3 – “Policy aligned” (impersonation-risk model)
+tls:           0.20
+dnssec:        0.20
+headers:       0.10
+mail:          0.15   # SPF + DMARC baseline
+whois:         0.10
+impersonation: 0.25   # SPF + DKIM + DMARC alignment score
