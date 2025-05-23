@@ -1,6 +1,12 @@
-# Level 2 – “Safe by default”
-tls:      0.30
-dnssec:   0.25   # includes delegation-hygiene penalties
-headers:  0.15   # HSTS + CSP present
+# Level 2 – "Safe by default"
+tls:      0.28
+dnssec:   0.23   # includes delegation-hygiene penalties
+headers:  0.14   # HSTS + CSP present
 mail:     0.20   # SPF + DMARC (p≠none)
 whois:    0.10   # org/name not redacted
+dns_basic: 0.05
+dkim: 0.03
+caa: 0.02
+accessibility: 0.08
+cookie: 0.04
+wcag_usability: 0.05
