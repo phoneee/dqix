@@ -16,6 +16,7 @@ import os
 import csv
 from pathlib import Path
 from typing import Dict, Tuple, Any  # Added Any
+import json
 
 from dqix.core import PROBES, load_weights
 from dqix.core.probes import Probe, set_verbosity_level, set_tls_method
@@ -148,6 +149,12 @@ def main():
         default="ssllabs",
         help="TLS probing backend: ssllabs (detailed, remote), sslyze (local, fast), nmap (local, fast)",
     )
+    ap.add_argument(
+        "--json-out",
+        type=str,
+        default=None,
+        help="Write full probe results to this JSON file (one object per domain)",
+    )
     args = ap.parse_args()
 
     # 0 = silent, 1 = verbose, 2 = debug
@@ -174,6 +181,7 @@ def main():
         return
 
     rows = []
+    results = []
     # ------- Concurrent execution w/ real-time progress bar ----------------
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.threads) as ex:
         future_to_domain = {ex.submit(_score, dom, probes): dom for dom in domains}
@@ -229,6 +237,7 @@ def main():
                                 )
 
                     rows.append({"domain": dom, "dqi": score, **det})
+                    results.append({"domain": dom, "dqi": score, **det})
                 except Exception as e:
                     pbar.write(f"Error processing domain {dom}: {e}")
                     if args.debug:
@@ -238,6 +247,7 @@ def main():
                     rows.append(
                         {"domain": dom, "dqi": "Error", "error_message": str(e)}
                     )
+                    results.append({"domain": dom, "error": str(e)})
 
                 # Update progress after each domain finishes.
                 pbar.update(1)
@@ -263,6 +273,10 @@ def main():
                 print(f"Error: Could not write CSV to {args.csv}")
         else:
             print("No results to save to CSV.")
+
+    if args.json_out:
+        with open(args.json_out, "w", encoding="utf-8") as f:
+            json.dump(results, f, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
