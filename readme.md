@@ -239,10 +239,10 @@ While primarily a CLI tool, DQIX's core components can be used programmatically.
 
 Contributions are welcome! Whether it's bug reports, feature requests, documentation improvements, or new probes, please feel free to contribute.
 
-1. Fork the repository (`https://github.com/phoneee/domain_quality_index`).
+1. Fork the repository (`https://github.com/phoneee/domain-quality-index`).
 2. Create your feature branch (git checkout -b feature/my-new-probe).
 3. If you have development dependencies (e.g., in `requirements-dev.txt` or as a `dev` extra), install them:
-   *   Scan domains from a file `domains.txt` and save results to `results.csv`:
+   *   Scan domains from a file `domains.txt` and save results to `results.csv`
 4. Make your changes. Add tests for new functionality.
 5. Ensure tests pass (e.g., `pytest -q`).
 6. Format your code (e.g., using Black, Flake8 - consider pre-commit hooks).
