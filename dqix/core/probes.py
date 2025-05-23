@@ -8,6 +8,7 @@ import dns.resolver
 import whois
 from typing import Tuple, List, Dict  # Added List, Dict
 from dqix.core import register
+from bs4 import BeautifulSoup
 
 # Import sslyze errors if DQIX_TLS_DEEP is used
 try:
@@ -426,6 +427,282 @@ class TLSProbe(Probe):
             return "F"
 
 
+# ────────── DNS Basic ───────────────────────────────────────────────────────
+@register
+class DNSBasicProbe(Probe):
+    """Validate presence of essential DNS records.
+
+    Scoring logic (0–1):
+        • A/AAAA present (0.25)
+        • ≥2 NS records (0.25)
+        • SOA present (0.25)
+        • MX present (0.25) – if none, partial credit 0.10 (domain may be web-only)
+    """
+
+    id, weight = "dns_basic", 0.05
+
+    def run(self, original_domain: str):
+        from dqix.utils.dns import domain_variants
+        import dns.resolver
+
+        variants = domain_variants(original_domain)
+        last_err = None
+
+        for dom in variants:
+            try:
+                self._report_progress(f"DNSBasic: querying records for {dom}…")
+
+                a_ok = bool(self._query_any(dom, "A") or self._query_any(dom, "AAAA"))
+                ns_records = self._query_any(dom, "NS")
+                ns_ok = len(ns_records) >= 2
+                soa_ok = bool(self._query_any(dom, "SOA"))
+                mx_records = self._query_any(dom, "MX")
+                mx_ok = bool(mx_records)
+
+                score = 0.0
+                score += 0.25 if a_ok else 0.0
+                score += 0.25 if ns_ok else 0.0
+                score += 0.25 if soa_ok else 0.0
+                score += 0.25 if mx_ok else 0.10  # partial credit
+
+                details = {
+                    "a_present": a_ok,
+                    "ns_count": len(ns_records),
+                    "soa_present": soa_ok,
+                    "mx_present": mx_ok,
+                }
+
+                return round(score, 2), details
+            except Exception as e:
+                last_err = str(e)
+                continue
+
+        return 0.0, {"error": last_err or "DNS query failed"}
+
+    # ------------------------------------------------------------------
+
+    def _query_any(self, domain: str, rdtype: str):
+        import dns.resolver
+
+        try:
+            answers = dns.resolver.resolve(domain, rdtype, raise_on_no_answer=False)
+            return list(answers) if answers else []
+        except dns.resolver.NoAnswer:
+            return []
+        except Exception:
+            return []
+
+
+# ────────── DKIM ─────────────────────────────────────────────────────────────
+@register
+class DKIMProbe(Probe):
+    """Check for DKIM TXT records for common selectors."""
+    id, weight = "dkim", 0.03
+
+    COMMON_SELECTORS = ["default", "selector1", "google", "mail", "smtp", "dkim"]
+
+    def run(self, original_domain: str):
+        from dqix.utils.dns import get_txt_records
+        selectors = self.COMMON_SELECTORS
+        found = False
+        found_selector = None
+        for sel in selectors:
+            name = f"{sel}._domainkey.{original_domain}"
+            txts = get_txt_records(name)
+            for t in txts:
+                if t.lower().startswith("v=dkim1"):
+                    found = True
+                    found_selector = sel
+                    break
+            if found:
+                break
+        score = 1.0 if found else 0.0
+        return score, {"dkim_found": found, "selector": found_selector}
+
+
+# Re-export migrated CAAProbe (now in dqix.probes.caa) for backward compatibility
+from dqix.probes.caa import CAAProbe  # noqa: F401
+
+# ────────── Accessibility (HTML) ─────────────────────────────────────────────
+@register
+class AccessibilityProbe(Probe):
+    """Check for basic HTML accessibility: <title>, <img alt>, <label for>."""
+    id, weight = "accessibility", 0.08
+
+    def run(self, original_domain: str):
+        url = f"https://{original_domain}"
+        try:
+            resp = requests.get(url, timeout=8)
+            html = resp.text
+        except Exception as e:
+            return 0.0, {"error": f"Failed to fetch HTML: {e}"}
+
+        soup = BeautifulSoup(html, "html.parser")
+
+        # 1. <title>
+        has_title = bool(soup.title and soup.title.string and soup.title.string.strip())
+
+        # 2. <img alt>
+        imgs = soup.find_all("img")
+        img_missing_alt = [img for img in imgs if not img.has_attr("alt") or img["alt"] == None]
+        img_empty_alt = [img for img in imgs if img.has_attr("alt") and img["alt"] == ""]
+        img_with_alt = [img for img in imgs if img.has_attr("alt") and img["alt"]]
+
+        # 3. <label for>
+        labels = soup.find_all("label")
+        label_for = {lbl.get("for") for lbl in labels if lbl.get("for")}
+        inputs = soup.find_all(["input", "select", "textarea"])
+        input_ids = {inp.get("id") for inp in inputs if inp.get("id")}
+        inputs_without_label = [inp for inp in inputs if inp.get("id") and inp.get("id") not in label_for]
+
+        # Score: 0.4 for title, 0.3 for all img alt, 0.3 for all input label
+        score = 0.0
+        if has_title:
+            score += 0.4
+        if imgs:
+            if not img_missing_alt:
+                score += 0.3
+        else:
+            score += 0.3  # No images, no penalty
+        if inputs:
+            if not inputs_without_label:
+                score += 0.3
+        else:
+            score += 0.3  # No inputs, no penalty
+
+        details = {
+            "has_title": has_title,
+            "img_count": len(imgs),
+            "img_missing_alt": len(img_missing_alt),
+            "img_empty_alt": len(img_empty_alt),
+            "input_count": len(inputs),
+            "inputs_without_label": len(inputs_without_label),
+        }
+        return round(score, 2), details
+
+
+# ────────── Cookie Policy ────────────────────────────────────────────────────
+@register
+class CookieProbe(Probe):
+    """Check for Set-Cookie, Secure/HttpOnly/SameSite, and cookie banner/privacy link."""
+    id, weight = "cookie", 0.04
+
+    def run(self, original_domain: str):
+        url = f"https://{original_domain}"
+        try:
+            resp = requests.get(url, timeout=8)
+            html = resp.text
+            cookies = resp.cookies
+            set_cookie_headers = resp.headers.get("Set-Cookie", "")
+        except Exception as e:
+            return 0.0, {"error": f"Failed to fetch: {e}"}
+
+        # 1. Check Set-Cookie headers
+        has_cookie = bool(set_cookie_headers)
+        secure = "Secure" in set_cookie_headers
+        httponly = "HttpOnly" in set_cookie_headers
+        samesite = "SameSite" in set_cookie_headers
+
+        # 2. Check for cookie banner or privacy link in HTML
+        soup = BeautifulSoup(html, "html.parser")
+        banner_keywords = ["cookie", "consent", "gdpr", "privacy"]
+        banner_found = False
+        for tag in soup.find_all(["div", "section", "footer", "a", "span"]):
+            text = (tag.get_text() or "").lower()
+            if any(kw in text for kw in banner_keywords):
+                banner_found = True
+                break
+
+        # Score: 0.4 for Secure+HttpOnly+SameSite, 0.3 for banner, 0.3 for Set-Cookie present
+        score = 0.0
+        if has_cookie:
+            score += 0.3
+        if secure and httponly and samesite:
+            score += 0.4
+        if banner_found:
+            score += 0.3
+
+        details = {
+            "has_cookie": has_cookie,
+            "secure": secure,
+            "httponly": httponly,
+            "samesite": samesite,
+            "banner_found": banner_found,
+        }
+        return round(score, 2), details
+
+
+# ────────── WCAG/Usability ──────────────────────────────────────────────────
+@register
+class WCAGUsabilityProbe(Probe):
+    """Check for font-size, viewport meta, skip link, and descriptive link text."""
+    id, weight = "wcag_usability", 0.05
+
+    def run(self, original_domain: str):
+        url = f"https://{original_domain}"
+        try:
+            resp = requests.get(url, timeout=8)
+            html = resp.text
+        except Exception as e:
+            return 0.0, {"error": f"Failed to fetch HTML: {e}"}
+
+        soup = BeautifulSoup(html, "html.parser")
+
+        # 1. Font size (at least one style >= 16px or 1em)
+        font_ok = False
+        for tag in soup.find_all(style=True):
+            style = tag["style"].lower()
+            if "font-size" in style:
+                if any(sz in style for sz in ["16px", "1em", "larger", "large"]):
+                    font_ok = True
+                    break
+        # Also check for <body style="font-size:...">
+        body = soup.body
+        if body and body.has_attr("style") and not font_ok:
+            style = body["style"].lower()
+            if "font-size" in style and any(sz in style for sz in ["16px", "1em", "larger", "large"]):
+                font_ok = True
+
+        # 2. Viewport meta tag
+        viewport_ok = bool(soup.find("meta", attrs={"name": "viewport"}))
+
+        # 3. Skip link (a[href^="#"] near top)
+        skip_ok = False
+        for a in soup.find_all("a", href=True):
+            if a["href"].startswith("#") and ("skip" in (a.get_text() or "").lower() or "main" in a["href"].lower()):
+                skip_ok = True
+                break
+
+        # 4. Descriptive link text (no "click here", "read more", etc. as only text)
+        bad_link_texts = {"click here", "read more", "more", "here"}
+        links = soup.find_all("a", href=True)
+        # Strict: all links must be descriptive
+        link_text_ok = all(
+            a.get_text().strip().lower() not in bad_link_texts and len(a.get_text().strip()) > 3
+            for a in links
+        ) if links else True
+
+        # Score: 0.25 font, 0.25 viewport, 0.25 skip, 0.25 link text
+        score = 0.0
+        if font_ok:
+            score += 0.25
+        if viewport_ok:
+            score += 0.25
+        if skip_ok:
+            score += 0.25
+        if link_text_ok:
+            score += 0.25
+
+        details = {
+            "font_ok": font_ok,
+            "viewport_ok": viewport_ok,
+            "skip_ok": skip_ok,
+            "link_text_ok": link_text_ok,
+            "link_count": len(links),
+        }
+        return round(score, 2), details
+
+
 # ────────── DNSSEC ─────────────────────────────────────────────────────────
 @register
 class DNSSECProbe(Probe):
@@ -434,6 +711,7 @@ class DNSSECProbe(Probe):
     def run(self, dom):  # Stays with original domain
         try:
             self._report_progress(f"DNSSEC: Checking validation status for {dom}...")
+            # Use Google DoH for now, but could use utils.dns in future
             j = requests.get(
                 GOOGLE_DOH, params={"name": dom, "type": "A", "do": "1"}, timeout=8
             ).json()
@@ -461,7 +739,8 @@ class HeaderProbe(Probe):
     id, weight = "headers", 0.10
 
     def run(self, original_domain: str) -> Tuple[float, dict]:
-        variants = _get_domain_variants(original_domain)
+        from dqix.utils.dns import domain_variants
+        variants = domain_variants(original_domain)
         self._report_progress(
             f"Headers: Will check variants {', '.join(variants)} for {original_domain}..."
         )
@@ -591,9 +870,10 @@ class MailProbe(Probe):
     id, weight = "mail", 0.15
 
     def run(self, dom):  # Stays with original domain
+        from dqix.utils.dns import get_txt_records
         self._report_progress(f"Mail: Checking SPF record for {dom}...")
         spf_record_present = any(
-            SPF_RE.match(t if isinstance(t, str) else str(t)) for t in self._txt(dom)
+            SPF_RE.match(t if isinstance(t, str) else str(t)) for t in get_txt_records(dom)
         )
         self._report_progress(
             f"Mail: SPF {'found' if spf_record_present else 'not found'} for {dom}"
@@ -602,7 +882,7 @@ class MailProbe(Probe):
         self._report_progress(f"Mail: Checking DMARC record for {dom}...")
         dmarc_policy = None
         dmarc_record_text = ""
-        dmarc_records = self._txt(f"_dmarc.{dom}")
+        dmarc_records = get_txt_records(f"_dmarc.{dom}")
         if dmarc_records:
             first_rec = dmarc_records[0]
             dmarc_record_text = (
@@ -627,9 +907,6 @@ class MailProbe(Probe):
             "dmarc_policy": dmarc_policy or "none",
             "dmarc_record": dmarc_record_text[:200],
         }
-
-    def _txt(self, name: str) -> List[str]:  # type: ignore
-        return _get_txt_records(name)
 
 
 # ────────── WHOIS transparency ─────────────────────────────────────────────
@@ -692,6 +969,7 @@ class ImpersonationProbe(Probe):
     id, weight = "impersonation", 0.25
 
     def run(self, dom: str) -> Tuple[float, dict]:  # Stays with original domain
+        from dqix.utils.dns import get_txt_records
         self._report_progress(
             f"Impersonation: Starting deep email security check for {dom}..."
         )
@@ -707,7 +985,7 @@ class ImpersonationProbe(Probe):
         }
         current_score = 0.0
         self._report_progress(f"Impersonation: Checking SPF record for {dom}...")
-        if any(SPF_RE.match(t) for t in _get_txt_records(dom)):
+        if any(SPF_RE.match(t) for t in get_txt_records(dom)):
             details["spf_present"] = True
             current_score += 0.2
         self._report_progress(
@@ -715,7 +993,7 @@ class ImpersonationProbe(Probe):
         )
 
         self._report_progress(f"Impersonation: Checking DMARC alignment for {dom}...")
-        dmarc_records = _get_txt_records(f"_dmarc.{dom}")
+        dmarc_records = get_txt_records(f"_dmarc.{dom}")
         if dmarc_records:
             details["dmarc_present"] = True
             dmarc_tags = _parse_dmarc_tags(dmarc_records[0])
