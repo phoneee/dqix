@@ -1,4 +1,4 @@
-# Domain Quality Index (DQIX) – Project Principles
+# DQIX: Domain Quality Index – Project Principles
 
 ## Vision
 
@@ -73,4 +73,4 @@ Detailed steps live in **CONTRIBUTING.md**.
 ---
 _Project tagline_: **"Measuring the health of the web, together, in the open."**
 
-_Updated tagline_: **"Measuring internet performance, affordability & trustworthiness — together, in the open."** 
+_Updated tagline_: **"Measuring internet performance, affordability & trustworthiness."** 
