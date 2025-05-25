@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Probe Scoring Logic &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Probe Scoring Logic</a><ul>
+<li><a class="reference internal" href="#transport-security">Transport Security</a><ul>
+<li><a class="reference internal" href="#tls">TLS</a></li>
+<li><a class="reference internal" href="#dnssec">DNSSEC</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#web-hardening">Web Hardening</a><ul>
+<li><a class="reference internal" href="#security-headers">Security Headers</a></li>
+<li><a class="reference internal" href="#cookie-flags">Cookie Flags</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#e-mail-security">E-mail Security</a><ul>
+<li><a class="reference internal" href="#spf-dmarc">SPF + DMARC</a></li>
+<li><a class="reference internal" href="#dkim">DKIM</a></li>
+<li><a class="reference internal" href="#mta-sts">MTA-STS</a></li>
+<li><a class="reference internal" href="#bimi">BIMI</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#certificate-policy">Certificate Policy</a><ul>
+<li><a class="reference internal" href="#caa">CAA</a></li>
+<li><a class="reference internal" href="#certificate-transparency-monitor">Certificate Transparency Monitor</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dns-hygiene">DNS Hygiene</a><ul>
+<li><a class="reference internal" href="#dns-basic">DNS Basic</a></li>
+<li><a class="reference internal" href="#dnssec-chain">DNSSEC Chain</a></li>
+<li><a class="reference internal" href="#nsec3">NSEC3</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#impersonation-trust">Impersonation &amp; Trust</a><ul>
+<li><a class="reference internal" href="#impersonation">Impersonation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#accessibility">Accessibility</a><ul>
+<li><a class="reference internal" href="#wcag-2-1-aa">WCAG 2.1 AA</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ownership-clarity">Ownership Clarity</a><ul>
+<li><a class="reference internal" href="#whois">WHOIS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sustainability-optional">Sustainability (Optional)</a><ul>
+<li><a class="reference internal" href="#eco-index">Eco Index</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Probe Scoring Logic</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/SCORING.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="probe-scoring-logic">
+<h1>Probe Scoring Logic<a class="headerlink" href="#probe-scoring-logic" title="Link to this heading"></a></h1>
+<p>This page documents <strong>how each probe converts raw evidence into a 0–1 score</strong>.<br />
+The formulas are intentionally simple so that anyone can reproduce them with the same inputs.<br />
+Reference numbers correspond to the bibliography in <a class="reference internal" href="#../README.md#references"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">README.md</span></code></span></a>.</p>
+<hr class="docutils" />
+<section id="transport-security">
+<h2>Transport Security<a class="headerlink" href="#transport-security" title="Link to this heading"></a></h2>
+<section id="tls">
+<h3>TLS<a class="headerlink" href="#tls" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>A+ = 1.0, A = 0.95, A- = 0.90, … F = 0.0 (SSL Labs/sslyze/nmap grade)</p></li>
+<li><p>Handshake-only (no grade available) = 1.0 (but the probe’s <strong>weight</strong> is lower)</p></li>
+<li><p><em>Ref</em>: Mozilla Observatory<a href="#id12"><span class="problematic" id="id1">[^4]</span></a>, NIST 800-52r2<a href="#id13"><span class="problematic" id="id2">[^2]</span></a></p></li>
+</ul>
+</section>
+<section id="dnssec">
+<h3>DNSSEC<a class="headerlink" href="#dnssec" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>DS+DNSKEY+RRSIG present +0.25</p></li>
+<li><p>Chain of trust validated (<strong>AD</strong> flag) +0.25</p></li>
+<li><p>Validated by multiple resolvers +0.25</p></li>
+<li><p>Modern algorithm (13 or 14) <strong>and</strong> key ≥ 256 bit +0.25</p></li>
+<li><p><em>Ref</em>: Ling et al., 2021<a href="#id14"><span class="problematic" id="id3">[^1]</span></a></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="web-hardening">
+<h2>Web Hardening<a class="headerlink" href="#web-hardening" title="Link to this heading"></a></h2>
+<section id="security-headers">
+<h3>Security Headers<a class="headerlink" href="#security-headers" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>HSTS 0.20</p></li>
+<li><p>CSP 0.20</p></li>
+<li><p>X-Frame-Options 0.15</p></li>
+<li><p>X-Content-Type-Options 0.15</p></li>
+<li><p>Referrer-Policy 0.15</p></li>
+<li><p>Permissions-Policy 0.15</p></li>
+<li><p>Missing any header → subtract its weight</p></li>
+<li><p><em>Ref</em>: Aerts et al., 2019<a href="#id15"><span class="problematic" id="id4">[^4]</span></a>; OWASP Top 10</p></li>
+</ul>
+</section>
+<section id="cookie-flags">
+<h3>Cookie Flags<a class="headerlink" href="#cookie-flags" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All of <strong>Secure</strong> + <strong>HttpOnly</strong> + <strong>SameSite</strong> present → 1.0</p></li>
+<li><p>−0.33 for each flag that is missing</p></li>
+<li><p><em>Ref</em>: OWASP Secure Headers</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="e-mail-security">
+<h2>E-mail Security<a class="headerlink" href="#e-mail-security" title="Link to this heading"></a></h2>
+<section id="spf-dmarc">
+<h3>SPF + DMARC<a class="headerlink" href="#spf-dmarc" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>SPF + DMARC <code class="docutils literal notranslate"><span class="pre">policy=reject</span></code> = 1.0</p></li>
+<li><p>SPF + DMARC <code class="docutils literal notranslate"><span class="pre">quarantine</span></code> = 0.75</p></li>
+<li><p>SPF only = 0.50</p></li>
+<li><p>None = 0.0</p></li>
+<li><p><em>Ref</em>: RFC 7208, RFC 7489</p></li>
+</ul>
+</section>
+<section id="dkim">
+<h3>DKIM<a class="headerlink" href="#dkim" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>DKIM record present = 1.0, missing = 0.0</p></li>
+<li><p><em>Ref</em>: RFC 6376</p></li>
+</ul>
+</section>
+<section id="mta-sts">
+<h3>MTA-STS<a class="headerlink" href="#mta-sts" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode=enforce</span></code> = 1.0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode=testing</span></code> = 0.5</p></li>
+<li><p>No policy = 0.0</p></li>
+<li><p><em>Ref</em>: RFC 8460<a href="#id16"><span class="problematic" id="id5">[^6]</span></a></p></li>
+</ul>
+</section>
+<section id="bimi">
+<h3>BIMI<a class="headerlink" href="#bimi" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>BIMI TXT record <strong>and</strong> valid SVG = 1.0</p></li>
+<li><p>Record present but invalid SVG = 0.5</p></li>
+<li><p>None = 0.0</p></li>
+<li><p><em>Ref</em>: BIMI Group</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="certificate-policy">
+<h2>Certificate Policy<a class="headerlink" href="#certificate-policy" title="Link to this heading"></a></h2>
+<section id="caa">
+<h3>CAA<a class="headerlink" href="#caa" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>CAA restricts CA (no wildcard) = 1.0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">issue</span> <span class="pre">*</span></code> (any CA) = 0.5</p></li>
+<li><p>No CAA = 0.0</p></li>
+<li><p><em>Ref</em>: CA/B Forum<a href="#id17"><span class="problematic" id="id6">[^7]</span></a></p></li>
+</ul>
+</section>
+<section id="certificate-transparency-monitor">
+<h3>Certificate Transparency Monitor<a class="headerlink" href="#certificate-transparency-monitor" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Active CT log monitoring present = 1.0</p></li>
+<li><p>None = 0.0</p></li>
+<li><p><em>Ref</em>: Scheitle et al., 2020</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="dns-hygiene">
+<h2>DNS Hygiene<a class="headerlink" href="#dns-hygiene" title="Link to this heading"></a></h2>
+<section id="dns-basic">
+<h3>DNS Basic<a class="headerlink" href="#dns-basic" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>A/AAAA record 0.25</p></li>
+<li><p>≥ 2 NS records 0.25</p></li>
+<li><p>SOA record 0.25</p></li>
+<li><p>MX record 0.25 (if no MX → 0.10)</p></li>
+<li><p><em>Ref</em>: Fowler et al., 2022<a href="#id18"><span class="problematic" id="id7">[^5]</span></a></p></li>
+</ul>
+</section>
+<section id="dnssec-chain">
+<h3>DNSSEC Chain<a class="headerlink" href="#dnssec-chain" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Full chain of trust = 1.0</p></li>
+<li><p>Partial = 0.5</p></li>
+<li><p>None = 0.0</p></li>
+<li><p><em>Ref</em>: Ling et al., 2021<a href="#id19"><span class="problematic" id="id8">[^1]</span></a></p></li>
+</ul>
+</section>
+<section id="nsec3">
+<h3>NSEC3<a class="headerlink" href="#nsec3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>NSEC3 present = 1.0</p></li>
+<li><p>None = 0.0</p></li>
+<li><p><em>Ref</em>: RFC 5155</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="impersonation-trust">
+<h2>Impersonation &amp; Trust<a class="headerlink" href="#impersonation-trust" title="Link to this heading"></a></h2>
+<section id="impersonation">
+<h3>Impersonation<a class="headerlink" href="#impersonation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All of DMARC alignment, BIMI, and MTA-STS present → 1.0</p></li>
+<li><p>Subtract proportionally for each control that is missing</p></li>
+<li><p><em>Ref</em>: ISO/IEC 27001:2022 Annex A.5<a href="#id20"><span class="problematic" id="id9">[^8]</span></a></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="accessibility">
+<h2>Accessibility<a class="headerlink" href="#accessibility" title="Link to this heading"></a></h2>
+<section id="wcag-2-1-aa">
+<h3>WCAG 2.1 AA<a class="headerlink" href="#wcag-2-1-aa" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Fully compliant = 1.0</p></li>
+<li><p>Partial = 0.5</p></li>
+<li><p>Fail = 0.0</p></li>
+<li><p><em>Ref</em>: WCAG 2.1<a href="#id21"><span class="problematic" id="id10">[^9]</span></a></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ownership-clarity">
+<h2>Ownership Clarity<a class="headerlink" href="#ownership-clarity" title="Link to this heading"></a></h2>
+<section id="whois">
+<h3>WHOIS<a class="headerlink" href="#whois" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Owner/organisation contact present = 1.0</p></li>
+<li><p>Registrar only = 0.5</p></li>
+<li><p>None or privacy-masked WHOIS = 0.0</p></li>
+<li><p><em>Ref</em>: EU GDPR Art. 5<a href="#id22"><span class="problematic" id="id11">[^10]</span></a></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="sustainability-optional">
+<h2>Sustainability (Optional)<a class="headerlink" href="#sustainability-optional" title="Link to this heading"></a></h2>
+<section id="eco-index">
+<h3>Eco Index<a class="headerlink" href="#eco-index" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Meets eco criteria = 1.0</p></li>
+<li><p>None = 0.0</p></li>
+<li><p><em>Ref</em>: Oberle 2022</p></li>
+</ul>
+<hr class="docutils" />
+<blockquote>
+<div><p><strong>Design goal:</strong> All formulas rely on binary or easily enumerable criteria to keep manual verification possible (KISS).<br />
+For implementation details, see the corresponding class in <code class="docutils literal notranslate"><span class="pre">dqix/probes/*</span></code> or <code class="docutils literal notranslate"><span class="pre">dqix/plugins/*</span></code>.</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
