@@ -4,8 +4,11 @@ API is prepared for future `aiodns` refactor.
 """
 from __future__ import annotations
 
-from typing import List, Set
+from typing import List, Set, Any, Optional, Tuple
 import dns.resolver
+import dns.dnssec
+import dns.rdatatype
+from datetime import datetime
 
 __all__ = [
     "domain_variants",
@@ -19,33 +22,97 @@ __all__ = [
 ]
 
 
+def query_records(domain: str, rdtype: str) -> List[Any]:
+    """Query DNS records of specified type.
+    
+    Args:
+        domain: Domain to query
+        rdtype: Record type (A, AAAA, NS, SOA, MX, DS, DNSKEY, RRSIG, NSEC)
+        
+    Returns:
+        List of DNS records, empty list on error
+    """
+    try:
+        answers = dns.resolver.resolve(domain, rdtype, raise_on_no_answer=False)
+        return list(answers) if answers else []
+    except dns.resolver.NoAnswer:
+        return []
+    except Exception:
+        return []
+
+
+def get_dnssec_info(domain: str) -> Tuple[Optional[str], List[str], List[str], List[str], Optional[int], Optional[int], Optional[datetime]]:
+    """Get DNSSEC information for a domain.
+    
+    Args:
+        domain: Domain to check
+        
+    Returns:
+        Tuple of (ds_record, dnskey_records, rrsig_records, nsec_records, algorithm, key_length, signature_expiry)
+    """
+    resolver = dns.resolver.Resolver()
+    resolver.use_edns(0, dns.flags.DO)
+    
+    # Get DS record
+    try:
+        ds_records = resolver.resolve(domain, 'DS')
+        ds_record = str(ds_records[0]) if ds_records else None
+    except:
+        ds_record = None
+
+    # Get DNSKEY records
+    try:
+        dnskey_records = resolver.resolve(domain, 'DNSKEY')
+        dnskey_list = [str(r) for r in dnskey_records]
+        # Extract algorithm and key length from first DNSKEY
+        if dnskey_list:
+            parts = dnskey_list[0].split()
+            algorithm = int(parts[2])
+            key_length = len(parts[3]) * 4  # Base64 length to bits
+        else:
+            algorithm = None
+            key_length = None
+    except:
+        dnskey_list = []
+        algorithm = None
+        key_length = None
+
+    # Get RRSIG records
+    try:
+        rrsig_records = resolver.resolve(domain, 'RRSIG')
+        rrsig_list = [str(r) for r in rrsig_records]
+        # Extract signature expiry from first RRSIG
+        if rrsig_list:
+            parts = rrsig_list[0].split()
+            expiry = datetime.strptime(parts[8], "%Y%m%d%H%M%S")
+        else:
+            expiry = None
+    except:
+        rrsig_list = []
+        expiry = None
+
+    # Get NSEC records
+    try:
+        nsec_records = resolver.resolve(domain, 'NSEC')
+        nsec_list = [str(r) for r in nsec_records]
+    except:
+        nsec_list = []
+
+    return ds_record, dnskey_list, rrsig_list, nsec_list, algorithm, key_length, expiry
+
+
 def domain_variants(domain: str) -> List[str]:
-    """Get list of domain variants to try.
+    """Generate domain name variants to try.
     
     Args:
         domain: Original domain name
         
     Returns:
-        List of domain variants in order of preference
+        List of domain variants to try
     """
-    # Remove any protocol prefix
-    domain = domain.lower().strip()
-    if domain.startswith(("http://", "https://")):
-        domain = domain.split("://", 1)[1]
-        
-    # Remove any path
-    domain = domain.split("/", 1)[0]
-    
-    # Remove any port
-    domain = domain.split(":", 1)[0]
-    
-    # Try www and non-www variants
-    variants = []
-    if domain.startswith("www."):
-        variants = [domain, domain[4:]]
-    else:
-        variants = [domain, f"www.{domain}"]
-        
+    variants = [domain]
+    if not domain.startswith('www.'):
+        variants.append(f'www.{domain}')
     return variants
 
 
