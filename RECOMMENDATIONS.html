@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DQIX Architecture Recommendations &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">DQIX Architecture Recommendations</a><ul>
+<li><a class="reference internal" href="#executive-summary">Executive Summary</a></li>
+<li><a class="reference internal" href="#immediate-actions-priority-1">1. Immediate Actions (Priority 1)</a><ul>
+<li><a class="reference internal" href="#remove-redundant-components">1.1 Remove Redundant Components</a></li>
+<li><a class="reference internal" href="#fix-architectural-issues">1.2 Fix Architectural Issues</a></li>
+<li><a class="reference internal" href="#consolidate-email-security">1.3 Consolidate Email Security</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#critical-additions-priority-2">2. Critical Additions (Priority 2)</a><ul>
+<li><a class="reference internal" href="#ipv6-support-probe">2.1 IPv6 Support Probe</a></li>
+<li><a class="reference internal" href="#performance-metrics">2.2 Performance Metrics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#scoring-model-improvements">3. Scoring Model Improvements</a><ul>
+<li><a class="reference internal" href="#implement-baseline-requirements">3.1 Implement Baseline Requirements</a></li>
+<li><a class="reference internal" href="#adjust-weights-based-on-research">3.2 Adjust Weights Based on Research</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#measurement-validity">4. Measurement Validity</a><ul>
+<li><a class="reference internal" href="#tls-scoring">4.1 TLS Scoring</a></li>
+<li><a class="reference internal" href="#dnssec-scoring">4.2 DNSSEC Scoring</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#implementation-timeline">5. Implementation Timeline</a><ul>
+<li><a class="reference internal" href="#phase-1-week-1-2">Phase 1 (Week 1-2)</a></li>
+<li><a class="reference internal" href="#phase-2-week-3-4">Phase 2 (Week 3-4)</a></li>
+<li><a class="reference internal" href="#phase-3-week-5-6">Phase 3 (Week 5-6)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#validation-methodology">6. Validation Methodology</a><ul>
+<li><a class="reference internal" href="#ground-truth-dataset">6.1 Ground Truth Dataset</a></li>
+<li><a class="reference internal" href="#correlation-analysis">6.2 Correlation Analysis</a></li>
+<li><a class="reference internal" href="#academic-review">6.3 Academic Review</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ethical-considerations">7. Ethical Considerations</a><ul>
+<li><a class="reference internal" href="#transparency">7.1 Transparency</a></li>
+<li><a class="reference internal" href="#privacy">7.2 Privacy</a></li>
+<li><a class="reference internal" href="#responsible-disclosure">7.3 Responsible Disclosure</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">8. References</a></li>
+<li><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DQIX Architecture Recommendations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/RECOMMENDATIONS.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="dqix-architecture-recommendations">
+<h1>DQIX Architecture Recommendations<a class="headerlink" href="#dqix-architecture-recommendations" title="Link to this heading"></a></h1>
+<section id="executive-summary">
+<h2>Executive Summary<a class="headerlink" href="#executive-summary" title="Link to this heading"></a></h2>
+<p>Based on rigorous academic analysis, the DQIX system requires architectural improvements to become a credible domain quality measurement system. This document provides actionable recommendations with academic justification.</p>
+</section>
+<section id="immediate-actions-priority-1">
+<h2>1. Immediate Actions (Priority 1)<a class="headerlink" href="#immediate-actions-priority-1" title="Link to this heading"></a></h2>
+<section id="remove-redundant-components">
+<h3>1.1 Remove Redundant Components<a class="headerlink" href="#remove-redundant-components" title="Link to this heading"></a></h3>
+<p><strong>What to Remove:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ProbeResult</span></code> class in <code class="docutils literal notranslate"><span class="pre">core/probes.py</span></code> (unused)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">impersonation</span></code> probe (duplicates SPF/DKIM/DMARC)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NSEC</span></code> probe (DNSSEC implementation detail)</p></li>
+<li><p>Certificate Transparency probe (mandatory, not differentiating)</p></li>
+</ul>
+<p><strong>Justification:</strong> Occam’s Razor - entities should not be multiplied without necessity</p>
+</section>
+<section id="fix-architectural-issues">
+<h3>1.2 Fix Architectural Issues<a class="headerlink" href="#fix-architectural-issues" title="Link to this heading"></a></h3>
+<p><strong>Replace Global State:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Current (BAD)</span>
+<span class="n">VERBOSE_LEVEL</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Global variable</span>
+
+<span class="c1"># Recommended (GOOD)</span>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProbeConfig</span><span class="p">:</span>
+    <span class="n">verbosity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p><strong>Justification:</strong> Fowler (2002) - Avoid global state for testability</p>
+</section>
+<section id="consolidate-email-security">
+<h3>1.3 Consolidate Email Security<a class="headerlink" href="#consolidate-email-security" title="Link to this heading"></a></h3>
+<p><strong>Current:</strong> Separate SPF (15%), DKIM (3%), DMARC, Impersonation (24%)</p>
+<p><strong>Recommended:</strong> Single <code class="docutils literal notranslate"><span class="pre">email_security</span></code> probe (20%)</p>
+<ul class="simple">
+<li><p>Prevents double-counting</p></li>
+<li><p>Reflects interdependencies (DMARC requires SPF/DKIM)</p></li>
+<li><p>Reference: M³AAWG Best Practices</p></li>
+</ul>
+</section>
+</section>
+<section id="critical-additions-priority-2">
+<h2>2. Critical Additions (Priority 2)<a class="headerlink" href="#critical-additions-priority-2" title="Link to this heading"></a></h2>
+<section id="ipv6-support-probe">
+<h3>2.1 IPv6 Support Probe<a class="headerlink" href="#ipv6-support-probe" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@register</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IPv6Probe</span><span class="p">(</span><span class="n">Probe</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measure IPv6 readiness.</span>
+<span class="sd">    </span>
+<span class="sd">    Reference: Google IPv6 Statistics (40%+ adoption)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="s2">&quot;ipv6&quot;</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="mf">0.05</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">):</span>
+        <span class="c1"># Check for AAAA records</span>
+        <span class="c1"># Test IPv6 connectivity</span>
+        <span class="c1"># Verify feature parity with IPv4</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-metrics">
+<h3>2.2 Performance Metrics<a class="headerlink" href="#performance-metrics" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@register</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PerformanceProbe</span><span class="p">(</span><span class="n">Probe</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measure domain performance.</span>
+<span class="sd">    </span>
+<span class="sd">    Reference: Google Core Web Vitals</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="s2">&quot;performance&quot;</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="mf">0.10</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">):</span>
+        <span class="c1"># DNS response time (&lt;100ms good)</span>
+        <span class="c1"># HTTP response time (&lt;200ms good)</span>
+        <span class="c1"># Geographic distribution</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="scoring-model-improvements">
+<h2>3. Scoring Model Improvements<a class="headerlink" href="#scoring-model-improvements" title="Link to this heading"></a></h2>
+<section id="implement-baseline-requirements">
+<h3>3.1 Implement Baseline Requirements<a class="headerlink" href="#implement-baseline-requirements" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scoring_model</span> <span class="o">=</span> <span class="n">BaselineScoringModel</span><span class="p">(</span>
+    <span class="n">baseline_probes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tls&#39;</span><span class="p">,</span> <span class="s1">&#39;dnssec&#39;</span><span class="p">],</span>
+    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+
+<span class="c1"># Domain cannot score &gt;50% without basic security</span>
+</pre></div>
+</div>
+<p><strong>Justification:</strong> Security is not additive - missing TLS is critical regardless of other features</p>
+</section>
+<section id="adjust-weights-based-on-research">
+<h3>3.2 Adjust Weights Based on Research<a class="headerlink" href="#adjust-weights-based-on-research" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># level3_improved.yaml</span>
+<span class="nt">tls</span><span class="p">:</span><span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">0.25</span><span class="w">  </span><span class="c1"># Critical (Felt et al. 2017)</span>
+<span class="nt">dnssec</span><span class="p">:</span><span class="w">         </span><span class="l l-Scalar l-Scalar-Plain">0.20</span><span class="w">  </span><span class="c1"># Critical (Chung et al. 2017)</span>
+<span class="nt">email_security</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.20</span><span class="w">  </span><span class="c1"># Combined SPF/DKIM/DMARC</span>
+<span class="nt">headers</span><span class="p">:</span><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">0.15</span><span class="w">  </span><span class="c1"># Important (OWASP)</span>
+<span class="nt">dns_basic</span><span class="p">:</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">0.10</span><span class="w">  </span><span class="c1"># Infrastructure</span>
+<span class="nt">ipv6</span><span class="p">:</span><span class="w">           </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w">  </span><span class="c1"># Future-ready</span>
+<span class="nt">performance</span><span class="p">:</span><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w">  </span><span class="c1"># User experience</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="measurement-validity">
+<h2>4. Measurement Validity<a class="headerlink" href="#measurement-validity" title="Link to this heading"></a></h2>
+<section id="tls-scoring">
+<h3>4.1 TLS Scoring<a class="headerlink" href="#tls-scoring" title="Link to this heading"></a></h3>
+<p><strong>Current Issues:</strong></p>
+<ul class="simple">
+<li><p>Binary pass/fail doesn’t reflect gradations</p></li>
+<li><p>SSL Labs grades are opaque</p></li>
+</ul>
+<p><strong>Recommended Scoring:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">score_tls</span><span class="p">(</span><span class="n">tls_version</span><span class="p">,</span> <span class="n">cipher_strength</span><span class="p">,</span> <span class="n">cert_validity</span><span class="p">):</span>
+    <span class="n">base_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+    
+    <span class="c1"># Protocol version (40% of score)</span>
+    <span class="k">if</span> <span class="n">tls_version</span> <span class="o">&gt;=</span> <span class="s2">&quot;1.3&quot;</span><span class="p">:</span>
+        <span class="n">base_score</span> <span class="o">+=</span> <span class="mf">0.4</span>
+    <span class="k">elif</span> <span class="n">tls_version</span> <span class="o">&gt;=</span> <span class="s2">&quot;1.2&quot;</span><span class="p">:</span>
+        <span class="n">base_score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>  <span class="c1"># Fail immediately</span>
+    
+    <span class="c1"># Cipher strength (30% of score)</span>
+    <span class="k">if</span> <span class="n">cipher_strength</span> <span class="o">&gt;=</span> <span class="mi">256</span><span class="p">:</span>
+        <span class="n">base_score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+    <span class="k">elif</span> <span class="n">cipher_strength</span> <span class="o">&gt;=</span> <span class="mi">128</span><span class="p">:</span>
+        <span class="n">base_score</span> <span class="o">+=</span> <span class="mf">0.2</span>
+    
+    <span class="c1"># Certificate validity (30% of score)</span>
+    <span class="k">if</span> <span class="n">cert_validity</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>  <span class="c1"># days</span>
+        <span class="n">base_score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+    <span class="k">elif</span> <span class="n">cert_validity</span> <span class="o">&gt;</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="n">base_score</span> <span class="o">+=</span> <span class="mf">0.15</span>
+    
+    <span class="k">return</span> <span class="n">base_score</span>
+</pre></div>
+</div>
+</section>
+<section id="dnssec-scoring">
+<h3>4.2 DNSSEC Scoring<a class="headerlink" href="#dnssec-scoring" title="Link to this heading"></a></h3>
+<p><strong>Reference:</strong> Scheitle et al. (2018) “A Long Way to the Top”</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">score_dnssec</span><span class="p">(</span><span class="n">chain_valid</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">key_size</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">chain_valid</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    
+    <span class="n">score</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Base for valid chain</span>
+    
+    <span class="c1"># Modern crypto (ECDSA P-256 or RSA-2048+)</span>
+    <span class="k">if</span> <span class="n">algorithm</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span> <span class="ow">or</span> <span class="p">(</span><span class="n">algorithm</span> <span class="o">==</span> <span class="mi">8</span> <span class="ow">and</span> <span class="n">key_size</span> <span class="o">&gt;=</span> <span class="mi">2048</span><span class="p">):</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+    
+    <span class="c1"># Multiple validators confirmed</span>
+    <span class="k">if</span> <span class="n">validated_by_multiple_resolvers</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.2</span>
+    
+    <span class="k">return</span> <span class="n">score</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-timeline">
+<h2>5. Implementation Timeline<a class="headerlink" href="#implementation-timeline" title="Link to this heading"></a></h2>
+<section id="phase-1-week-1-2">
+<h3>Phase 1 (Week 1-2)<a class="headerlink" href="#phase-1-week-1-2" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Remove redundant components</p></li>
+<li><p>Fix global state issues</p></li>
+<li><p>Consolidate email probes</p></li>
+</ol>
+</section>
+<section id="phase-2-week-3-4">
+<h3>Phase 2 (Week 3-4)<a class="headerlink" href="#phase-2-week-3-4" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Add IPv6 probe</p></li>
+<li><p>Add performance probe</p></li>
+<li><p>Implement baseline scoring</p></li>
+</ol>
+</section>
+<section id="phase-3-week-5-6">
+<h3>Phase 3 (Week 5-6)<a class="headerlink" href="#phase-3-week-5-6" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Adjust weights based on data</p></li>
+<li><p>Validate measurements</p></li>
+<li><p>Document methodology</p></li>
+</ol>
+</section>
+</section>
+<section id="validation-methodology">
+<h2>6. Validation Methodology<a class="headerlink" href="#validation-methodology" title="Link to this heading"></a></h2>
+<section id="ground-truth-dataset">
+<h3>6.1 Ground Truth Dataset<a class="headerlink" href="#ground-truth-dataset" title="Link to this heading"></a></h3>
+<p>Create validation set from:</p>
+<ul class="simple">
+<li><p>Alexa Top 1000 (popular sites)</p></li>
+<li><p>Tranco List (research-oriented)</p></li>
+<li><p>Government domains (.gov)</p></li>
+<li><p>Known-bad domains (phishing lists)</p></li>
+</ul>
+</section>
+<section id="correlation-analysis">
+<h3>6.2 Correlation Analysis<a class="headerlink" href="#correlation-analysis" title="Link to this heading"></a></h3>
+<p>Validate that DQIX scores correlate with:</p>
+<ul class="simple">
+<li><p>Security incidents (lower scores = more incidents)</p></li>
+<li><p>User trust surveys</p></li>
+<li><p>Browser security warnings</p></li>
+<li><p>Industry certifications (ISO 27001, etc.)</p></li>
+</ul>
+</section>
+<section id="academic-review">
+<h3>6.3 Academic Review<a class="headerlink" href="#academic-review" title="Link to this heading"></a></h3>
+<p>Submit methodology to:</p>
+<ul class="simple">
+<li><p>Internet Measurement Conference (IMC)</p></li>
+<li><p>USENIX Security Symposium</p></li>
+<li><p>Network and Distributed System Security (NDSS)</p></li>
+</ul>
+</section>
+</section>
+<section id="ethical-considerations">
+<h2>7. Ethical Considerations<a class="headerlink" href="#ethical-considerations" title="Link to this heading"></a></h2>
+<section id="transparency">
+<h3>7.1 Transparency<a class="headerlink" href="#transparency" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Publish all algorithms and weights</p></li>
+<li><p>Provide detailed scoring breakdowns</p></li>
+<li><p>Allow appeals/corrections</p></li>
+</ul>
+</section>
+<section id="privacy">
+<h3>7.2 Privacy<a class="headerlink" href="#privacy" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>No personal data collection</p></li>
+<li><p>Respect robots.txt</p></li>
+<li><p>Rate-limit scans</p></li>
+</ul>
+</section>
+<section id="responsible-disclosure">
+<h3>7.3 Responsible Disclosure<a class="headerlink" href="#responsible-disclosure" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Notify domains of critical issues before publishing</p></li>
+<li><p>Provide remediation guidance</p></li>
+<li><p>Grace period for fixes</p></li>
+</ul>
+</section>
+</section>
+<section id="references">
+<h2>8. References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Architecture &amp; Design</strong></p>
+<ul class="simple">
+<li><p>Fowler, M. (2002). “Patterns of Enterprise Application Architecture”</p></li>
+<li><p>Martin, R. (2003). “Agile Software Development, Principles, Patterns, and Practices”</p></li>
+</ul>
+</li>
+<li><p><strong>Domain Security</strong></p>
+<ul class="simple">
+<li><p>Felt et al. (2017). “Measuring HTTPS Adoption on the Web.” USENIX Security</p></li>
+<li><p>Chung et al. (2017). “Understanding the Role of Registrars in DNSSEC.” IMC</p></li>
+<li><p>Scheitle et al. (2018). “A Long Way to the Top: Significance of DNSSEC.” IMC</p></li>
+</ul>
+</li>
+<li><p><strong>Measurement Methodology</strong></p>
+<ul class="simple">
+<li><p>Le Pochat et al. (2019). “Tranco: A Research-Oriented Top Sites Ranking.” WWW</p></li>
+<li><p>Durumeric et al. (2014). “The Matter of Heartbleed.” IMC</p></li>
+</ul>
+</li>
+<li><p><strong>Standards</strong></p>
+<ul class="simple">
+<li><p>RFC 1035: Domain Names - Implementation</p></li>
+<li><p>RFC 7208: Sender Policy Framework</p></li>
+<li><p>RFC 7489: Domain-based Message Authentication</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>The DQIX system has potential to become a valuable domain quality measurement tool. By implementing these evidence-based recommendations, it can provide accurate, actionable insights that improve internet security and reliability. The key is focusing on measurable, validated metrics that correlate with real-world outcomes.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
