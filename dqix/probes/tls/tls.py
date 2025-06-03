@@ -4,10 +4,11 @@ import socket
 import requests
 from typing import Tuple, Dict, Any, Optional, List
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import domain_variants
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import domain_variants
 
 # TLS probing backend selection
 TLS_METHOD: str = "ssllabs"  # {ssllabs, sslyze, nmap}
@@ -37,26 +38,26 @@ class TLSScoreCalculator(ScoreCalculator):
     """Calculate score for TLS probe."""
     
     def _grade_to_score(self, grade: str) -> float:
-    """Convert SSL Labs grade to a score between 0 and 1."""
-    grade_map = {
-        "A+": 1.0,
-        "A": 0.95,
-        "A-": 0.90,
-        "B+": 0.85,
-        "B": 0.80,
-        "B-": 0.75,
-        "C+": 0.70,
-        "C": 0.65,
-        "C-": 0.60,
-        "D+": 0.55,
-        "D": 0.50,
-        "D-": 0.45,
-        "E+": 0.40,
-        "E": 0.35,
-        "E-": 0.30,
-        "F": 0.0,
-    }
-    return grade_map.get(grade.upper(), 0.0)
+        """Convert SSL Labs grade to a score between 0 and 1."""
+        grade_map = {
+            "A+": 1.0,
+            "A": 0.95,
+            "A-": 0.90,
+            "B+": 0.85,
+            "B": 0.80,
+            "B-": 0.75,
+            "C+": 0.70,
+            "C": 0.65,
+            "C-": 0.60,
+            "D+": 0.55,
+            "D": 0.50,
+            "D-": 0.45,
+            "E+": 0.40,
+            "E": 0.35,
+            "E-": 0.30,
+            "F": 0.0,
+        }
+        return grade_map.get(grade.upper(), 0.0)
     
     def calculate_score(self, data: TLSData) -> Tuple[float, Dict[str, Any]]:
         """Calculate score from TLS data.
@@ -159,6 +160,16 @@ class TLSProbe(Probe):
         except (requests.RequestException, ValueError, IndexError, KeyError):
             self._report_progress(f"TLS: SSL Labs API error for {dom}", end="\n")
             return None
+    
+    def _grade_sslyze(self, dom: str) -> Optional[str]:
+        """Get grade using sslyze (placeholder)."""
+        # TODO: Implement sslyze backend
+        return None
+    
+    def _grade_nmap(self, dom: str) -> Optional[str]:
+        """Get grade using nmap (placeholder)."""
+        # TODO: Implement nmap backend
+        return None
             
     def collect_data(self, original_domain: str) -> TLSData:
         """Collect TLS data for the domain.

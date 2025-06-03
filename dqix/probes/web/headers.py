@@ -1,13 +1,13 @@
 from __future__ import annotations
 from typing import Tuple, Dict, Any, List, Optional
 from dataclasses import dataclass
-
 import requests
+from urllib.parse import urlparse
 
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import domain_variants
-from ..utils.http import get_https_url, fetch_url, is_gaierror_like
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import domain_variants
+from dqix.utils.http import get_https_url, fetch_url, is_gaierror_like
 
 @dataclass
 class HeadersData(ProbeData):
@@ -109,37 +109,37 @@ class HeadersScoreCalculator(ScoreCalculator):
                 "attempted_domain": data.attempted_domain,
                 "original_domain": data.original_domain
             }
-                
-                # Run all header checks
+        
+        # Run all header checks
         hsts_score, hsts_details = self._check_hsts(data.headers)
         csp_score, csp_details = self._check_csp(data.headers)
         frame_score, frame_details = self._check_frame_options(data.headers)
         type_score, type_details = self._check_content_type(data.headers)
         ref_score, ref_details = self._check_referrer(data.headers)
         perm_score, perm_details = self._check_permissions(data.headers)
-                
-                # Calculate weighted score
-                score = (
-                    hsts_score * 0.20 +
-                    csp_score * 0.20 +
-                    frame_score * 0.15 +
-                    type_score * 0.15 +
-                    ref_score * 0.15 +
-                    perm_score * 0.15
-                )
-                
-                details = {
+        
+        # Calculate weighted score
+        score = (
+            hsts_score * 0.20 +
+            csp_score * 0.20 +
+            frame_score * 0.15 +
+            type_score * 0.15 +
+            ref_score * 0.15 +
+            perm_score * 0.15
+        )
+        
+        details = {
             "attempted_domain": data.attempted_domain,
             "original_domain": data.original_domain,
-                    **hsts_details,
-                    **csp_details,
-                    **frame_details,
-                    **type_details,
-                    **ref_details,
-                    **perm_details
-                }
-                
-                return round(score, 2), details
+            **hsts_details,
+            **csp_details,
+            **frame_details,
+            **type_details,
+            **ref_details,
+            **perm_details
+        }
+        
+        return round(score, 2), details
 
 @register
 class HeaderProbe(Probe):

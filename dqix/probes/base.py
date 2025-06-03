@@ -66,7 +66,7 @@ class Probe(ABC):
     
     id: str
     weight: float
-    category: ProbeCategory
+    category: Optional[ProbeCategory] = None  # Make category optional with default None
     
     def __init__(self):
         """Initialize probe with logging."""

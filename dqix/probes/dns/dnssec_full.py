@@ -3,9 +3,9 @@ from typing import Tuple, Dict, Any, List, Optional
 from dataclasses import dataclass
 import requests
 
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import get_dnssec_info
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import get_dnssec_info, domain_variants, query_records
 
 # Google's DNS-over-HTTPS endpoint
 GOOGLE_DOH = "https://dns.google/resolve"

@@ -143,5 +143,5 @@ Reference numbers correspond to the bibliography in [`README.md`](../README.md#r
 
 ---
 
-> **Design goal:** All formulas rely on binary or easily enumerable criteria to keep manual verification possible (KISS).  
+> **Design goal:** All formulas rely on binary or easily enumerable criteria to keep manual verification possible (KISS).
 > For implementation details, see the corresponding class in `dqix/probes/*` or `dqix/plugins/*`. 

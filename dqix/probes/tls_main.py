@@ -6,8 +6,8 @@ import requests
 import logging
 from typing import Tuple, Dict, Optional
 
-from ..core.probes import Probe, register
-from ..utils.dns import domain_variants, grade_to_score
+from dqix.core.probes import Probe, register
+from dqix.utils.dns import domain_variants
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +22,28 @@ def set_tls_method(method: str) -> None:
     """
     global TLS_METHOD
     TLS_METHOD = method.lower().strip()
+
+def grade_to_score(grade: str) -> float:
+    """Convert SSL Labs grade to a score between 0 and 1."""
+    grade_map = {
+        "A+": 1.0,
+        "A": 0.95,
+        "A-": 0.90,
+        "B+": 0.85,
+        "B": 0.80,
+        "B-": 0.75,
+        "C+": 0.70,
+        "C": 0.65,
+        "C-": 0.60,
+        "D+": 0.55,
+        "D": 0.50,
+        "D-": 0.45,
+        "E+": 0.40,
+        "E": 0.35,
+        "E-": 0.30,
+        "F": 0.0,
+    }
+    return grade_map.get(grade.upper(), 0.0)
 
 @register
 class TLSProbe(Probe):

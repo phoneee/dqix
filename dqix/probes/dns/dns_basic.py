@@ -2,9 +2,9 @@ from __future__ import annotations
 from typing import Tuple, Dict, Any, List, Optional
 from dataclasses import dataclass
 
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import domain_variants, query_records
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import domain_variants, query_records
 
 @dataclass
 class DNSBasicData(ProbeData):

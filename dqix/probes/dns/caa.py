@@ -1,10 +1,9 @@
 from __future__ import annotations
 from typing import Tuple, Dict, Any, List, Optional
 from dataclasses import dataclass
-
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import get_caa_records
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import domain_variants, query_records, get_caa_records
 
 @dataclass
 class CAAData(ProbeData):
@@ -18,7 +17,7 @@ class CAAScoreCalculator(ScoreCalculator):
 
     Scoring logic (0–1):
         • No CAA records                → 0.00
-        • CAA present, but only "issue \*" or empty → 0.50
+        • CAA present, but only "issue *" or empty → 0.50
         • At least one CA restricted (e.g. "issue letsencrypt.org") → 1.00
     """
 

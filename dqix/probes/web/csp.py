@@ -1,14 +1,14 @@
 from __future__ import annotations
 from typing import Tuple, Dict, Any, List, Optional
 from dataclasses import dataclass
+import requests
+from urllib.parse import urlparse
 import re
 
-import requests
-
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import domain_variants
-from ..utils.http import get_https_url, fetch_url
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import domain_variants
+from dqix.utils.http import get_https_url, fetch_url, is_gaierror_like
 
 @dataclass
 class CSPData(ProbeData):

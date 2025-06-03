@@ -3,12 +3,18 @@ from typing import Tuple, Dict, Any, List, Optional
 from dataclasses import dataclass
 import ssl
 import socket
-import OpenSSL.crypto
-from datetime import datetime
+from datetime import datetime, timezone
+import certifi
 
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import domain_variants
+try:
+    import OpenSSL.crypto
+    HAS_OPENSSL = True
+except ImportError:
+    HAS_OPENSSL = False
+
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import domain_variants
 
 @dataclass
 class TLSChainData(ProbeData):
@@ -81,8 +87,11 @@ class TLSChainProbe(Probe):
     id, weight = "tls_chain", 0.15
     ScoreCalculator = TLSChainScoreCalculator
     
-    def _get_cert_chain(self, domain: str) -> Tuple[List[OpenSSL.crypto.X509], Optional[str]]:
+    def _get_cert_chain(self, domain: str) -> Tuple[List[Any], Optional[str]]:
         """Get certificate chain for domain."""
+        if not HAS_OPENSSL:
+            return [], "OpenSSL module not available"
+            
         try:
             ctx = ssl.create_default_context()
             with socket.create_connection((domain, 443), timeout=10) as sock:
@@ -103,8 +112,11 @@ class TLSChainProbe(Probe):
         except Exception as e:
             return [], str(e)
             
-    def _verify_chain(self, certs: List[OpenSSL.crypto.X509]) -> Tuple[bool, bool]:
+    def _verify_chain(self, certs: List[Any]) -> Tuple[bool, bool]:
         """Verify certificate chain trust."""
+        if not HAS_OPENSSL:
+            return False, False
+            
         if not certs:
             return False, False
             
@@ -143,6 +155,17 @@ class TLSChainProbe(Probe):
         Returns:
             TLSChainData containing chain validation results
         """
+        if not HAS_OPENSSL:
+            return TLSChainData(
+                domain=domain,
+                chain_length=0,
+                root_trusted=False,
+                intermediates_trusted=False,
+                expiry_dates=[],
+                issuer_orgs=[],
+                error="OpenSSL module not available"
+            )
+            
         try:
             self._report_progress(f"TLS Chain: Checking certificate chain for {domain}...")
             

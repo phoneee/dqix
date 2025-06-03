@@ -35,5 +35,6 @@ PROBES = {}
 
 
 def register(cls):
-    PROBES[cls.id] = cls()
+    """Register a probe class in the global registry."""
+    PROBES[cls.id] = cls
     return cls

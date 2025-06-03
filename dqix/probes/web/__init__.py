@@ -1,6 +1,6 @@
 """Web Security Probes."""
 
-from .headers import HeadersProbe
+from .headers import HeaderProbe
 from .csp import CSPProbe
  
-__all__ = ["HeadersProbe", "CSPProbe"] 
+__all__ = ["HeaderProbe", "CSPProbe"] 

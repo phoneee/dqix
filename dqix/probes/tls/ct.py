@@ -3,13 +3,15 @@ from typing import Tuple, Dict, Any, List, Optional
 from dataclasses import dataclass
 import json
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
+import base64
+import struct
 
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import domain_variants
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import domain_variants
 
 # Google's CT API endpoint
 CT_API = "https://transparencyreport.google.com/transparencyreport/api/v3/httpsreport/ct/certsearch"

@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Dict
 import logging
 
-from .probes import Probe, PROBES
-from . import load_weights
+from .probes import Probe
+from . import load_weights, PROBES
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +26,15 @@ def load_level(level: int) -> Dict[str, Probe]:
             logger.warning(f"Unknown probe '{pid}' in level {level}")
             continue
             
-        probe_instance = PROBES[pid]
+        probe_class = PROBES[pid]
         try:
+            # Create instance from class
+            probe_instance = probe_class()
             probe_instance.weight = float(weight_val)
             selected[pid] = probe_instance
-        except (TypeError, ValueError):
-            logger.warning(f"Invalid weight '{weight_val}' for probe '{pid}' in level {level}")
+        except (TypeError, ValueError) as e:
+            logger.warning(f"Invalid weight '{weight_val}' for probe '{pid}' in level {level}: {e}")
+        except Exception as e:
+            logger.error(f"Failed to instantiate probe '{pid}': {e}")
             
     return selected 

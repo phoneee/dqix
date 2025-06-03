@@ -2,13 +2,88 @@
 [project]
 name = "dqix"
 version = "0.1.0"
-description = "Domain Quality Index CLI and library"
-license = "MIT"
-requires-python = ">=3.9"
+description = "Domain Quality Index (DQIX) - An open-source tool for measuring domain quality"
+authors = [
+    {name = "DQIX Team", email = "team@dqix.org"}
+]
+readme = "readme.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: System :: Networking",
+]
+dependencies = [
+    "requests>=2.28.0",
+    "beautifulsoup4>=4.11.0",
+    "dnspython>=2.2.0",
+    "cryptography>=37.0.0",
+    "pyOpenSSL>=22.0.0",
+    "python-whois>=0.7.3",
+    "aiohttp>=3.8.0",
+    "click>=8.1.0",
+    "rich>=12.0.0",
+    "pyyaml>=6.0",
+]
 
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.18.0",
+    "pytest-cov>=3.0.0",
+    "black>=22.0.0",
+    "isort>=5.10.0",
+    "mypy>=0.950",
+    "flake8>=4.0.0",
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+]
 
-[tool.setuptools.packages.find]
-where = ["dqix"]
+[project.scripts]
+dqix = "dqix.cli:main"
+
+[tool.setuptools]
+packages = ["dqix"]
+
+[tool.setuptools.package-data]
+dqix = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"
+
+[project.urls]
+Homepage = "https://github.com/dqix/dqix"
+Documentation = "https://dqix.readthedocs.io/"
+Repository = "https://github.com/dqix/dqix.git"
+Issues = "https://github.com/dqix/dqix/issues"
+
+[project.entry-points."dqix.plugins"]
+sri = "dqix.plugins.sri:SRIPlugin"
+whois = "dqix.plugins.whois:WHOISPlugin"

@@ -4,9 +4,9 @@ from dataclasses import dataclass
 
 import dns.resolver
 
-from .base import Probe, ProbeData, ScoreCalculator
-from . import register
-from ..utils.dns import query_records
+from ..base import Probe, ProbeData, ScoreCalculator
+from .. import register
+from dqix.utils.dns import query_records, domain_variants
 
 @dataclass
 class NSECData(ProbeData):
