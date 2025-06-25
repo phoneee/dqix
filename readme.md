@@ -1,150 +1,189 @@
-# DQIX – Domain Quality Index
+# DQIX - Domain Quality Index
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI](https://github.com/your-org/dqix/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/dqix/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/dqix.svg)](https://pypi.org/project/dqix)
-[![Python](https://img.shields.io/pypi/pyversions/dqix.svg)](#)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-> **DQIX is an open-source CLI & Python library that benchmarks the security, transparency and governance hygiene of public-facing domains.** It bundles a battery of probes – TLS, DNSSEC, email auth, HTTP headers, accessibility and more – into a single reproducible score that anyone can verify.
+A modern, clean architecture implementation for assessing domain quality across security, performance, and compliance dimensions.
 
----
+## 🚀 Quick Start
 
-## 🎬 Quick start (30 sec)
-
-```bash
-# 1. Install (pipx recommended)
-python -m pip install --upgrade pipx
-pipx install dqix  # or: pip install dqix
-
-# 2. Run a scan
-$ dqix example.com -l 2  # level 2 preset
-┏━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Probe       ┃ Score  ┃ Details                            ┃
-┡━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ tls         │ 1.00   │ grade=A, hsts=yes                  │
-│ dnssec      │ 1.00   │ ad_flag=True                       │
-│ headers     │ 0.80   │ hsts, csp missing x-frame          │
-│ mail        │ 0.50   │ spf=yes dmarc=none                 │
-│ whois       │ 0.60   │ org=Public Entity (redacted name)  │
-│ …           │ …      │ …                                  │
-└─────────────┴────────┴────────────────────────────────────┘
-Total score (level2 weights): **0.83**
-```
-
-*No API keys. All checks rely on public data only.*
-
----
-
-## 📦 Installation
+### Installation
 
 ```bash
-pip install dqix               # Python ≥ 3.9
+# Clone the repository
+git clone https://github.com/your-org/dqix.git
+cd dqix
+
+# Install dependencies
+pip install dnspython httpx cryptography pydantic typer rich
+
+# Or install from pyproject.toml
+pip install -e .
 ```
 
-Optional extras:
+### Basic Usage
 
 ```bash
-pip install dqix[deep]          # enable deep TLS grading via sslyze
-pip install dqix[dev]           # lint + test deps
+# Assess a single domain
+python -m dqix assess example.com
+
+# Assess multiple domains from file
+python -m dqix assess-bulk domains.txt
+
+# List available probes
+python -m dqix list-probes
 ```
 
----
+### Programmatic Usage
 
-## ⚖️  Compliance levels
+```python
+import asyncio
+from dqix.application.use_cases import AssessDomainCommand, AssessDomainUseCase
+from dqix.domain.entities import ProbeConfig
 
-DQIX adopts a **three-tiered model** for domain security maturity, following best practices from NIST, CIS, and academic research[^1].
+# Create assessment use case (see examples/ for full setup)
+async def assess_domain():
+    use_case = create_assessment_use_case()  # See examples/
+    
+    command = AssessDomainCommand(
+        domain_name="example.com",
+        probe_config=ProbeConfig(timeout=30)
+    )
+    
+    result = await use_case.execute(command)
+    print(f"Score: {result.overall_score:.2f}")
+    print(f"Level: {result.compliance_level.value}")
 
-| Level | Purpose | Typical audience |
-|-------|---------|------------------|
-| **L1 – Minimum Baseline** | Essential security hygiene every public domain should have. <br>Focuses on the most critical, low-cost controls (e.g., TLS, DNSSEC, SPF/DMARC). | Personal sites, small NGOs, MVPs |
-| **L2 – Full Safe** | Broader best-practice surface incl. e-mail auth & HTTP hardening. <br>Adds proactive controls (e.g., HSTS, DKIM, CAA, MTA-STS) to reduce attack surface. | Government sub-domains, SMEs |
-| **L3 – Policy Compliance** | Highest bar aligned with national policies / public-sector directives. <br>Includes advanced controls (e.g., CT monitoring, BIMI, accessibility, impersonation protection) for critical infrastructure. | Critical infrastructure, ministries |
+asyncio.run(assess_domain())
+```
 
-> **Why three levels?**<br>
-This structure is supported by NIST SP 800-53B[^2], CIS Controls v8[^3], and research on web security maturity[^1]. It allows organizations to adopt security in stages, from basic hygiene to full compliance, and is proven to increase adoption and reduce risk over time.
+## 🏗️ Architecture
 
-### Probe weights by level
+DQIX follows **Clean Architecture** principles with clear separation of concerns:
 
-| Category                  | Probe            | L1 | L2 | L3 |
-|--------------------------|------------------|:--:|:--:|:--:|
-| **Transport Security**    | tls              | 0.60 | 0.28 | 0.18 |
-|                          | dnssec           | 0.40 | 0.23 | 0.18 |
-| **Web Hardening**         | headers          |  –  | 0.14 | 0.10 |
-|                          | cookie           |  –  | 0.04 | 0.04 |
-| **E-mail Security**       | mail             |  –  | 0.20 | 0.15 |
-|                          | dkim             |  –  | 0.03 | 0.03 |
-| **Certificate Policy**    | caa              |  –  | 0.02 | 0.02 |
-| **DNS Hygiene**           | dns_basic        |  –  | 0.05 | 0.05 |
-| **Impersonation & Trust** | impersonation    |  –  |  –   | 0.24 |
-| **Accessibility**         | accessibility    |  –  | 0.08 | 0.08 |
-| **Ownership Clarity**     | whois            |  –  | 0.10 | 0.10 |
+```
+dqix/
+├── domain/           # 🏛️ Core business logic (no dependencies)
+│   ├── entities.py   # Business objects (Domain, ProbeResult, etc.)
+│   ├── services.py   # Business logic (ScoringService, ValidationService)
+│   └── repositories.py # Data access interfaces
+├── application/      # 🚀 Use cases and orchestration
+│   └── use_cases.py  # Business workflows (AssessDomainUseCase)
+├── infrastructure/   # 🔧 External services and I/O
+│   ├── probes/       # Domain checking implementations
+│   └── repositories.py # Data persistence
+└── interfaces/       # 🖥️ User interaction
+    └── cli.py        # Command-line interface
+```
 
-*A dash means the probe is not evaluated at that level.*
+### Key Benefits
 
-**At-a-glance coverage**
+- **🧪 Testable**: Each layer can be tested independently
+- **🔧 Maintainable**: Changes are isolated to specific layers  
+- **📖 Readable**: Clear structure and naming conventions
+- **🚀 Scalable**: Easy to add new probes or use cases
 
-| Probe            | L1 | L2 | L3 |
-|------------------|:--:|:--:|:--:|
-| tls              | ✓  | ✓  | ✓  |
-| dnssec           | ✓  | ✓  | ✓  |
-| headers          | –  | ✓  | ✓  |
-| cookie           | –  | ✓  | ✓  |
-| mail (SPF/DMARC) | –  | ✓  | ✓  |
-| dkim             | –  | ✓  | ✓  |
-| caa              | –  | ✓  | ✓  |
-| dns_basic        | –  | ✓  | ✓  |
-| impersonation    | –  | –  | ✓  |
-| accessibility    | –  | ✓  | ✓  |
-| whois            | –  | ✓  | ✓  |
+## 🔬 Available Probes
 
-> **Note**  Plugin probes such as **SRI** and **Eco Index** live under `dqix/plugins/` and are currently marked as *roadmap/experimental*. They are not part of the default level presets yet.
+| Probe | Category | Description |
+|-------|----------|-------------|
+| **TLS** | Security | SSL/TLS configuration and certificate analysis |
+| **DNS** | Security | DNS records, SPF, DMARC validation |
+| **Security Headers** | Security | HTTP security headers analysis |
 
-### 🧮 Probe Scoring Logic
+Each probe returns a score from 0.0 (worst) to 1.0 (best).
 
-A detailed walk-through of how every probe converts raw evidence into a 0-to-1 score is now kept in [`docs/SCORING.md`](docs/SCORING.md) to keep this README short and sweet.  
-Each probe's source file also contains inline comments and references for full reproducibility.
+## 📊 Compliance Levels
 
----
+- **Basic** (0.0-0.6): Essential security requirements
+- **Standard** (0.7-0.8): Comprehensive security practices
+- **Advanced** (0.9-1.0): Best practice implementation
 
-## 🛠  Key features
+## 📚 Examples
 
-* **Probe-centric architecture** – add or disable checks with one file.
-* **Zero vendor lock-in** – uses only open data / public resolvers.
-* **Structured output** – JSON & CSV for dashboards or data pipelines.
-* **Fast** – multithreaded, DNS / HTTP caching.
-* **Extensible** – write your own probe in <50 lines (see `dqix/probes/*`).
+The `examples/` directory contains comprehensive usage examples:
 
----
+- **`domain_assessment_demo.py`**: Single and multiple domain assessment
+- **`bulk_assessment_demo.py`**: Large-scale domain analysis
+- **`probe_demo.py`**: Individual probe testing and configuration
+
+## 🛠️ Development
+
+### Setup Development Environment
+
+```bash
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run tests
+pytest
+
+# Run linting
+ruff check .
+
+# Run type checking
+mypy dqix/
+```
+
+### Adding New Probes
+
+1. Create probe class in `dqix/infrastructure/probes/`
+2. Inherit from `BaseProbe`
+3. Implement `async def check(domain, config)` method
+4. Register in `implementations.py`
+
+Example:
+
+```python
+from dqix.infrastructure.probes.base import BaseProbe
+from dqix.domain.entities import ProbeCategory
+
+class MyProbe(BaseProbe):
+    def __init__(self):
+        super().__init__("my_probe", ProbeCategory.SECURITY)
+    
+    async def check(self, domain, config):
+        # Your probe logic here
+        return self._create_result(domain, score, details)
+```
+
+## 🎯 Design Principles
+
+1. **Dependency Rule**: Inner layers don't depend on outer layers
+2. **Single Responsibility**: Each class has one reason to change
+3. **Interface Segregation**: Small, focused interfaces
+4. **Dependency Injection**: Dependencies injected at runtime
+5. **Fail Fast**: Validate inputs early and clearly
+
+## 📖 Documentation
+
+- **Architecture Guide**: See `README_CLEAN_ARCHITECTURE.md`
+- **API Documentation**: Generated from inline docstrings
+- **Examples**: Comprehensive examples in `examples/` directory
+- **Contributing**: See `CONTRIBUTING.md`
 
 ## 🤝 Contributing
 
-1. Fork & clone, then
-
-   ```bash
-   uv venv; uv pip install -e .[dev]
-   ```
-2. Run the test-suite: `pytest -q`
-3. Open a pull-request against `main`. Please follow the coding style enforced by Ruff & mypy.
-
-Full guidelines in [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
----
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with tests
+4. Run quality checks: `make test lint type-check`
+5. Submit a pull request
 
 ## 📄 License
 
-DQIX is released under the [MIT license](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Clean Architecture principles by Robert C. Martin
+- [Public Suffix List](https://publicsuffix.org/) for domain validation standards
+- Modern Python development tools: ruff, mypy, pytest, typer, rich
 
 ---
 
-## 📚 References
-
-[^1]: Ling, X. et al. "A Maturity Model for Web-Domain Security." *IEEE Access*, 2021. https://ieeexplore.ieee.org/document/9442172
-[^2]: NIST Special Publication 800-53B. "Control Baselines for Information Systems." 2020. https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53B.pdf
-[^3]: Center for Internet Security. "CIS Controls v8 – Implementation Groups." 2021. https://www.cisecurity.org/controls/implementation-groups
-[^4]: Aerts, L., et al. "Security Headers and Web Security Grades: Adoption and Effectiveness." *IEEE S&P*, 2019. https://ieeexplore.ieee.org/document/8662642
-[^5]: Fowler, M. et al. "DNS Health and Security: A Survey." *ACM Computing Surveys*, 2022.
-[^6]: RFC 8460: SMTP MTA Strict Transport Security (MTA-STS). https://datatracker.ietf.org/doc/html/rfc8460
-[^7]: CA/Browser Forum Baseline Requirements. https://cabforum.org/
-[^8]: ISO/IEC 27001:2022 Annex A.5. https://www.iso.org/isoiec-27001-information-security.html
-[^9]: WCAG 2.1 Accessibility Standard. https://www.w3.org/WAI/standards-guidelines/wcag/
-[^10]: EU GDPR Article 5. https://gdpr-info.eu/art-5-gdpr/
+**"Measuring domain quality with clean, maintainable code"** 🚀

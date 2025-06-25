@@ -1,36 +1,40 @@
 # DQIX Documentation
 
-Welcome to the DQIX documentation! DQIX is a tool for assessing domain quality through various security and governance checks.
+## Internet Governance Framework for Domain Quality Assessment
 
-## Quick Start
+DQIX implements comprehensive domain quality assessment based on established **internet governance principles** and **multistakeholder frameworks** as outlined by the [Harvard Berkman Klein Center](https://cyber.harvard.edu/publications/2014/internet_governance) and [Internet Society](https://www.internetsociety.org/policybriefs/internetgovernance/).
 
-```bash
-# Install DQIX
-pip install dqix
+### Framework Foundation
 
-# Run a basic check
-dqix example.com
-```
+The assessment framework employs a **decentralized, collaborative evaluation model** following internet governance best practices:
 
-## Features
+- **Multistakeholder Approach**: Based on Harvard Berkman Klein Center research on collaborative governance groups
+- **Internet Standards Compliance**: IETF RFCs for technical specifications  
+- **Security Frameworks**: NIST Cybersecurity Framework integration
+- **Accessibility Standards**: W3C WCAG compliance
+- **Best Practices**: Internet Society governance recommendations
 
-- Multiple compliance levels (Minimal, Safe, Policy)
-- Extensible probe system
-- Detailed scoring and reporting
-- Command-line interface
+### Getting Started
 
-## Compliance Levels
+For installation, usage examples, and comprehensive documentation, see the main [README](../README.md).
 
-DQIX offers three compliance levels:
+### Governance Framework References
 
-1. **Level 1 (Minimal)**: Basic security checks
-2. **Level 2 (Safe)**: Enhanced security and governance
-3. **Level 3 (Policy)**: Comprehensive security, governance, and policy compliance
+The complete framework is built on established internet governance standards from:
 
-## Contributing
+- **Harvard Berkman Klein Center** - Multistakeholder governance research
+- **Internet Society** - Policy briefs on internet governance
+- **IETF** - Internet engineering standards (RFCs)
+- **W3C** - Web accessibility guidelines
+- **NIST** - Cybersecurity framework
 
-See our [Contributing Guide](contributing.md) for details on how to contribute to DQIX.
+## Development
 
-## License
+Follow the project development guidelines in the main README for:
 
-DQIX is released under the MIT License. See the [LICENSE](../LICENSE) file for details. 
+- Development environment setup
+- Quality assurance processes  
+- Testing procedures
+- Contribution guidelines
+
+All development follows **internet governance principles** of transparency, collaboration, and community benefit. 

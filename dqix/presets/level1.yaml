@@ -1,3 +1,0 @@
-# Level 1 – “Minimal”: channel security + basic DNS integrity
-tls:     0.6   # handshake must validate / SSL Labs grade ≥ B
-dnssec:  0.4   # zone is at least signed (no bogus chain)

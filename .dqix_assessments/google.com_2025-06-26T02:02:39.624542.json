@@ -1,0 +1,90 @@
+{
+  "domain": "google.com",
+  "overall_score": 0.6833333333333332,
+  "compliance_level": "basic",
+  "timestamp": "2025-06-26T02:02:39.624542",
+  "probe_results": [
+    {
+      "probe_id": "tls",
+      "score": 0.9999999999999999,
+      "category": "security",
+      "details": {
+        "tls_version": "TLSv1.3",
+        "cipher_suite": "TLS_AES_256_GCM_SHA384",
+        "certificate_subject": [
+          [
+            [
+              "commonName",
+              "*.google.com"
+            ]
+          ]
+        ],
+        "certificate_issuer": [
+          [
+            [
+              "countryName",
+              "US"
+            ]
+          ],
+          [
+            [
+              "organizationName",
+              "Google Trust Services"
+            ]
+          ],
+          [
+            [
+              "commonName",
+              "WE2"
+            ]
+          ]
+        ],
+        "expires": "Aug 25 08:35:39 2025 GMT"
+      },
+      "error": null
+    },
+    {
+      "probe_id": "dns",
+      "score": 0.8,
+      "category": "security",
+      "details": {
+        "a_records": [
+          "142.250.105.100",
+          "142.250.105.102",
+          "142.250.105.138",
+          "142.250.105.139",
+          "142.250.105.101",
+          "142.250.105.113"
+        ],
+        "aaaa_records": [
+          "2607:f8b0:4002:c1b::8a",
+          "2607:f8b0:4002:c1b::64",
+          "2607:f8b0:4002:c1b::8b",
+          "2607:f8b0:4002:c1b::71"
+        ],
+        "mx_records": [
+          "10 smtp.google.com."
+        ],
+        "spf_records": [],
+        "dmarc_records": [
+          "\"v=DMARC1; p=reject; rua=mailto:mailauth-reports@google.com\""
+        ]
+      },
+      "error": null
+    },
+    {
+      "probe_id": "security_headers",
+      "score": 0.25,
+      "category": "security",
+      "details": {
+        "strict-transport-security": null,
+        "x-frame-options": "SAMEORIGIN",
+        "x-content-type-options": null,
+        "x-xss-protection": "0",
+        "content-security-policy": null,
+        "referrer-policy": null
+      },
+      "error": null
+    }
+  ]
+}

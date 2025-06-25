@@ -1,0 +1,39 @@
+{
+  "domain": "nonexistent-domain-12345.com",
+  "overall_score": 0.0,
+  "compliance_level": "basic",
+  "timestamp": "2025-06-26T02:02:42.700592",
+  "probe_results": [
+    {
+      "probe_id": "tls",
+      "score": 0.0,
+      "category": "security",
+      "details": {
+        "error": "[Errno 8] nodename nor servname provided, or not known"
+      },
+      "error": "[Errno 8] nodename nor servname provided, or not known"
+    },
+    {
+      "probe_id": "dns",
+      "score": 0.0,
+      "category": "security",
+      "details": {
+        "a_records": [],
+        "aaaa_records": [],
+        "mx_records": [],
+        "spf_records": [],
+        "dmarc_records": []
+      },
+      "error": null
+    },
+    {
+      "probe_id": "security_headers",
+      "score": 0.0,
+      "category": "security",
+      "details": {
+        "error": "Cannot connect to host nonexistent-domain-12345.com:443 ssl:default [nodename nor servname provided, or not known]"
+      },
+      "error": "Cannot connect to host nonexistent-domain-12345.com:443 ssl:default [nodename nor servname provided, or not known]"
+    }
+  ]
+}

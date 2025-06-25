@@ -1,45 +1,76 @@
 # Contributing to DQIX
 
-Thanks for your interest in improving DQIX! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to DQIX! This document provides guidelines and instructions for contributing.
+
+## Quick Start
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes
+4. Run tests: `pytest`
+5. Submit a pull request
 
 ## Development Setup
 
-1. Fork & clone the repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/domain-quality-index.git
-   cd domain-quality-index
-   ```
+```bash
+# Clone repository
+git clone https://github.com/yourusername/dqix.git
+cd dqix
 
-2. Create a virtual environment and install dev dependencies:
-   ```bash
-   # Using uv (recommended)
-   uv venv
-   source .venv/bin/activate  # or .venv/Scripts/activate on Windows
-   uv pip install -e .[dev]
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# or
+.venv\Scripts\activate  # Windows
 
-   # Or using venv
-   python -m venv .venv
-   source .venv/bin/activate  # or .venv/Scripts/activate on Windows
-   pip install -e .[dev]
-   ```
-
-3. Run tests to verify setup:
-   ```bash
-   pytest -q
-   ```
+# Install development dependencies
+pip install -e ".[dev]"
+```
 
 ## Code Style
 
-DQIX uses:
-- [Ruff](https://github.com/astral-sh/ruff) for linting
-- [MyPy](https://mypy.readthedocs.io/) for type checking
-- [Black](https://black.readthedocs.io/) for code formatting
+- Follow [PEP 8](https://peps.python.org/pep-0008/) guidelines
+- Use [Black](https://black.readthedocs.io/) for code formatting
+- Use [isort](https://pycqa.github.io/isort/) for import sorting
+- Use [mypy](https://mypy.readthedocs.io/) for type checking
+- Use [ruff](https://beta.ruff.rs/) for linting
 
-Run all checks:
 ```bash
+# Format code
+black .
+isort .
+
+# Type checking
+mypy .
+
+# Linting
 ruff check .
-mypy dqix
 ```
+
+## Testing
+
+- Write tests for new features
+- Ensure all tests pass: `pytest`
+- Maintain test coverage: `pytest --cov=dqix`
+
+## Pull Request Process
+
+1. Update documentation for new features
+2. Add tests for new functionality
+3. Ensure all tests pass
+4. Update the changelog
+5. Submit PR with clear description
+
+## Code Review
+
+- Be respectful and constructive
+- Focus on code quality and maintainability
+- Consider performance implications
+- Check for security issues
+
+## Questions?
+
+Feel free to open an issue for any questions or concerns.
 
 ## Adding a New Probe
 
@@ -59,49 +90,8 @@ mypy dqix
 3. Add tests in `dqix/tests/test_my_probe.py`
 4. Update presets in `dqix/presets/` if needed
 
-## Pull Request Process
-
-1. Create a feature branch:
-   ```bash
-   git checkout -b feature/my-probe
-   ```
-
-2. Make your changes and commit:
-   ```bash
-   git add .
-   git commit -m "feat: add my new probe"
-   ```
-
-3. Push and create a PR:
-   ```bash
-   git push origin feature/my-probe
-   ```
-
-4. Ensure CI passes and address any review comments
-
 ## Commit Messages
 
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-- `feat:` New feature
-- `fix:` Bug fix
-- `docs:` Documentation changes
-- `style:` Code style changes (formatting, etc.)
-- `refactor:` Code changes that neither fix bugs nor add features
-- `test:` Adding or modifying tests
-- `chore:` Changes to build process, tools, etc.
-
-Example:
-```
-feat(probes): add new TLS version check probe
-
-- Add TLSv1.3 support detection
-- Update level2 preset weights
-- Add tests for new probe
-```
-
-## Need Help?
-
-- Open a [GitHub Discussion](https://github.com/your-org/dqix/discussions)
-- Join our [Discord server](https://discord.gg/your-server)
-- Check existing [Issues](https://github.com/your-org/dqix/issues) 
+- `
