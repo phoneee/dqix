@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academic References and Best Practices &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Academic References and Best Practices</a><ul>
+<li><a class="reference internal" href="#about-dqix">About DQIX</a><ul>
+<li><a class="reference internal" href="#what-dqix-does">What DQIX Does</a></li>
+<li><a class="reference internal" href="#what-dqix-does-not-do">What DQIX Does NOT Do</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#academic-references-used">Academic References Used</a><ul>
+<li><a class="reference internal" href="#web-accessibility-guidelines">Web Accessibility Guidelines</a><ul>
+<li><a class="reference internal" href="#wcag-2-2-w3c-recommendation">WCAG 2.2 (W3C Recommendation)</a></li>
+<li><a class="reference internal" href="#wcag-2-1-w3c-recommendation">WCAG 2.1 (W3C Recommendation)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#security-best-practices">Security Best Practices</a><ul>
+<li><a class="reference internal" href="#nist-special-publication-800-53">NIST Special Publication 800-53</a></li>
+<li><a class="reference internal" href="#cis-controls-version-8">CIS Controls Version 8</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#internet-standards-rfcs">Internet Standards (RFCs)</a><ul>
+<li><a class="reference internal" href="#http-strict-transport-security-hsts">HTTP Strict Transport Security (HSTS)</a></li>
+<li><a class="reference internal" href="#dns-security-extensions-dnssec">DNS Security Extensions (DNSSEC)</a></li>
+<li><a class="reference internal" href="#email-authentication-standards">Email Authentication Standards</a><ul>
+<li><a class="reference internal" href="#sender-policy-framework-spf">Sender Policy Framework (SPF)</a></li>
+<li><a class="reference internal" href="#dkim-domainkeys-identified-mail">DKIM (DomainKeys Identified Mail)</a></li>
+<li><a class="reference internal" href="#dmarc-domain-based-message-authentication">DMARC (Domain-based Message Authentication)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quality-assessment-levels">Quality Assessment Levels</a><ul>
+<li><a class="reference internal" href="#basic-security-score-60">Basic Security (Score: 60%+)</a></li>
+<li><a class="reference internal" href="#standard-security-score-80">Standard Security (Score: 80%+)</a></li>
+<li><a class="reference internal" href="#advanced-security-score-90">Advanced Security (Score: 90%+)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-to-use-dqix">How to Use DQIX</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#understanding-results">Understanding Results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#educational-benefits">Educational Benefits</a><ul>
+<li><a class="reference internal" href="#for-developers">For Developers</a></li>
+<li><a class="reference internal" href="#for-students">For Students</a></li>
+<li><a class="reference internal" href="#for-small-organizations">For Small Organizations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#limitations-and-disclaimers">Limitations and Disclaimers</a><ul>
+<li><a class="reference internal" href="#important-limitations">Important Limitations</a></li>
+<li><a class="reference internal" href="#appropriate-use-cases">Appropriate Use Cases</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#related-resources">Related Resources</a><ul>
+<li><a class="reference internal" href="#learning-resources">Learning Resources</a></li>
+<li><a class="reference internal" href="#security-testing-tools">Security Testing Tools</a></li>
+<li><a class="reference internal" href="#academic-research">Academic Research</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#support">Support</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Academic References and Best Practices</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/academic-references.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="academic-references-and-best-practices">
+<h1>Academic References and Best Practices<a class="headerlink" href="#academic-references-and-best-practices" title="Link to this heading"></a></h1>
+<p>This document outlines the academic references and best practices that DQIX uses for domain quality assessment. DQIX is an open-source educational tool designed to help individuals and organizations understand and improve their domain security posture.</p>
+<section id="about-dqix">
+<h2>About DQIX<a class="headerlink" href="#about-dqix" title="Link to this heading"></a></h2>
+<p>DQIX (Domain Quality Index) is an <strong>independent open-source Python library</strong> for educational domain quality assessment. It is <strong>not officially endorsed</strong> by any standards organization and should be used as a learning tool rather than for official compliance purposes.</p>
+<section id="what-dqix-does">
+<h3>What DQIX Does<a class="headerlink" href="#what-dqix-does" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Educational Assessment</strong>: Provides domain security, accessibility, and governance insights</p></li>
+<li><p><strong>Academic References</strong>: Based on established academic standards and industry best practices</p></li>
+<li><p><strong>Easy to Use</strong>: Simple Python library suitable for developers and security enthusiasts</p></li>
+<li><p><strong>Open Source</strong>: Transparent methodology that anyone can review and contribute to</p></li>
+</ul>
+</section>
+<section id="what-dqix-does-not-do">
+<h3>What DQIX Does NOT Do<a class="headerlink" href="#what-dqix-does-not-do" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>❌ Provide official compliance certification</p></li>
+<li><p>❌ Replace professional security audits</p></li>
+<li><p>❌ Guarantee compliance with any specific regulation</p></li>
+<li><p>❌ Represent any official standards body</p></li>
+</ul>
+</section>
+</section>
+<section id="academic-references-used">
+<h2>Academic References Used<a class="headerlink" href="#academic-references-used" title="Link to this heading"></a></h2>
+<p>DQIX references established academic standards and industry best practices for educational purposes:</p>
+<section id="web-accessibility-guidelines">
+<h3>Web Accessibility Guidelines<a class="headerlink" href="#web-accessibility-guidelines" title="Link to this heading"></a></h3>
+<section id="wcag-2-2-w3c-recommendation">
+<h4>WCAG 2.2 (W3C Recommendation)<a class="headerlink" href="#wcag-2-2-w3c-recommendation" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines (WCAG) 2.2</a></p></li>
+<li><p><strong>Usage</strong>: Educational reference for accessibility features assessment</p></li>
+<li><p><strong>Purpose</strong>: Help understand basic accessibility principles</p></li>
+</ul>
+</section>
+<section id="wcag-2-1-w3c-recommendation">
+<h4>WCAG 2.1 (W3C Recommendation)<a class="headerlink" href="#wcag-2-1-w3c-recommendation" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines (WCAG) 2.1</a></p></li>
+<li><p><strong>Usage</strong>: Baseline accessibility reference for older systems</p></li>
+<li><p><strong>Purpose</strong>: Understand fundamental accessibility requirements</p></li>
+</ul>
+</section>
+</section>
+<section id="security-best-practices">
+<h3>Security Best Practices<a class="headerlink" href="#security-best-practices" title="Link to this heading"></a></h3>
+<section id="nist-special-publication-800-53">
+<h4>NIST Special Publication 800-53<a class="headerlink" href="#nist-special-publication-800-53" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final">Security and Privacy Controls for Information Systems</a></p></li>
+<li><p><strong>Usage</strong>: Academic reference for security best practices</p></li>
+<li><p><strong>Purpose</strong>: Understand comprehensive security control frameworks</p></li>
+</ul>
+</section>
+<section id="cis-controls-version-8">
+<h4>CIS Controls Version 8<a class="headerlink" href="#cis-controls-version-8" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://www.cisecurity.org/controls/v8">CIS Controls v8</a></p></li>
+<li><p><strong>Usage</strong>: Practical cybersecurity implementation reference</p></li>
+<li><p><strong>Purpose</strong>: Learn prioritized cybersecurity actions</p></li>
+</ul>
+</section>
+</section>
+<section id="internet-standards-rfcs">
+<h3>Internet Standards (RFCs)<a class="headerlink" href="#internet-standards-rfcs" title="Link to this heading"></a></h3>
+<section id="http-strict-transport-security-hsts">
+<h4>HTTP Strict Transport Security (HSTS)<a class="headerlink" href="#http-strict-transport-security-hsts" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Standard</strong>: RFC 6797</p></li>
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://tools.ietf.org/rfc/rfc6797.txt">HTTP Strict Transport Security</a></p></li>
+<li><p><strong>Usage</strong>: HTTPS security implementation reference</p></li>
+<li><p><strong>Purpose</strong>: Understand transport security best practices</p></li>
+</ul>
+</section>
+<section id="dns-security-extensions-dnssec">
+<h4>DNS Security Extensions (DNSSEC)<a class="headerlink" href="#dns-security-extensions-dnssec" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Standard</strong>: RFC 4034</p></li>
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://tools.ietf.org/rfc/rfc4034.txt">DNS Security Introduction</a></p></li>
+<li><p><strong>Usage</strong>: DNS security implementation reference</p></li>
+<li><p><strong>Purpose</strong>: Learn about DNS integrity protection</p></li>
+</ul>
+</section>
+<section id="email-authentication-standards">
+<h4>Email Authentication Standards<a class="headerlink" href="#email-authentication-standards" title="Link to this heading"></a></h4>
+<section id="sender-policy-framework-spf">
+<h5>Sender Policy Framework (SPF)<a class="headerlink" href="#sender-policy-framework-spf" title="Link to this heading"></a></h5>
+<ul class="simple">
+<li><p><strong>Standard</strong>: RFC 7208</p></li>
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://tools.ietf.org/rfc/rfc7208.txt">Sender Policy Framework</a></p></li>
+<li><p><strong>Purpose</strong>: Learn email anti-spoofing techniques</p></li>
+</ul>
+</section>
+<section id="dkim-domainkeys-identified-mail">
+<h5>DKIM (DomainKeys Identified Mail)<a class="headerlink" href="#dkim-domainkeys-identified-mail" title="Link to this heading"></a></h5>
+<ul class="simple">
+<li><p><strong>Standard</strong>: RFC 6376</p></li>
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://tools.ietf.org/rfc/rfc6376.txt">DKIM Signatures</a></p></li>
+<li><p><strong>Purpose</strong>: Understand email message integrity</p></li>
+</ul>
+</section>
+<section id="dmarc-domain-based-message-authentication">
+<h5>DMARC (Domain-based Message Authentication)<a class="headerlink" href="#dmarc-domain-based-message-authentication" title="Link to this heading"></a></h5>
+<ul class="simple">
+<li><p><strong>Standard</strong>: RFC 7489</p></li>
+<li><p><strong>Reference</strong>: <a class="reference external" href="https://tools.ietf.org/rfc/rfc7489.txt">DMARC Protocol</a></p></li>
+<li><p><strong>Purpose</strong>: Learn comprehensive email domain protection</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<section id="quality-assessment-levels">
+<h2>Quality Assessment Levels<a class="headerlink" href="#quality-assessment-levels" title="Link to this heading"></a></h2>
+<p>DQIX provides three educational assessment levels suitable for different use cases:</p>
+<section id="basic-security-score-60">
+<h3>Basic Security (Score: 60%+)<a class="headerlink" href="#basic-security-score-60" title="Link to this heading"></a></h3>
+<p><strong>Target Audience</strong>: Personal websites, hobbyists, small blogs</p>
+<p><strong>Focus Areas</strong>:</p>
+<ul class="simple">
+<li><p>✅ HTTPS encryption enabled</p></li>
+<li><p>✅ Basic DNS configuration</p></li>
+<li><p>✅ Basic email authentication (SPF)</p></li>
+</ul>
+<p><strong>Good For</strong>:</p>
+<ul class="simple">
+<li><p>Personal portfolios</p></li>
+<li><p>Small hobby websites</p></li>
+<li><p>Learning web security basics</p></li>
+</ul>
+</section>
+<section id="standard-security-score-80">
+<h3>Standard Security (Score: 80%+)<a class="headerlink" href="#standard-security-score-80" title="Link to this heading"></a></h3>
+<p><strong>Target Audience</strong>: Small organizations, professional websites</p>
+<p><strong>Focus Areas</strong>:</p>
+<ul class="simple">
+<li><p>✅ HTTPS with HSTS enabled</p></li>
+<li><p>✅ DNS security (DNSSEC)</p></li>
+<li><p>✅ Complete email security (SPF/DMARC/DKIM)</p></li>
+<li><p>✅ Basic accessibility features</p></li>
+</ul>
+<p><strong>Good For</strong>:</p>
+<ul class="simple">
+<li><p>Business websites</p></li>
+<li><p>E-commerce sites</p></li>
+<li><p>Professional portfolios</p></li>
+<li><p>Small organization websites</p></li>
+</ul>
+</section>
+<section id="advanced-security-score-90">
+<h3>Advanced Security (Score: 90%+)<a class="headerlink" href="#advanced-security-score-90" title="Link to this heading"></a></h3>
+<p><strong>Target Audience</strong>: Large organizations, security-conscious entities</p>
+<p><strong>Focus Areas</strong>:</p>
+<ul class="simple">
+<li><p>✅ Complete transport security</p></li>
+<li><p>✅ Full email authentication suite</p></li>
+<li><p>✅ Accessibility compliance</p></li>
+<li><p>✅ Advanced security headers</p></li>
+<li><p>✅ Comprehensive DNS protection</p></li>
+</ul>
+<p><strong>Good For</strong>:</p>
+<ul class="simple">
+<li><p>Enterprise websites</p></li>
+<li><p>Financial institutions</p></li>
+<li><p>Government websites</p></li>
+<li><p>High-security applications</p></li>
+</ul>
+</section>
+</section>
+<section id="how-to-use-dqix">
+<h2>How to Use DQIX<a class="headerlink" href="#how-to-use-dqix" title="Link to this heading"></a></h2>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>dqix
+</pre></div>
+</div>
+</section>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dqix</span><span class="w"> </span><span class="kn">import</span> <span class="n">assess_domain</span>
+
+<span class="c1"># Assess a domain</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">assess_domain</span><span class="p">(</span><span class="s2">&quot;example.com&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Domain: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recommendations: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">recommendations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="understanding-results">
+<h3>Understanding Results<a class="headerlink" href="#understanding-results" title="Link to this heading"></a></h3>
+<p>DQIX provides easy-to-understand results:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;overall_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.85</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GOOD&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;assessment_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Standard Security&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Comprehensive security for small organizations&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;target_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;focus_areas&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;HTTPS with HSTS&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;DNS security (DNSSEC)&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Email security (SPF/DMARC/DKIM)&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Basic accessibility features&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;recommendations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;Aim for a score of 0.8 for Standard Security&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Review individual probe results for improvement areas&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Consider implementing missing security features&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;disclaimer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This assessment is for educational purposes based on academic references. It is not an official certification or compliance audit.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="educational-benefits">
+<h2>Educational Benefits<a class="headerlink" href="#educational-benefits" title="Link to this heading"></a></h2>
+<section id="for-developers">
+<h3>For Developers<a class="headerlink" href="#for-developers" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Learn about web security best practices</p></li>
+<li><p>Understand domain configuration requirements</p></li>
+<li><p>Get actionable recommendations for improvement</p></li>
+</ul>
+</section>
+<section id="for-students">
+<h3>For Students<a class="headerlink" href="#for-students" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Study real-world application of security standards</p></li>
+<li><p>Understand the relationship between different security measures</p></li>
+<li><p>Learn about accessibility and web standards</p></li>
+</ul>
+</section>
+<section id="for-small-organizations">
+<h3>For Small Organizations<a class="headerlink" href="#for-small-organizations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Get basic security assessment without expensive tools</p></li>
+<li><p>Understand priority areas for improvement</p></li>
+<li><p>Learn about industry best practices</p></li>
+</ul>
+</section>
+</section>
+<section id="limitations-and-disclaimers">
+<h2>Limitations and Disclaimers<a class="headerlink" href="#limitations-and-disclaimers" title="Link to this heading"></a></h2>
+<section id="important-limitations">
+<h3>Important Limitations<a class="headerlink" href="#important-limitations" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Not a Security Audit</strong>: DQIX is an educational tool, not a professional security audit</p></li>
+<li><p><strong>Academic References Only</strong>: Based on public standards and best practices, not official certification</p></li>
+<li><p><strong>No Legal Compliance</strong>: Cannot guarantee compliance with specific regulations or laws</p></li>
+<li><p><strong>Point-in-Time Assessment</strong>: Results reflect domain configuration at time of testing</p></li>
+<li><p><strong>No Substitute for Professional Review</strong>: Complex security needs require professional assessment</p></li>
+</ol>
+</section>
+<section id="appropriate-use-cases">
+<h3>Appropriate Use Cases<a class="headerlink" href="#appropriate-use-cases" title="Link to this heading"></a></h3>
+<p>✅ <strong>Good for</strong>:</p>
+<ul class="simple">
+<li><p>Learning about domain security</p></li>
+<li><p>Initial security assessment</p></li>
+<li><p>Understanding best practices</p></li>
+<li><p>Educational research</p></li>
+<li><p>Personal website improvement</p></li>
+</ul>
+<p>❌ <strong>Not suitable for</strong>:</p>
+<ul class="simple">
+<li><p>Official compliance certification</p></li>
+<li><p>Legal or regulatory compliance verification</p></li>
+<li><p>Critical infrastructure assessment</p></li>
+<li><p>Formal security auditing</p></li>
+<li><p>Professional compliance reporting</p></li>
+</ul>
+</section>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h2>
+<p>DQIX is open source and welcomes contributions:</p>
+<ol class="arabic simple">
+<li><p><strong>Report Issues</strong>: Found a bug or have a suggestion? Open an issue</p></li>
+<li><p><strong>Improve Documentation</strong>: Help make the documentation clearer</p></li>
+<li><p><strong>Add Features</strong>: Contribute new probes or improvements</p></li>
+<li><p><strong>Share Knowledge</strong>: Help others learn about domain security</p></li>
+</ol>
+</section>
+<section id="related-resources">
+<h2>Related Resources<a class="headerlink" href="#related-resources" title="Link to this heading"></a></h2>
+<section id="learning-resources">
+<h3>Learning Resources<a class="headerlink" href="#learning-resources" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://infosec.mozilla.org/guidelines/web_security">Mozilla Web Security Guidelines</a></p></li>
+<li><p><a class="reference external" href="https://owasp.org/www-project-top-ten/">OWASP Top 10</a></p></li>
+<li><p><a class="reference external" href="https://www.w3.org/standards/webofdevices/security">W3C Security Standards</a></p></li>
+</ul>
+</section>
+<section id="security-testing-tools">
+<h3>Security Testing Tools<a class="headerlink" href="#security-testing-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.ssllabs.com/ssltest/">SSL Labs SSL Server Test</a></p></li>
+<li><p><a class="reference external" href="https://observatory.mozilla.org/">Mozilla Observatory</a></p></li>
+<li><p><a class="reference external" href="https://securityheaders.com/">Security Headers</a></p></li>
+</ul>
+</section>
+<section id="academic-research">
+<h3>Academic Research<a class="headerlink" href="#academic-research" title="Link to this heading"></a></h3>
+<p>Based on research found in:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.unesco.org/en/internet-universality-indicators/background">UNESCO Internet Universality Indicators</a> - providing frameworks for assessing internet development including rights-based, open, accessible approaches</p></li>
+<li><p>Academic literature on web security measurement studies</p></li>
+<li><p>Internet governance research and best practices</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="support">
+<h2>Support<a class="headerlink" href="#support" title="Link to this heading"></a></h2>
+<p>This is an open-source educational project. For questions or support:</p>
+<ul class="simple">
+<li><p>📖 Check the <a class="reference internal" href="#docs/"><span class="xref myst">documentation</span></a></p></li>
+<li><p>🐛 Report bugs on <a class="reference external" href="https://github.com/your-org/dqix/issues">GitHub Issues</a></p></li>
+<li><p>💬 Join discussions in <a class="reference external" href="https://github.com/your-org/dqix/discussions">GitHub Discussions</a></p></li>
+<li><p>📧 Contact maintainers for educational collaborations</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>Remember</strong>: DQIX is a learning tool. For production systems and compliance requirements, always consult with qualified security professionals and use certified tools.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
