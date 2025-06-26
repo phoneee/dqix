@@ -49,22 +49,28 @@ class SecurityHeadersProbe(BaseProbe):
             # Fallback result if all endpoints fail
             return ProbeResult(
                 probe_id=self.probe_id,
-                domain=domain,
-                status="failed",
+                domain=domain.name,
                 score=0.0,
-                message="Unable to retrieve security headers from any endpoint",
-                details={"error": "All endpoints failed"}
+                category=self.category,
+                details={
+                    "error": "All endpoints failed",
+                    "message": "Unable to retrieve security headers from any endpoint"
+                },
+                error="Unable to retrieve security headers from any endpoint"
             )
 
         except Exception as e:
             self.logger.error(f"Security headers probe failed for {domain.name}: {e}")
             return ProbeResult(
                 probe_id=self.probe_id,
-                domain=domain,
-                status="error",
+                domain=domain.name,
                 score=0.0,
-                message=f"Security headers analysis failed: {str(e)}",
-                details={"error": str(e)}
+                category=self.category,
+                details={
+                    "error": str(e),
+                    "message": f"Security headers analysis failed: {str(e)}"
+                },
+                error=str(e)
             )
 
     async def _analyze_endpoint(self, url: str, config: ProbeConfig) -> Optional[ProbeResult]:
@@ -120,15 +126,16 @@ class SecurityHeadersProbe(BaseProbe):
 
                     return ProbeResult(
                         probe_id=self.probe_id,
-                        domain=domain,
-                        status=status,
+                        domain=parsed_url.netloc,
                         score=score,
-                        message=message,
+                        category=self.category,
                         details={
                             "url_analyzed": url,
                             "security_headers": security_analysis,
                             "response_status": response.status,
-                            "total_headers": len(headers)
+                            "total_headers": len(headers),
+                            "status": status,
+                            "message": message
                         }
                     )
 

@@ -673,6 +673,26 @@ def _clean_domain_input(domain: str) -> str:
 
 def _display_results(result: dict[str, Any], format: str, detailed: bool):
     """Enhanced display with comprehensive technical details."""
+    
+    # Import compact display functions
+    try:
+        from .cli_compact import display_compact_result, display_ultra_compact_result, display_json_compact
+        
+        if format == "json":
+            display_json_compact(result)
+            return
+        
+        # Use compact display for standard view
+        if not detailed:
+            display_compact_result(result, detailed=False)
+            return
+        else:
+            # For detailed view, show compact first then additional details
+            display_compact_result(result, detailed=True)
+            return
+    except ImportError:
+        # Fallback to original display if compact module not available
+        pass
 
     if format == "json":
         console.print(json.dumps(result, indent=2))
@@ -1013,6 +1033,23 @@ def _get_priority_actions(result: dict[str, Any]) -> list[str]:
 
 def _display_comparison(results: list[dict[str, Any]], format: str):
     """Display domain comparison results."""
+    
+    # Try to use compact display
+    try:
+        from .cli_compact import display_comparison_compact
+        
+        if format == "json":
+            # Show compact JSON for each domain
+            for result in results:
+                console.print(f"\n{result['domain']}:")
+                from .cli_compact import display_json_compact
+                display_json_compact(result)
+            return
+        
+        display_comparison_compact(results)
+        return
+    except ImportError:
+        pass
 
     if format == "json":
         console.print(json.dumps(results, indent=2))
