@@ -1,0 +1,55 @@
+# Basic test domains
+example.com
+google.com
+github.com
+stackoverflow.com
+mozilla.org
+
+# High-performance domains
+cloudflare.com
+fastly.com
+amazon.com
+microsoft.com
+apple.com
+
+# Security-focused domains
+haveibeenpwned.com
+letsencrypt.org
+eff.org
+owasp.org
+security.org
+
+# International domains
+wikipedia.org
+reddit.com
+twitter.com
+linkedin.com
+facebook.com
+
+# Government domains
+usa.gov
+gov.uk
+canada.ca
+australia.gov.au
+europa.eu
+
+# Educational domains
+mit.edu
+stanford.edu
+harvard.edu
+berkeley.edu
+ox.ac.uk
+
+# Complex configurations
+nginx.org
+apache.org
+docker.com
+kubernetes.io
+golang.org
+
+# Media and content
+youtube.com
+vimeo.com
+imgur.com
+medium.com
+wordpress.com 

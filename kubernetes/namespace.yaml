@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dqix
+  labels:
+    name: dqix
+    app.kubernetes.io/name: dqix
+    app.kubernetes.io/version: "1.2.0"
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/part-of: dqix-platform 

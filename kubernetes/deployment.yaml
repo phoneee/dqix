@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dqix-deployment
+  namespace: dqix
+  labels:
+    app: dqix
+    app.kubernetes.io/name: dqix
+    app.kubernetes.io/version: "1.2.0"
+    app.kubernetes.io/component: assessment-engine
+    app.kubernetes.io/part-of: dqix-platform
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: dqix
+  template:
+    metadata:
+      labels:
+        app: dqix
+        app.kubernetes.io/name: dqix
+        app.kubernetes.io/version: "1.2.0"
+        app.kubernetes.io/component: assessment-engine
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: dqix-multi
+        image: dqix/dqix:1.2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: DQIX_DSL_PATH
+          value: "/app/dsl"
+        - name: DQIX_CONCURRENT_LIMIT
+          value: "10"
+        - name: DQIX_DEFAULT_TIMEOUT
+          value: "30s"
+        - name: DQIX_LOG_LEVEL
+          value: "info"
+        - name: PYTHONPATH
+          value: "/usr/local/lib/python3.11/site-packages"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - /usr/local/bin/dqix
+            - --help
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - /usr/local/bin/dqix-multi
+            - --help
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: dsl-config
+          mountPath: /app/dsl
+          readOnly: true
+        - name: temp-volume
+          mountPath: /tmp
+      volumes:
+      - name: dsl-config
+        configMap:
+          name: dqix-dsl-config
+      - name: temp-volume
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - dqix
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300
+      - key: "node.kubernetes.io/unreachable"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300 

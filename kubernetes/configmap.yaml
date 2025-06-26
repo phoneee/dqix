@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dqix-dsl-config
+  namespace: dqix
+  labels:
+    app: dqix
+    app.kubernetes.io/name: dqix
+    app.kubernetes.io/version: "1.2.0"
+    app.kubernetes.io/component: configuration
+    app.kubernetes.io/part-of: dqix-platform
+data:
+  probe_definition_language.yaml: |
+    # DQIX DSL Configuration v1.0
+    version: "1.0"
+    metadata:
+      name: "DQIX Core Probe Definitions"
+      description: "Multi-language probe definitions for domain quality assessment"
+      
+    scoring:
+      algorithm: "weighted_average"
+      scale: "0.0-1.0"
+      precision: 4
+      
+    levels:
+      - name: "advanced"
+        threshold: 0.8
+        color: "green"
+      - name: "standard" 
+        threshold: 0.6
+        color: "yellow"
+      - name: "basic"
+        threshold: 0.4
+        color: "orange"
+      - name: "needs_improvement"
+        threshold: 0.0
+        color: "red"
+        
+    categories:
+      - name: "security"
+        weight: 0.35
+        description: "TLS, DNS, and security headers assessment"
+      - name: "performance"
+        weight: 0.25
+        description: "HTTPS accessibility and redirect performance"
+      - name: "compliance"
+        weight: 0.25
+        description: "Standards compliance and best practices"
+      - name: "infrastructure"
+        weight: 0.15
+        description: "DNS and infrastructure configuration"
+        
+    probes:
+      - name: "tls_security"
+        type: "tls"
+        category: "security"
+        weight: 0.25
+        timeout: 10
+        algorithm: "tls_comprehensive_check"
+        config:
+          min_tls_version: "1.2"
+          check_certificate: true
+          check_cipher_strength: true
+          
+      - name: "dns_security"
+        type: "dns"
+        category: "security" 
+        weight: 0.25
+        timeout: 10
+        algorithm: "dns_security_assessment"
+        config:
+          check_dnssec: true
+          check_spf: true
+          check_dmarc: true
+          
+      - name: "https_access"
+        type: "https"
+        category: "performance"
+        weight: 0.25
+        timeout: 10
+        algorithm: "https_accessibility_check"
+        config:
+          check_accessibility: true
+          check_redirect: true
+          max_response_time: 5000
+          
+      - name: "security_headers"
+        type: "security_headers"
+        category: "security"
+        weight: 0.25
+        timeout: 10
+        algorithm: "security_headers_analysis"
+        config:
+          required_headers:
+            - "strict-transport-security"
+            - "content-security-policy"
+            - "x-frame-options"
+            - "x-content-type-options"
+            - "referrer-policy"
+            
+    output:
+      formats:
+        - "json"
+        - "csv" 
+        - "yaml"
+        - "report"
+      default_format: "json"
+      include_raw_data: true
+      include_recommendations: true
+  
+  enhanced_probe_definition.yaml: |
+    # DQIX Enhanced DSL Configuration v2.0
+    version: "2.0"
+    metadata:
+      name: "DQIX Enhanced Probe Definitions"
+      description: "Comprehensive multi-domain probe definitions"
+      
+    domains:
+      - name: "security"
+        weight: 0.35
+        probes: ["tls_security", "dns_security", "security_headers", "ssl_certificate"]
+      - name: "performance"  
+        weight: 0.20
+        probes: ["https_access", "response_time", "compression"]
+      - name: "infrastructure"
+        weight: 0.15
+        probes: ["dns_configuration", "ipv6_support", "cdn_usage"]
+      - name: "accessibility"
+        weight: 0.10
+        probes: ["markup_validation", "alt_attributes", "color_contrast"]
+      - name: "seo"
+        weight: 0.10
+        probes: ["meta_tags", "structured_data", "robots_txt"]
+      - name: "privacy"
+        weight: 0.10
+        probes: ["privacy_policy", "cookie_policy", "tracking_analysis"]
+        
+    quality_levels:
+      - name: "A+"
+        threshold: 0.95
+        description: "Exceptional security and compliance"
+      - name: "A"
+        threshold: 0.85
+        description: "Excellent security posture"
+      - name: "B"
+        threshold: 0.75
+        description: "Good security with minor improvements needed"
+      - name: "C"
+        threshold: 0.65
+        description: "Adequate security with several improvements needed"
+      - name: "D"
+        threshold: 0.55
+        description: "Below average security, significant improvements required"
+      - name: "E"
+        threshold: 0.45
+        description: "Poor security posture, immediate attention required"
+      - name: "F"
+        threshold: 0.0
+        description: "Critical security issues, urgent action required" 
