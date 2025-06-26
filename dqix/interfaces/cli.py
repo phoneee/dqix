@@ -28,7 +28,7 @@ from rich.columns import Columns
 from rich import box
 
 from ..application.use_cases import DomainAssessmentUseCase
-from ..infrastructure.factory import create_infrastructure
+from ..infrastructure.factory import create_infrastructure, InfrastructureFactory
 from ..domain.entities import ComplianceLevel
 
 # Initialize console and Typer app
@@ -55,11 +55,12 @@ def assess_domain(
     technical: bool = typer.Option(False, "-t", "--technical", help="Include technical details"),
     checklist: bool = typer.Option(False, "--checklist", help="Show detailed measurement checklists"),
     recommendations: bool = typer.Option(False, "-r", "--recommendations", help="Show improvement recommendations"),
-    format: str = typer.Option("rich", "-f", "--format", help="Output format: rich, json, table"),
+    format: str = typer.Option("rich", "-f", "--format", help="Output format: rich, json, table, csv, stdout"),
     save: bool = typer.Option(False, "-s", "--save", help="Save results to file"),
     save_dir: str = typer.Option(DEFAULT_SAVE_DIR, "--save-dir", help="Directory to save results"),
     timeout: int = typer.Option(10, "--timeout", help="Request timeout in seconds"),
-    comprehensive: bool = typer.Option(False, "-c", "--comprehensive", help="Run comprehensive analysis")
+    comprehensive: bool = typer.Option(False, "-c", "--comprehensive", help="Run comprehensive analysis"),
+    fast: bool = typer.Option(False, "--fast", help="Use high-performance mode with concurrent execution")
 ):
     """🔍 Assess a single domain with comprehensive security and compliance analysis."""
     
@@ -73,14 +74,21 @@ def assess_domain(
     console.print(f"\n🔍 Assessing domain: [bold cyan]{domain}[/bold cyan]")
     
     try:
-        # Run assessment with progress
-        result = asyncio.run(_run_assessment_with_progress(domain, timeout, comprehensive))
+        # Run assessment with performance optimization
+        if fast:
+            result = asyncio.run(_run_fast_assessment(domain, timeout, comprehensive))
+        else:
+            result = asyncio.run(_run_assessment_with_progress(domain, timeout, comprehensive))
         
         # Display results based on format
         if format == "json":
             _display_json_result(result)
         elif format == "table":
             _display_table_result(result, verbose, technical or checklist, recommendations)
+        elif format == "csv":
+            _display_csv_result(result)
+        elif format == "stdout":
+            _display_stdout_result(result)
         else:  # rich format (default)
             _display_rich_result(result, verbose, technical or checklist, recommendations)
         
@@ -1005,6 +1013,66 @@ def _save_bulk_results(results: List[Dict[str, Any]], save_dir: str, format: str
             json.dump(results, f, indent=2, default=str)
     
     console.print(f"💾 Bulk results saved to: {file_path}")
+
+
+async def _run_fast_assessment(domain: str, timeout: int, comprehensive: bool) -> Dict[str, Any]:
+    """Run domain assessment in high-performance mode with concurrent execution."""
+    import time
+    start_time = time.time()
+    
+    # Get infrastructure and run assessment with optimizations
+    infrastructure = create_infrastructure()
+    use_case = DomainAssessmentUseCase(infrastructure)
+    
+    # Run assessment without progress tracking for maximum speed
+    result = await use_case.assess_domain(domain, timeout, comprehensive)
+    
+    elapsed = time.time() - start_time
+    console.print(f"⚡ Fast assessment completed in {elapsed:.2f}s", style="green")
+    
+    return result
+
+
+def _display_csv_result(result: Dict[str, Any]):
+    """Display result in CSV format."""
+    import csv
+    import sys
+    from io import StringIO
+    
+    # Create CSV output
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Header
+    writer.writerow(['domain', 'overall_score', 'compliance_level', 'probe_id', 'probe_score', 'probe_category'])
+    
+    # Data rows
+    domain = result.get('domain', 'unknown')
+    overall_score = result.get('overall_score', 0.0)
+    compliance_level = result.get('compliance_level', 'unknown')
+    
+    for probe in result.get('probe_results', []):
+        writer.writerow([
+            domain,
+            overall_score,
+            compliance_level,
+            probe.get('probe_id', 'unknown'),
+            probe.get('score', 0.0),
+            probe.get('category', 'unknown')
+        ])
+    
+    # Print to stdout
+    print(output.getvalue().strip())
+
+
+def _display_stdout_result(result: Dict[str, Any]):
+    """Display result in simple stdout format for piping."""
+    domain = result.get('domain', 'unknown')
+    score = result.get('overall_score', 0.0)
+    compliance = result.get('compliance_level', 'unknown')
+    
+    # Simple one-line output
+    print(f"{domain}\t{score:.3f}\t{compliance}")
 
 
 # ============================================================================

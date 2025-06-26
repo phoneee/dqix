@@ -324,6 +324,28 @@ make install-hooks
 make quality
 ```
 
+## 📚 Documentation
+
+### **📖 Complete Documentation**
+- **[User Manual](docs/USER_MANUAL.md)** - Comprehensive usage guide with examples
+- **[FAQ](docs/FAQ.md)** - Frequently asked questions & troubleshooting
+- **[Domain Quality Principles](docs/DOMAIN_QUALITY_INDEX_PRINCIPLES.md)** - Academic standards & measurement criteria
+
+### **🚀 Quick Navigation**
+- **[Quick Start Guide](docs/USER_MANUAL.md#quick-start-guide)** - Get started in 5 minutes
+- **[Command Reference](docs/USER_MANUAL.md#command-reference)** - Complete CLI documentation
+- **[Output Formats](docs/USER_MANUAL.md#output-formats)** - Rich, JSON, CSV, table, stdout
+- **[Performance Guide](docs/USER_MANUAL.md#performance-optimization)** - Speed up assessments
+- **[Integration Examples](docs/USER_MANUAL.md#integration-guide)** - CI/CD, APIs, monitoring
+
+### **🎯 Common Use Cases**
+- **Security Auditing**: `dqix assess domain.com --checklist --recommendations`
+- **Bulk Analysis**: `dqix bulk domains.txt --concurrent 20 --format csv`
+- **Domain Comparison**: `dqix compare site1.com site2.com --verbose`
+- **Automation**: `dqix assess domain.com --format json | jq '.overall_score'`
+
+---
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
