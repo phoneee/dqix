@@ -236,3 +236,4 @@ tmp/
 temp/
 notes.md
 todo.md
+dqix-reports/*.json
