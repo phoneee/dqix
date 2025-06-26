@@ -1,0 +1,53 @@
+[package]
+name = "dqix"
+version = "1.2.0"
+edition = "2021"
+authors = ["DQIX Team <team@dqix.org>"]
+description = "Domain Quality Index - Rust Implementation with Multi-Language Architecture"
+license = "MIT"
+repository = "https://github.com/dqix-org/dqix"
+homepage = "https://github.com/dqix-org/dqix"
+keywords = ["domain", "security", "quality", "assessment", "monitoring"]
+categories = ["network-programming", "command-line-utilities", "web-programming"]
+
+[dependencies]
+# CLI and UI
+clap = { version = "4.4", features = ["derive", "color"] }
+colored = "2.1"
+indicatif = "0.17"
+
+# Async runtime and networking
+tokio = { version = "1.35", features = ["full"] }
+reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+trust-dns-resolver = "0.23"
+async-trait = "0.1"
+
+# TLS and crypto
+rustls = "0.22"
+webpki-roots = "0.26"
+
+# Serialization and config
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Utilities
+url = "2.5"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[[bin]]
+name = "dqix"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort" 
