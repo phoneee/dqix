@@ -1,7 +1,7 @@
 """Integration tests for DQIX Internet Governance Framework."""
 
+
 import pytest
-from unittest.mock import Mock, patch
 
 from dqix.core.academic_references import (
     DomainQualityGovernance,
@@ -13,12 +13,12 @@ from dqix.core.academic_references import (
 
 class MockGovernanceProbe:
     """Mock probe for internet governance testing."""
-    
+
     def __init__(self, probe_id: str, score: float = 0.8):
         self.id = probe_id
         self.score = score
         self.weight = 1.0
-    
+
     def assess(self, domain: str) -> dict:
         """Mock assessment following governance principles."""
         return {
@@ -40,29 +40,29 @@ def test_basic_domain_assessment():
     tls_probe = MockGovernanceProbe("tls_governance", 0.85)
     dns_probe = MockGovernanceProbe("dns_security", 0.75)
     email_probe = MockGovernanceProbe("email_auth", 0.70)
-    
+
     # Mock engine assessment
     mock_results = {
         "tls_governance": tls_probe.assess("example.com"),
         "dns_security": dns_probe.assess("example.com"),
         "email_auth": email_probe.assess("example.com"),
     }
-    
+
     # Calculate governance score
     probe_scores = {k: v["score"] for k, v in mock_results.items()}
     overall_score = sum(probe_scores.values()) / len(probe_scores)
-    
+
     # Verify governance assessment
     assert overall_score == 0.77  # (0.85 + 0.75 + 0.70) / 3
     assert all(result["governance_compliant"] for result in mock_results.values())
-    assert all(result["details"]["framework"] == "internet_governance" 
+    assert all(result["details"]["framework"] == "internet_governance"
               for result in mock_results.values())
 
 
 def test_multiple_domain_assessment():
     """Test assessment of multiple domains using governance framework."""
     domains = ["example.com", "test.org", "demo.net"]
-    
+
     # Mock governance assessment for multiple domains
     governance_results = {}
     for domain in domains:
@@ -78,12 +78,12 @@ def test_multiple_domain_assessment():
             },
             "framework": "internet_governance",
         }
-    
+
     # Verify multi-domain assessment
     assert len(governance_results) == 3
-    assert all("governance_compliance" in result 
+    assert all("governance_compliance" in result
               for result in governance_results.values())
-    assert all(result["framework"] == "internet_governance" 
+    assert all(result["framework"] == "internet_governance"
               for result in governance_results.values())
 
 
@@ -91,17 +91,17 @@ def test_governance_references_integration():
     """Test integration with internet governance references."""
     # Get governance references
     references = DomainQualityGovernance.get_governance_references()
-    
+
     # Test Harvard Berkman Klein Center integration
     multistakeholder_ref = references[GovernanceFramework.MULTISTAKEHOLDER_APPROACH]
     assert "Harvard Berkman Klein Center" in multistakeholder_ref.organization
     assert multistakeholder_ref.url.startswith("https://cyber.harvard.edu")
-    
+
     # Test Internet Society integration
     igf_ref = references[GovernanceFramework.IGF_BEST_PRACTICES]
     assert "Internet Society" in igf_ref.organization
     assert "internetsociety.org" in igf_ref.url
-    
+
     # Test RFC standards integration
     hsts_ref = references[GovernanceFramework.RFC_6797_HSTS]
     assert "IETF" in hsts_ref.organization
@@ -114,16 +114,16 @@ def test_quality_level_configuration():
     # Test each governance level
     levels = [
         InternetGovernanceLevels.BASIC,
-        InternetGovernanceLevels.STANDARD, 
+        InternetGovernanceLevels.STANDARD,
         InternetGovernanceLevels.ADVANCED,
     ]
-    
+
     for level in levels:
         # Each level should have governance-focused areas
         assert len(level.focus_areas) >= 3
         assert level.target_score > 0.5
         assert "security" in level.description.lower() or "infrastructure" in level.description.lower()
-        
+
         # Verify governance principles in focus areas
         focus_text = " ".join(level.focus_areas).lower()
         has_governance_focus = any(term in focus_text for term in [
@@ -138,7 +138,7 @@ def test_error_handling():
     with pytest.raises(ValueError, match="Invalid domain"):
         # Mock an invalid domain scenario
         raise ValueError("Invalid domain format")
-    
+
     # Test graceful handling of missing probes
     try:
         # Mock missing probe scenario
@@ -169,7 +169,7 @@ def test_preset_configuration():
             "IETF RFCs",
         ]
     }
-    
+
     # Verify preset structure
     assert mock_preset["governance_framework"] == "multistakeholder"
     assert "Harvard Berkman Klein Center" in mock_preset["references"]
@@ -191,21 +191,21 @@ def test_governance_report_generation():
         },
         target_level=InternetGovernanceLevels.STANDARD,
     )
-    
+
     # Verify comprehensive governance report
     assert report["domain"] == "example.com"
     assert report["overall_score"] == 0.85
     assert report["status"] == "EXCELLENT"  # Score >= 0.9 is excellent, but 0.85 should be "GOOD"
-    
+
     # Verify governance compliance
     governance = report["governance_compliance"]
     assert governance["multistakeholder_principles"] is True  # >= 0.7
     assert governance["internet_standards_compliance"] is True  # >= 0.8
     assert governance["best_practices_implementation"] is False  # < 0.9
-    
+
     # Verify framework reference
     assert "internet governance principles" in report["framework"]
-    
+
     # Verify assessment level details
     assert report["assessment_level"]["name"] == "Standard Compliance"
     assert report["assessment_level"]["target_score"] == 0.8
@@ -213,4 +213,4 @@ def test_governance_report_generation():
 
 if __name__ == "__main__":
     # Run tests with verbose output
-    pytest.main([__file__, "-v"]) 
+    pytest.main([__file__, "-v"])

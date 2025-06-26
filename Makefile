@@ -62,9 +62,30 @@ test-watch: ## Run tests in watch mode
 	@echo "$(CYAN)Running tests in watch mode...$(RESET)"
 	uv run ptw --runner "pytest -v"
 
-benchmark: ## Run performance benchmarks
-	@echo "$(CYAN)Running benchmarks...$(RESET)"
-	uv run pytest tests/ -k "benchmark" --benchmark-json=benchmark.json
+benchmark: ## Run polyglot performance benchmarks
+	@echo "$(CYAN)Running DQIX polyglot benchmarks...$(RESET)"
+	uv run --extra benchmarking python benchmarks/run_benchmarks.py
+
+benchmark-python: ## Run Python-only benchmarks
+	@echo "$(CYAN)Running Python benchmarks...$(RESET)"
+	uv run --extra benchmarking python benchmarks/run_benchmarks.py --language python
+
+benchmark-go: ## Run Go-only benchmarks (requires Go implementation)
+	@echo "$(CYAN)Running Go benchmarks...$(RESET)"
+	uv run --extra benchmarking python benchmarks/run_benchmarks.py --language go
+
+benchmark-rust: ## Run Rust-only benchmarks (requires Rust implementation)
+	@echo "$(CYAN)Running Rust benchmarks...$(RESET)"
+	uv run --extra benchmarking python benchmarks/run_benchmarks.py --language rust
+
+benchmark-analysis: ## Generate benchmark analysis and reports
+	@echo "$(CYAN)Generating benchmark analysis...$(RESET)"
+	uv run --extra benchmarking python benchmarks/compare_languages.py
+
+benchmark-clean: ## Clean benchmark results
+	@echo "$(CYAN)Cleaning benchmark results...$(RESET)"
+	rm -rf benchmarks/results/
+	rm -rf benchmarks/reports/
 
 # Code Quality Commands
 lint: ## Run linting
@@ -199,6 +220,18 @@ deps-audit: ## Audit dependencies for vulnerabilities
 db-setup: ## Set up test database
 	@echo "$(CYAN)Setting up test database...$(RESET)"
 	# Add database setup commands here if needed
+
+# Polyglot Build Commands
+build-go: ## Build Go implementation
+	@echo "$(CYAN)Building Go implementation...$(RESET)"
+	cd dqix-go && go build -o dqix ./cmd/dqix
+
+build-rust: ## Build Rust implementation
+	@echo "$(CYAN)Building Rust implementation...$(RESET)"
+	cd dqix-rust && cargo build --release
+
+build-all: build build-go build-rust ## Build all language implementations
+	@echo "$(GREEN)All implementations built successfully!$(RESET)"
 
 # Docker Commands (if using containers)
 docker-build: ## Build Docker image

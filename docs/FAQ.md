@@ -28,7 +28,7 @@ pip install dqix
 
 For development:
 ```bash
-git clone https://github.com/dqix/dqix
+git clone https://github.com/phoneee/dqix
 cd dqix
 pip install -e .
 ```
@@ -273,7 +273,7 @@ dqix assess example.com --format json | jq '.' | your-database-import-script
 **A:** Yes, suggested citation:
 ```
 Domain Quality Index (DQIX) Principles & Measurement Criteria, Version 1.0 (2025).
-Available at: https://github.com/dqix/dqix
+Available at: https://github.com/phoneee/dqix
 ```
 
 ### **Q: What academic standards does DQIX follow?**
@@ -346,4 +346,4 @@ Available at: https://github.com/dqix/dqix
 ---
 
 *Last Updated: June 2025*  
-*For additional support, visit: [GitHub Issues](https://github.com/dqix/dqix/issues)* 
+*For additional support, visit: [GitHub Issues](https://github.com/phoneee/dqix/issues)* 

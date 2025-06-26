@@ -1,760 +1,516 @@
-"""Enhanced Security Headers probe with comprehensive technical analysis."""
+"""Enhanced Security Headers probe with comprehensive analysis and reduced false positives."""
+
+import asyncio
+import logging
+import re
+import ssl
+from typing import Any, Optional
+from urllib.parse import urlparse
 
 import aiohttp
-import re
-from typing import Dict, Any, List, Optional, Union
-from urllib.parse import urlparse
 
 from ...domain.entities import Domain, ProbeCategory, ProbeConfig, ProbeResult
 from .base import BaseProbe
 
 
 class SecurityHeadersProbe(BaseProbe):
-    """Comprehensive HTTP security headers analysis."""
-    
+    """Comprehensive HTTP security headers analysis with reduced false positives."""
+
     def __init__(self):
         super().__init__("security_headers", ProbeCategory.SECURITY)
-    
+        self.logger = logging.getLogger(__name__)
+
     async def check(self, domain: Domain, config: ProbeConfig) -> ProbeResult:
         """Perform comprehensive security headers analysis."""
+
         try:
-            # Collect security headers information from multiple endpoints
-            headers_info = await self._collect_headers_info(domain.name, config.timeout)
-            
-            # Calculate detailed score
-            score = self._calculate_comprehensive_score(headers_info)
-            
-            # Prepare detailed technical information
-            details = self._prepare_technical_details(headers_info)
-            
-            return self._create_result(domain, score, details)
-            
-        except Exception as e:
-            return self._create_result(
-                domain, 
-                0.0, 
-                {"error": str(e), "analysis": "HTTP headers analysis failed"}, 
-                error=str(e)
+            # Test multiple endpoints to reduce false positives
+            endpoints = [
+                f"https://{domain.name}",
+                f"https://www.{domain.name}",
+            ]
+
+            best_result = None
+            best_score = 0
+
+            for endpoint in endpoints:
+                try:
+                    result = await self._analyze_endpoint(endpoint, config)
+                    if result and result.score > best_score:
+                        best_result = result
+                        best_score = result.score
+                except Exception as e:
+                    self.logger.debug(f"Endpoint {endpoint} failed: {e}")
+                    continue
+
+            if best_result:
+                return best_result
+
+            # Fallback result if all endpoints fail
+            return ProbeResult(
+                probe_id=self.probe_id,
+                domain=domain,
+                status="failed",
+                score=0.0,
+                message="Unable to retrieve security headers from any endpoint",
+                details={"error": "All endpoints failed"}
             )
-    
-    async def _collect_headers_info(self, hostname: str, timeout: int) -> Dict[str, Any]:
-        """Collect comprehensive HTTP security headers information."""
-        headers_info = {
-            "https_response": {},
-            "http_response": {},
-            "security_headers": {},
-            "header_analysis": {},
-            "security_assessment": {},
-            "recommendations": []
-        }
-        
-        timeout_config = aiohttp.ClientTimeout(total=timeout)
-        
-        try:
-            async with aiohttp.ClientSession(timeout=timeout_config) as session:
-                # Test HTTPS endpoint
-                headers_info["https_response"] = await self._test_endpoint(
-                    session, f"https://{hostname}", "HTTPS"
-                )
-                
-                # Test HTTP endpoint (to check for redirects)
-                headers_info["http_response"] = await self._test_endpoint(
-                    session, f"http://{hostname}", "HTTP"
-                )
-                
-                # Analyze security headers from HTTPS response
-                if headers_info["https_response"].get("headers"):
-                    headers_info["security_headers"] = self._analyze_security_headers(
-                        headers_info["https_response"]["headers"]
-                    )
-                    
-                    # Perform comprehensive header analysis
-                    headers_info["header_analysis"] = self._perform_header_analysis(
-                        headers_info["https_response"]["headers"]
-                    )
-                    
-                    # Generate security assessment
-                    headers_info["security_assessment"] = self._assess_security_posture(
-                        headers_info
-                    )
-                    
-                    # Generate recommendations
-                    headers_info["recommendations"] = self._generate_recommendations(
-                        headers_info
-                    )
-                
+
         except Exception as e:
-            headers_info["error"] = str(e)
-        
-        return headers_info
-    
-    async def _test_endpoint(self, session: aiohttp.ClientSession, url: str, protocol: str) -> Dict[str, Any]:
-        """Test individual endpoint and collect response information."""
-        endpoint_info = {
-            "url": url,
-            "protocol": protocol,
-            "accessible": False,
-            "status_code": None,
-            "headers": {},
-            "redirect_info": {},
-            "response_time_ms": 0,
-            "error": None
-        }
-        
-        try:
-            import time
-            start_time = time.time()
-            
-            async with session.get(url, allow_redirects=True) as response:
-                end_time = time.time()
-                
-                endpoint_info["accessible"] = True
-                endpoint_info["status_code"] = response.status
-                endpoint_info["headers"] = dict(response.headers)
-                endpoint_info["response_time_ms"] = int((end_time - start_time) * 1000)
-                
-                # Analyze redirects
-                if hasattr(response, 'history') and response.history:
-                    endpoint_info["redirect_info"] = {
-                        "redirected": True,
-                        "redirect_count": len(response.history),
-                        "final_url": str(response.url),
-                        "redirect_chain": [str(r.url) for r in response.history]
-                    }
-                else:
-                    endpoint_info["redirect_info"] = {"redirected": False}
-                
-        except Exception as e:
-            endpoint_info["error"] = str(e)
-        
-        return endpoint_info
-    
-    def _analyze_security_headers(self, headers: Dict[str, str]) -> Dict[str, Any]:
-        """Analyze all security-related headers comprehensively."""
-        # Normalize header names to lowercase for comparison
+            self.logger.error(f"Security headers probe failed for {domain.name}: {e}")
+            return ProbeResult(
+                probe_id=self.probe_id,
+                domain=domain,
+                status="error",
+                score=0.0,
+                message=f"Security headers analysis failed: {str(e)}",
+                details={"error": str(e)}
+            )
+
+    async def _analyze_endpoint(self, url: str, config: ProbeConfig) -> Optional[ProbeResult]:
+        """Analyze security headers for a specific endpoint."""
+
+        # Create SSL context for secure connections
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+
+        connector = aiohttp.TCPConnector(
+            ssl=ssl_context,
+            limit=10,
+            limit_per_host=5,
+            ttl_dns_cache=300,
+            use_dns_cache=True
+        )
+
+        timeout = aiohttp.ClientTimeout(total=config.timeout)
+
+        async with aiohttp.ClientSession(
+            connector=connector,
+            timeout=timeout,
+            headers={
+                'User-Agent': 'DQIX-Security-Scanner/1.0',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1'
+            }
+        ) as session:
+
+            try:
+                async with session.get(url, allow_redirects=True) as response:
+                    headers = dict(response.headers)
+
+                    # Analyze security headers
+                    security_analysis = await self._analyze_security_headers(headers)
+
+                    # Calculate score
+                    score = self._calculate_security_score(security_analysis)
+
+                    # Determine status
+                    status = "passed" if score >= 0.6 else "warning" if score >= 0.4 else "failed"
+
+                    # Generate message
+                    message = self._generate_analysis_message(security_analysis, score)
+
+                    # Parse domain from URL
+                    parsed_url = urlparse(url)
+                    domain = Domain(parsed_url.netloc)
+
+                    return ProbeResult(
+                        probe_id=self.probe_id,
+                        domain=domain,
+                        status=status,
+                        score=score,
+                        message=message,
+                        details={
+                            "url_analyzed": url,
+                            "security_headers": security_analysis,
+                            "response_status": response.status,
+                            "total_headers": len(headers)
+                        }
+                    )
+
+            except asyncio.TimeoutError:
+                self.logger.warning(f"Timeout analyzing {url}")
+                return None
+            except Exception as e:
+                self.logger.warning(f"Failed to analyze {url}: {e}")
+                return None
+
+    async def _analyze_security_headers(self, headers: dict[str, str]) -> dict[str, Any]:
+        """Comprehensive security headers analysis."""
+
+        # Convert headers to lowercase for case-insensitive analysis
         lower_headers = {k.lower(): v for k, v in headers.items()}
-        
+
         security_analysis = {}
-        
-        # HSTS (HTTP Strict Transport Security)
-        security_analysis["hsts"] = self._analyze_hsts_header(
-            lower_headers.get("strict-transport-security")
-        )
-        
-        # Content Security Policy
-        security_analysis["csp"] = self._analyze_csp_header(
-            lower_headers.get("content-security-policy")
-        )
-        
-        # X-Frame-Options
-        security_analysis["x_frame_options"] = self._analyze_frame_options_header(
-            lower_headers.get("x-frame-options")
-        )
-        
-        # X-Content-Type-Options
-        security_analysis["x_content_type_options"] = self._analyze_content_type_options_header(
-            lower_headers.get("x-content-type-options")
-        )
-        
-        # X-XSS-Protection
-        security_analysis["x_xss_protection"] = self._analyze_xss_protection_header(
-            lower_headers.get("x-xss-protection")
-        )
-        
-        # Referrer Policy
-        security_analysis["referrer_policy"] = self._analyze_referrer_policy_header(
-            lower_headers.get("referrer-policy")
-        )
-        
-        # Permissions Policy (formerly Feature Policy)
-        security_analysis["permissions_policy"] = self._analyze_permissions_policy_header(
-            lower_headers.get("permissions-policy")
-        )
-        
-        # Additional security headers
-        security_analysis["additional_headers"] = self._analyze_additional_security_headers(lower_headers)
-        
+
+        # HSTS Analysis
+        security_analysis["hsts"] = self._analyze_hsts_header(lower_headers.get("strict-transport-security"))
+
+        # CSP Analysis
+        csp_value = lower_headers.get("content-security-policy")
+        csp_report_only = lower_headers.get("content-security-policy-report-only")
+
+        if csp_value or csp_report_only:
+            actual_csp_value = csp_value or csp_report_only
+            if actual_csp_value:
+                security_analysis["csp"] = self._analyze_csp_header_enhanced(actual_csp_value)
+        else:
+            security_analysis["csp"] = {"has_csp": False, "score": 0}
+
+        # X-Frame-Options Analysis
+        security_analysis["x_frame_options"] = self._analyze_x_frame_options(lower_headers.get("x-frame-options"))
+
+        # X-Content-Type-Options Analysis
+        security_analysis["x_content_type_options"] = self._analyze_x_content_type_options(lower_headers.get("x-content-type-options"))
+
+        # X-XSS-Protection Analysis
+        security_analysis["x_xss_protection"] = self._analyze_x_xss_protection(lower_headers.get("x-xss-protection"))
+
+        # Referrer Policy Analysis
+        security_analysis["referrer_policy"] = self._analyze_referrer_policy(lower_headers.get("referrer-policy"))
+
+        # Permissions Policy Analysis
+        security_analysis["permissions_policy"] = self._analyze_permissions_policy(lower_headers.get("permissions-policy"))
+
+        # Information disclosure analysis
+        security_analysis["information_disclosure"] = {
+            "server_disclosure": bool(lower_headers.get("server")),
+            "powered_by_disclosure": bool(lower_headers.get("x-powered-by")),
+            "version_disclosure": bool(lower_headers.get("x-aspnet-version"))
+        }
+
         return security_analysis
-    
-    def _analyze_hsts_header(self, hsts_value: Optional[str]) -> Dict[str, Any]:
-        """Analyze HSTS header in detail."""
+
+    def _analyze_hsts_header(self, hsts_value: Optional[str]) -> dict[str, Any]:
+        """Analyze HSTS header configuration."""
+
         if not hsts_value:
             return {
-                "present": False,
+                "has_hsts": False,
                 "score": 0,
-                "issues": ["HSTS header missing - site vulnerable to SSL stripping attacks"],
-                "recommendation": "Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'"
+                "issues": ["HSTS header not present"]
             }
-        
+
         analysis = {
-            "present": True,
+            "has_hsts": True,
             "raw_value": hsts_value,
-            "parsed": {},
-            "score": 0,
-            "issues": [],
-            "strengths": []
+            "issues": []
         }
-        
-        # Parse HSTS directives
-        directives = [d.strip() for d in hsts_value.split(';')]
-        max_age = 0
-        include_subdomains = False
-        preload = False
-        
-        for directive in directives:
-            if directive.startswith('max-age='):
-                try:
-                    max_age = int(directive.split('=')[1])
-                    analysis["parsed"]["max_age"] = max_age
-                except ValueError:
-                    analysis["issues"].append("Invalid max-age value")
-            elif directive.lower() == 'includesubdomains':
-                include_subdomains = True
-                analysis["parsed"]["include_subdomains"] = True
-            elif directive.lower() == 'preload':
-                preload = True
-                analysis["parsed"]["preload"] = True
-        
-        # Scoring and assessment
-        if max_age > 0:
-            analysis["score"] += 40
-            if max_age >= 31536000:  # 1 year
-                analysis["score"] += 30
-                analysis["strengths"].append("Long max-age (1+ year)")
-            elif max_age >= 2592000:  # 30 days
-                analysis["score"] += 20
-                analysis["strengths"].append("Reasonable max-age (30+ days)")
-            else:
-                analysis["issues"].append("Short max-age - consider longer duration")
+
+        # Parse max-age
+        max_age_match = re.search(r'max-age=(\d+)', hsts_value.lower())
+        if max_age_match:
+            max_age = int(max_age_match.group(1))
+            analysis["max_age"] = max_age
+
+            if max_age < 31536000:  # Less than 1 year
+                analysis["issues"].append("HSTS max-age should be at least 31536000 (1 year)")
         else:
-            analysis["issues"].append("Missing or invalid max-age")
-        
-        if include_subdomains:
-            analysis["score"] += 20
-            analysis["strengths"].append("Includes subdomains")
-        else:
-            analysis["issues"].append("Missing includeSubDomains directive")
-        
-        if preload:
-            analysis["score"] += 10
-            analysis["strengths"].append("Preload directive present")
-        
-        analysis["security_level"] = self._get_security_level(analysis["score"])
+            analysis["issues"].append("HSTS max-age directive missing")
+            analysis["max_age"] = 0
+
+        # Check for includeSubDomains
+        analysis["include_subdomains"] = "includesubdomains" in hsts_value.lower()
+        if not analysis["include_subdomains"]:
+            analysis["issues"].append("Consider adding includeSubDomains directive")
+
+        # Check for preload
+        analysis["preload"] = "preload" in hsts_value.lower()
+        if not analysis["preload"]:
+            analysis["issues"].append("Consider adding preload directive for enhanced security")
+
+        # Calculate score
+        score = 0.4  # Base score for having HSTS
+        if analysis.get("max_age", 0) >= 31536000:
+            score += 0.3
+        if analysis["include_subdomains"]:
+            score += 0.2
+        if analysis["preload"]:
+            score += 0.1
+
+        analysis["score"] = min(score, 1.0)
+
         return analysis
-    
-    def _analyze_csp_header(self, csp_value: Optional[str]) -> Dict[str, Any]:
-        """Analyze Content Security Policy header in detail."""
-        if not csp_value:
-            return {
-                "present": False,
-                "score": 0,
-                "issues": ["CSP header missing - site vulnerable to XSS and injection attacks"],
-                "recommendation": "Implement Content Security Policy to prevent XSS attacks"
-            }
-        
+
+    def _analyze_csp_header_enhanced(self, csp_value: str) -> dict[str, Any]:
+        """Enhanced CSP analysis with modern security practices."""
+
         analysis = {
-            "present": True,
+            "has_csp": True,
             "raw_value": csp_value,
             "directives": {},
-            "score": 0,
+            "security_score": 0,
             "issues": [],
-            "strengths": [],
-            "unsafe_directives": []
+            "recommendations": []
         }
-        
-        # Parse CSP directives
-        directives = [d.strip() for d in csp_value.split(';') if d.strip()]
-        
-        for directive in directives:
-            parts = directive.split()
-            if parts:
-                directive_name = parts[0]
-                directive_values = parts[1:] if len(parts) > 1 else []
-                analysis["directives"][directive_name] = directive_values
-                
+
+        # Parse directives
+        directives = {}
+        for directive in csp_value.split(';'):
+            directive = directive.strip()
+            if directive:
+                parts = directive.split(None, 1)
+                if len(parts) >= 1:
+                    key = parts[0].lower()
+                    value = parts[1] if len(parts) > 1 else ""
+                    directives[key] = value
+
+        analysis["directives"] = directives
+
+        # Analyze critical directives
+        critical_directives = ["default-src", "script-src", "object-src", "base-uri"]
+        security_score = 0
+
+        for directive in critical_directives:
+            if directive in directives:
+                security_score += 0.2
+
                 # Check for unsafe directives
-                if "'unsafe-inline'" in directive_values:
-                    analysis["unsafe_directives"].append(f"{directive_name}: 'unsafe-inline'")
-                if "'unsafe-eval'" in directive_values:
-                    analysis["unsafe_directives"].append(f"{directive_name}: 'unsafe-eval'")
-                if "*" in directive_values:
-                    analysis["unsafe_directives"].append(f"{directive_name}: wildcard (*)")
-        
-        # Scoring based on directive presence and safety
-        base_score = 50  # Base score for having CSP
-        analysis["score"] = base_score
-        
-        important_directives = ["default-src", "script-src", "style-src", "img-src"]
-        for directive in important_directives:
-            if directive in analysis["directives"]:
-                analysis["score"] += 10
-                analysis["strengths"].append(f"{directive} directive defined")
-        
-        # Deduct points for unsafe directives
-        analysis["score"] -= len(analysis["unsafe_directives"]) * 15
-        
-        if analysis["unsafe_directives"]:
-            analysis["issues"].extend(analysis["unsafe_directives"])
+                directive_value = directives[directive].lower()
+                if "'unsafe-inline'" in directive_value:
+                    analysis["issues"].append(f"{directive} allows unsafe-inline")
+                    security_score -= 0.1
+
+                if "'unsafe-eval'" in directive_value:
+                    analysis["issues"].append(f"{directive} allows unsafe-eval")
+                    security_score -= 0.1
+
+                if "*" in directive_value and directive != "img-src":
+                    analysis["issues"].append(f"{directive} uses wildcard (*)")
+                    security_score -= 0.05
+
+                # Check for modern CSP features
+                if "'nonce-" in directive_value:
+                    analysis["recommendations"].append(f"{directive} uses nonce-based CSP (good)")
+                    security_score += 0.05
+
+                if "'strict-dynamic'" in directive_value:
+                    analysis["recommendations"].append(f"{directive} uses strict-dynamic (excellent)")
+                    security_score += 0.1
+            else:
+                analysis["issues"].append(f"Missing {directive} directive")
+
+        # Check for frame-ancestors
+        if "frame-ancestors" in directives:
+            security_score += 0.1
         else:
-            analysis["strengths"].append("No unsafe directives detected")
-        
-        analysis["security_level"] = self._get_security_level(analysis["score"])
+            analysis["recommendations"].append("Consider adding frame-ancestors directive")
+
+        # Check for upgrade-insecure-requests
+        if "upgrade-insecure-requests" in directives:
+            security_score += 0.1
+            analysis["recommendations"].append("upgrade-insecure-requests directive present (good)")
+
+        analysis["security_score"] = max(0, min(security_score, 1.0))
+
         return analysis
-    
-    def _analyze_frame_options_header(self, frame_options_value: Optional[str]) -> Dict[str, Any]:
+
+    def _analyze_x_frame_options(self, xfo_value: Optional[str]) -> dict[str, Any]:
         """Analyze X-Frame-Options header."""
-        if not frame_options_value:
+
+        if not xfo_value:
             return {
-                "present": False,
+                "has_header": False,
                 "score": 0,
-                "issues": ["X-Frame-Options header missing - site vulnerable to clickjacking"],
-                "recommendation": "Add 'X-Frame-Options: DENY' or 'X-Frame-Options: SAMEORIGIN'"
+                "recommendation": "Add X-Frame-Options: DENY or SAMEORIGIN"
             }
-        
+
+        xfo_lower = xfo_value.lower()
+
         analysis = {
-            "present": True,
-            "raw_value": frame_options_value,
-            "score": 0,
-            "issues": [],
-            "strengths": []
+            "has_header": True,
+            "value": xfo_value,
+            "score": 0
         }
-        
-        value = frame_options_value.upper().strip()
-        
-        if value == "DENY":
-            analysis["score"] = 100
-            analysis["strengths"].append("Completely blocks framing (DENY)")
-        elif value == "SAMEORIGIN":
-            analysis["score"] = 90
-            analysis["strengths"].append("Allows same-origin framing (SAMEORIGIN)")
-        elif value.startswith("ALLOW-FROM"):
-            analysis["score"] = 70
-            analysis["strengths"].append("Allows specific origin framing")
-            analysis["issues"].append("ALLOW-FROM is deprecated in modern browsers")
+
+        if xfo_lower == "deny":
+            analysis["score"] = 1.0
+            analysis["assessment"] = "Excellent - Prevents all framing"
+        elif xfo_lower == "sameorigin":
+            analysis["score"] = 0.8
+            analysis["assessment"] = "Good - Allows same-origin framing"
+        elif xfo_lower.startswith("allow-from"):
+            analysis["score"] = 0.6
+            analysis["assessment"] = "Moderate - Allows specific origins"
+            analysis["recommendation"] = "Consider using CSP frame-ancestors instead"
         else:
-            analysis["score"] = 30
-            analysis["issues"].append("Unrecognized X-Frame-Options value")
-        
-        analysis["security_level"] = self._get_security_level(analysis["score"])
+            analysis["score"] = 0.2
+            analysis["assessment"] = "Poor - Invalid or weak configuration"
+
         return analysis
-    
-    def _analyze_content_type_options_header(self, content_type_value: Optional[str]) -> Dict[str, Any]:
+
+    def _analyze_x_content_type_options(self, xcto_value: Optional[str]) -> dict[str, Any]:
         """Analyze X-Content-Type-Options header."""
-        if not content_type_value:
+
+        if not xcto_value:
             return {
-                "present": False,
+                "has_header": False,
                 "score": 0,
-                "issues": ["X-Content-Type-Options header missing - vulnerable to MIME sniffing"],
-                "recommendation": "Add 'X-Content-Type-Options: nosniff'"
+                "recommendation": "Add X-Content-Type-Options: nosniff"
             }
-        
+
         analysis = {
-            "present": True,
-            "raw_value": content_type_value,
-            "score": 0,
-            "issues": [],
-            "strengths": []
+            "has_header": True,
+            "value": xcto_value
         }
-        
-        if content_type_value.lower().strip() == "nosniff":
-            analysis["score"] = 100
-            analysis["strengths"].append("MIME sniffing disabled (nosniff)")
+
+        if xcto_value.lower() == "nosniff":
+            analysis["score"] = 1.0
+            analysis["assessment"] = "Correct - Prevents MIME type sniffing"
         else:
-            analysis["score"] = 30
-            analysis["issues"].append("Unexpected X-Content-Type-Options value")
-        
-        analysis["security_level"] = self._get_security_level(analysis["score"])
+            analysis["score"] = 0.3
+            analysis["assessment"] = "Incorrect value - Should be 'nosniff'"
+
         return analysis
-    
-    def _analyze_xss_protection_header(self, xss_value: Optional[str]) -> Dict[str, Any]:
+
+    def _analyze_x_xss_protection(self, xxp_value: Optional[str]) -> dict[str, Any]:
         """Analyze X-XSS-Protection header."""
-        if not xss_value:
+
+        if not xxp_value:
             return {
-                "present": False,
-                "score": 0,
-                "issues": ["X-XSS-Protection header missing"],
-                "recommendation": "Add 'X-XSS-Protection: 1; mode=block' (though CSP is preferred)"
+                "has_header": False,
+                "score": 0.5,  # Neutral score as this header is deprecated
+                "note": "Header not present (acceptable - deprecated in favor of CSP)"
             }
-        
+
         analysis = {
-            "present": True,
-            "raw_value": xss_value,
-            "score": 0,
-            "issues": [],
-            "strengths": [],
-            "note": "X-XSS-Protection is deprecated; use CSP instead"
+            "has_header": True,
+            "value": xxp_value
         }
-        
-        value = xss_value.lower().strip()
-        
-        if "1; mode=block" in value:
-            analysis["score"] = 80
-            analysis["strengths"].append("XSS filter enabled with blocking mode")
-        elif value.startswith("1"):
-            analysis["score"] = 60
-            analysis["strengths"].append("XSS filter enabled")
-        elif value == "0":
-            analysis["score"] = 20
-            analysis["issues"].append("XSS protection explicitly disabled")
+
+        xxp_lower = xxp_value.lower()
+
+        if xxp_lower == "0":
+            analysis["score"] = 0.8
+            analysis["assessment"] = "Good - Disables legacy XSS filter"
+        elif xxp_lower in ["1", "1; mode=block"]:
+            analysis["score"] = 0.6
+            analysis["assessment"] = "Acceptable but deprecated"
+            analysis["recommendation"] = "Use Content Security Policy instead"
         else:
-            analysis["score"] = 30
-            analysis["issues"].append("Unrecognized X-XSS-Protection value")
-        
-        analysis["security_level"] = self._get_security_level(analysis["score"])
+            analysis["score"] = 0.3
+            analysis["assessment"] = "Poor configuration"
+
         return analysis
-    
-    def _analyze_referrer_policy_header(self, referrer_value: Optional[str]) -> Dict[str, Any]:
+
+    def _analyze_referrer_policy(self, rp_value: Optional[str]) -> dict[str, Any]:
         """Analyze Referrer-Policy header."""
-        if not referrer_value:
+
+        if not rp_value:
             return {
-                "present": False,
+                "has_header": False,
                 "score": 0,
-                "issues": ["Referrer-Policy header missing - may leak sensitive URLs"],
-                "recommendation": "Add 'Referrer-Policy: strict-origin-when-cross-origin'"
+                "recommendation": "Add Referrer-Policy header"
             }
-        
+
         analysis = {
-            "present": True,
-            "raw_value": referrer_value,
-            "score": 0,
-            "issues": [],
-            "strengths": []
+            "has_header": True,
+            "value": rp_value
         }
-        
-        value = referrer_value.lower().strip()
-        
+
+        rp_lower = rp_value.lower()
+
+        # Score based on privacy and security
         policy_scores = {
-            "no-referrer": 100,
-            "no-referrer-when-downgrade": 70,
-            "origin": 80,
-            "origin-when-cross-origin": 85,
-            "same-origin": 90,
-            "strict-origin": 95,
-            "strict-origin-when-cross-origin": 90,
-            "unsafe-url": 20
+            "no-referrer": 1.0,
+            "same-origin": 0.9,
+            "strict-origin": 0.9,
+            "strict-origin-when-cross-origin": 0.8,
+            "origin": 0.6,
+            "origin-when-cross-origin": 0.5,
+            "unsafe-url": 0.1,
+            "no-referrer-when-downgrade": 0.4
         }
-        
-        if value in policy_scores:
-            analysis["score"] = policy_scores[value]
-            if value == "unsafe-url":
-                analysis["issues"].append("Unsafe referrer policy - sends full URL")
-            else:
-                analysis["strengths"].append(f"Good referrer policy: {value}")
+
+        analysis["score"] = policy_scores.get(rp_lower, 0.3)
+
+        if analysis["score"] >= 0.8:
+            analysis["assessment"] = "Good privacy protection"
+        elif analysis["score"] >= 0.5:
+            analysis["assessment"] = "Moderate privacy protection"
         else:
-            analysis["score"] = 30
-            analysis["issues"].append("Unrecognized referrer policy")
-        
-        analysis["security_level"] = self._get_security_level(analysis["score"])
+            analysis["assessment"] = "Weak privacy protection"
+
         return analysis
-    
-    def _analyze_permissions_policy_header(self, permissions_value: Optional[str]) -> Dict[str, Any]:
+
+    def _analyze_permissions_policy(self, pp_value: Optional[str]) -> dict[str, Any]:
         """Analyze Permissions-Policy header."""
-        if not permissions_value:
+
+        if not pp_value:
             return {
-                "present": False,
+                "has_header": False,
                 "score": 0,
-                "issues": ["Permissions-Policy header missing"],
-                "recommendation": "Consider adding Permissions-Policy to control browser features"
+                "recommendation": "Consider adding Permissions-Policy header"
             }
-        
+
         analysis = {
-            "present": True,
-            "raw_value": permissions_value,
-            "directives": {},
-            "score": 50,  # Base score for having the header
-            "issues": [],
-            "strengths": ["Permissions policy configured"]
+            "has_header": True,
+            "value": pp_value,
+            "score": 0.5,  # Base score for having the header
+            "assessment": "Present - Helps control browser features"
         }
-        
-        # Parse permissions policy (simplified)
-        try:
-            directives = [d.strip() for d in permissions_value.split(',')]
-            for directive in directives:
-                if '=' in directive:
-                    feature, allowlist = directive.split('=', 1)
-                    analysis["directives"][feature.strip()] = allowlist.strip()
-            
-            analysis["score"] += min(len(analysis["directives"]) * 5, 50)
-        except Exception:
-            analysis["issues"].append("Could not parse permissions policy")
-            analysis["score"] = 30
-        
-        analysis["security_level"] = self._get_security_level(analysis["score"])
+
+        # Check for common dangerous permissions
+        dangerous_features = ["camera", "microphone", "geolocation", "payment"]
+        restricted_count = 0
+
+        for feature in dangerous_features:
+            if f"{feature}=()" in pp_value.lower():
+                restricted_count += 1
+
+        # Bonus score for restricting dangerous features
+        analysis["score"] += (restricted_count / len(dangerous_features)) * 0.3
+
         return analysis
-    
-    def _analyze_additional_security_headers(self, headers: Dict[str, str]) -> Dict[str, Any]:
-        """Analyze additional security-related headers."""
-        additional = {
-            "server_header": self._analyze_server_header(headers.get("server")),
-            "x_powered_by": self._analyze_powered_by_header(headers.get("x-powered-by")),
-            "expect_ct": self._analyze_expect_ct_header(headers.get("expect-ct")),
-            "cross_origin_headers": self._analyze_cross_origin_headers(headers)
+
+    def _calculate_security_score(self, security_analysis: dict[str, Any]) -> float:
+        """Calculate overall security score based on header analysis."""
+
+        weights = {
+            "hsts": 0.25,
+            "csp": 0.30,
+            "x_frame_options": 0.15,
+            "x_content_type_options": 0.10,
+            "x_xss_protection": 0.05,
+            "referrer_policy": 0.10,
+            "permissions_policy": 0.05
         }
-        
-        return additional
-    
-    def _analyze_server_header(self, server_value: Optional[str]) -> Dict[str, Any]:
-        """Analyze Server header for information disclosure."""
-        if not server_value:
-            return {
-                "present": False,
-                "score": 100,
-                "strengths": ["Server header not disclosed (good for security)"]
-            }
-        
-        return {
-            "present": True,
-            "raw_value": server_value,
-            "score": 30,
-            "issues": ["Server information disclosed - consider removing or obfuscating"],
-            "recommendation": "Remove or obfuscate server header to reduce information disclosure"
-        }
-    
-    def _analyze_powered_by_header(self, powered_by_value: Optional[str]) -> Dict[str, Any]:
-        """Analyze X-Powered-By header for information disclosure."""
-        if not powered_by_value:
-            return {
-                "present": False,
-                "score": 100,
-                "strengths": ["X-Powered-By header not disclosed (good for security)"]
-            }
-        
-        return {
-            "present": True,
-            "raw_value": powered_by_value,
-            "score": 20,
-            "issues": ["Technology stack disclosed - consider removing"],
-            "recommendation": "Remove X-Powered-By header to reduce information disclosure"
-        }
-    
-    def _analyze_expect_ct_header(self, expect_ct_value: Optional[str]) -> Dict[str, Any]:
-        """Analyze Expect-CT header."""
-        if not expect_ct_value:
-            return {
-                "present": False,
-                "score": 0,
-                "note": "Expect-CT header missing (optional but recommended for CT monitoring)"
-            }
-        
-        return {
-            "present": True,
-            "raw_value": expect_ct_value,
-            "score": 80,
-            "strengths": ["Certificate Transparency monitoring enabled"]
-        }
-    
-    def _analyze_cross_origin_headers(self, headers: Dict[str, str]) -> Dict[str, Any]:
-        """Analyze CORS and cross-origin related headers."""
-        cors_headers = {}
-        
-        cors_related = [
-            "access-control-allow-origin",
-            "access-control-allow-methods",
-            "access-control-allow-headers",
-            "access-control-allow-credentials",
-            "cross-origin-opener-policy",
-            "cross-origin-embedder-policy",
-            "cross-origin-resource-policy"
-        ]
-        
-        for header in cors_related:
-            if header in headers:
-                cors_headers[header] = {
-                    "present": True,
-                    "value": headers[header]
-                }
-                
-                # Basic security assessment for dangerous CORS configs
-                if header == "access-control-allow-origin" and headers[header] == "*":
-                    cors_headers[header]["security_issue"] = "Wildcard CORS policy - potential security risk"
-        
-        return cors_headers
-    
-    def _perform_header_analysis(self, headers: Dict[str, str]) -> Dict[str, Any]:
-        """Perform comprehensive header analysis."""
-        analysis = {
-            "total_headers": len(headers),
-            "security_headers_count": 0,
-            "information_disclosure": [],
-            "missing_security_headers": [],
-            "header_categories": {
-                "security": [],
-                "caching": [],
-                "content": [],
-                "server_info": [],
-                "other": []
-            }
-        }
-        
-        # Categorize headers
-        security_headers = [
-            "strict-transport-security", "content-security-policy", "x-frame-options",
-            "x-content-type-options", "x-xss-protection", "referrer-policy",
-            "permissions-policy", "expect-ct"
-        ]
-        
-        caching_headers = [
-            "cache-control", "expires", "etag", "last-modified", "vary"
-        ]
-        
-        content_headers = [
-            "content-type", "content-length", "content-encoding", "content-language"
-        ]
-        
-        server_info_headers = [
-            "server", "x-powered-by", "x-aspnet-version", "x-generator"
-        ]
-        
-        for header_name in headers.keys():
-            lower_header = header_name.lower()
-            
-            if lower_header in security_headers:
-                analysis["header_categories"]["security"].append(header_name)
-                analysis["security_headers_count"] += 1
-            elif lower_header in caching_headers:
-                analysis["header_categories"]["caching"].append(header_name)
-            elif lower_header in content_headers:
-                analysis["header_categories"]["content"].append(header_name)
-            elif lower_header in server_info_headers:
-                analysis["header_categories"]["server_info"].append(header_name)
-                analysis["information_disclosure"].append(f"{header_name}: {headers[header_name]}")
-            else:
-                analysis["header_categories"]["other"].append(header_name)
-        
-        # Check for missing critical security headers
-        for security_header in security_headers[:6]:  # First 6 are most critical
-            if security_header not in [h.lower() for h in headers.keys()]:
-                analysis["missing_security_headers"].append(security_header)
-        
-        return analysis
-    
-    def _assess_security_posture(self, headers_info: Dict[str, Any]) -> Dict[str, Any]:
-        """Assess overall security posture based on headers."""
-        assessment = {
-            "overall_score": 0,
-            "security_level": "poor",
-            "critical_issues": [],
-            "warnings": [],
-            "strengths": [],
-            "compliance_indicators": {}
-        }
-        
-        if "security_headers" in headers_info:
-            security_headers = headers_info["security_headers"]
-            
-            # Calculate weighted score
-            weights = {
-                "hsts": 0.25,
-                "csp": 0.25,
-                "x_frame_options": 0.15,
-                "x_content_type_options": 0.15,
-                "x_xss_protection": 0.10,
-                "referrer_policy": 0.10
-            }
-            
-            total_score = 0
-            for header, weight in weights.items():
-                if header in security_headers:
-                    header_score = security_headers[header].get("score", 0)
-                    total_score += (header_score / 100) * weight
-            
-            assessment["overall_score"] = min(100, int(total_score * 100))
-            
-            # Determine security level
-            if assessment["overall_score"] >= 80:
-                assessment["security_level"] = "excellent"
-            elif assessment["overall_score"] >= 60:
-                assessment["security_level"] = "good"
-            elif assessment["overall_score"] >= 40:
-                assessment["security_level"] = "fair"
-            else:
-                assessment["security_level"] = "poor"
-            
-            # Identify critical issues
-            for header_name, header_data in security_headers.items():
-                if not header_data.get("present", False):
-                    if header_name in ["hsts", "csp"]:
-                        assessment["critical_issues"].append(f"Missing critical header: {header_name}")
-                    else:
-                        assessment["warnings"].append(f"Missing security header: {header_name}")
-                elif header_data.get("issues"):
-                    assessment["warnings"].extend(header_data["issues"])
-                
-                if header_data.get("strengths"):
-                    assessment["strengths"].extend(header_data["strengths"])
-        
-        return assessment
-    
-    def _generate_recommendations(self, headers_info: Dict[str, Any]) -> List[str]:
-        """Generate specific recommendations for improving security headers."""
-        recommendations = []
-        
-        if "security_headers" in headers_info:
-            security_headers = headers_info["security_headers"]
-            
-            # HSTS recommendations
-            if not security_headers.get("hsts", {}).get("present"):
-                recommendations.append("Implement HSTS: Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'")
-            
-            # CSP recommendations
-            if not security_headers.get("csp", {}).get("present"):
-                recommendations.append("Implement CSP: Add Content-Security-Policy header to prevent XSS attacks")
-            elif security_headers.get("csp", {}).get("unsafe_directives"):
-                recommendations.append("Remove unsafe CSP directives like 'unsafe-inline' and 'unsafe-eval'")
-            
-            # Frame options
-            if not security_headers.get("x_frame_options", {}).get("present"):
-                recommendations.append("Add X-Frame-Options: DENY or SAMEORIGIN to prevent clickjacking")
-            
-            # Content type options
-            if not security_headers.get("x_content_type_options", {}).get("present"):
-                recommendations.append("Add X-Content-Type-Options: nosniff to prevent MIME sniffing")
-            
-            # Referrer policy
-            if not security_headers.get("referrer_policy", {}).get("present"):
-                recommendations.append("Add Referrer-Policy: strict-origin-when-cross-origin")
-        
-        # Information disclosure recommendations
-        if "header_analysis" in headers_info:
-            if headers_info["header_analysis"].get("information_disclosure"):
-                recommendations.append("Remove or obfuscate server information headers (Server, X-Powered-By)")
-        
-        return recommendations
-    
-    def _get_security_level(self, score: int) -> str:
-        """Convert numeric score to security level."""
-        if score >= 90:
-            return "excellent"
-        elif score >= 70:
-            return "good"
-        elif score >= 50:
-            return "fair"
+
+        total_weight = 0
+        weighted_score = 0
+
+        for header, weight in weights.items():
+            if header in security_analysis:
+                header_score = security_analysis[header].get("score", 0)
+                weighted_score += header_score * weight
+                total_weight += weight
+
+        # Penalty for information disclosure
+        info_disclosure = security_analysis.get("information_disclosure", {})
+        disclosure_penalty = 0
+        if info_disclosure.get("server_disclosure"):
+            disclosure_penalty += 0.02
+        if info_disclosure.get("powered_by_disclosure"):
+            disclosure_penalty += 0.02
+        if info_disclosure.get("version_disclosure"):
+            disclosure_penalty += 0.03
+
+        final_score = (weighted_score / total_weight if total_weight > 0 else 0) - disclosure_penalty
+
+        return max(0.0, min(1.0, final_score))
+
+    def _generate_analysis_message(self, security_analysis: dict[str, Any], score: float) -> str:
+        """Generate human-readable analysis message."""
+
+        if score >= 0.8:
+            return "Excellent security headers configuration"
+        elif score >= 0.6:
+            return "Good security headers with room for improvement"
+        elif score >= 0.4:
+            return "Basic security headers present, needs enhancement"
         else:
-            return "poor"
-    
-    def _calculate_comprehensive_score(self, headers_info: Dict[str, Any]) -> float:
-        """Calculate comprehensive security headers score."""
-        if "security_assessment" in headers_info:
-            return headers_info["security_assessment"]["overall_score"] / 100.0
-        return 0.0
-    
-    def _prepare_technical_details(self, headers_info: Dict[str, Any]) -> Dict[str, Any]:
-        """Prepare comprehensive technical details for output."""
-        return {
-            "https_accessible": headers_info.get("https_response", {}).get("accessible", False),
-            "http_redirects_to_https": self._check_http_redirect(headers_info),
-            "response_time_ms": headers_info.get("https_response", {}).get("response_time_ms", 0),
-            "security_headers_analysis": headers_info.get("security_headers", {}),
-            "header_statistics": headers_info.get("header_analysis", {}),
-            "security_assessment": headers_info.get("security_assessment", {}),
-            "recommendations": headers_info.get("recommendations", []),
-            "raw_headers": headers_info.get("https_response", {}).get("headers", {})
-        }
-    
-    def _check_http_redirect(self, headers_info: Dict[str, Any]) -> bool:
-        """Check if HTTP redirects to HTTPS."""
-        http_response = headers_info.get("http_response", {})
-        if http_response.get("redirect_info", {}).get("redirected"):
-            final_url = http_response["redirect_info"].get("final_url", "")
-            return final_url.startswith("https://")
-        return False 
+            return "Poor security headers configuration, immediate attention required"

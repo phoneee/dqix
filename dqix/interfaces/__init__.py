@@ -2,7 +2,7 @@
 
 This layer contains:
 - CLI commands
-- Web API endpoints  
+- Web API endpoints
 - Configuration files
 - Output formatters
-""" 
+"""

@@ -12,48 +12,49 @@ import os
 import statistics
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
+
 class LanguageComparator:
     """Analyzes and compares language implementation performance"""
-    
+
     def __init__(self, results_dir: str = "benchmarks/results"):
         self.results_dir = results_dir
         self.results = []
         self.load_results()
-    
+
     def load_results(self):
         """Load all benchmark result files"""
         results_path = Path(self.results_dir)
         if not results_path.exists():
             print(f"Results directory not found: {self.results_dir}")
             return
-        
+
         for file_path in results_path.glob("benchmark_results_*.json"):
             try:
-                with open(file_path, 'r') as f:
+                with open(file_path) as f:
                     data = json.load(f)
                     data['source_file'] = str(file_path)
                     self.results.append(data)
             except Exception as e:
                 print(f"Error loading {file_path}: {e}")
-        
+
         print(f"Loaded {len(self.results)} benchmark result files")
-    
+
     def extract_performance_metrics(self) -> pd.DataFrame:
         """Extract performance metrics into a pandas DataFrame"""
         rows = []
-        
+
         for result in self.results:
             timestamp = result.get('timestamp', 'unknown')
             system_info = result.get('system_info', {})
-            
+
             for lang, lang_data in result.get('languages', {}).items():
                 if not lang_data.get('available', False):
                     continue
-                
+
                 # Basic metrics
                 row = {
                     'timestamp': timestamp,
@@ -63,38 +64,38 @@ class LanguageComparator:
                     'memory_gb': system_info.get('memory_gb', 0),
                     'startup_time': lang_data.get('startup_time', 0)
                 }
-                
+
                 # Single domain metrics
                 single_domain_times = []
                 single_domain_memory = []
-                for domain, domain_data in lang_data.get('single_domain', {}).items():
+                for _domain, domain_data in lang_data.get('single_domain', {}).items():
                     if isinstance(domain_data, dict) and 'execution_time' in domain_data:
                         single_domain_times.append(domain_data['execution_time'])
                         single_domain_memory.append(domain_data.get('memory_peak', 0))
-                
+
                 if single_domain_times:
                     row['single_domain_avg_time'] = statistics.mean(single_domain_times)
                     row['single_domain_min_time'] = min(single_domain_times)
                     row['single_domain_max_time'] = max(single_domain_times)
                     row['single_domain_avg_memory'] = statistics.mean(single_domain_memory)
-                
+
                 # Bulk assessment metrics
                 bulk_throughputs = []
                 bulk_times = []
-                for bulk_name, bulk_data in lang_data.get('bulk_assessment', {}).items():
+                for _bulk_name, bulk_data in lang_data.get('bulk_assessment', {}).items():
                     if isinstance(bulk_data, dict) and 'throughput' in bulk_data:
                         bulk_throughputs.append(bulk_data['throughput'])
                         bulk_times.append(bulk_data['execution_time'])
-                
+
                 if bulk_throughputs:
                     row['bulk_max_throughput'] = max(bulk_throughputs)
                     row['bulk_avg_throughput'] = statistics.mean(bulk_throughputs)
                     row['bulk_avg_time'] = statistics.mean(bulk_times)
-                
+
                 rows.append(row)
-        
+
         return pd.DataFrame(rows)
-    
+
     def generate_paradigm_analysis(self, df: pd.DataFrame) -> str:
         """Generate analysis of programming paradigm impacts"""
         analysis = []
@@ -102,7 +103,7 @@ class LanguageComparator:
         analysis.append("")
         analysis.append("## Language Characteristics")
         analysis.append("")
-        
+
         # Language-specific analysis
         paradigms = {
             'python': {
@@ -124,7 +125,7 @@ class LanguageComparator:
                 'dqix_impact': 'Optimal for high-throughput domain assessments'
             }
         }
-        
+
         for lang, info in paradigms.items():
             if lang in df['language'].values:
                 analysis.append(f"### {lang.title()}")
@@ -133,12 +134,12 @@ class LanguageComparator:
                 analysis.append(f"**Weaknesses**: {', '.join(info['weaknesses'])}")
                 analysis.append(f"**DQIX Impact**: {info['dqix_impact']}")
                 analysis.append("")
-        
+
         # Performance comparison
         if len(df) > 0:
             analysis.append("## Performance Metrics Comparison")
             analysis.append("")
-            
+
             # Startup time comparison
             startup_stats = df.groupby('language')['startup_time'].agg(['mean', 'std']).round(4)
             analysis.append("### Startup Time (Cold Start)")
@@ -147,7 +148,7 @@ class LanguageComparator:
             for lang, row in startup_stats.iterrows():
                 analysis.append(f"| {lang.title()} | {row['mean']:.4f} | {row['std']:.4f} |")
             analysis.append("")
-            
+
             # Single domain performance
             if 'single_domain_avg_time' in df.columns:
                 single_stats = df.groupby('language')['single_domain_avg_time'].agg(['mean', 'std']).round(3)
@@ -157,7 +158,7 @@ class LanguageComparator:
                 for lang, row in single_stats.iterrows():
                     analysis.append(f"| {lang.title()} | {row['mean']:.3f} | {row['std']:.3f} |")
                 analysis.append("")
-            
+
             # Bulk throughput
             if 'bulk_max_throughput' in df.columns:
                 bulk_stats = df.groupby('language')['bulk_max_throughput'].agg(['mean', 'std']).round(2)
@@ -167,7 +168,7 @@ class LanguageComparator:
                 for lang, row in bulk_stats.iterrows():
                     analysis.append(f"| {lang.title()} | {row['mean']:.2f} | {row['std']:.2f} |")
                 analysis.append("")
-        
+
         # Complexity analysis
         analysis.append("## Code Complexity Analysis")
         analysis.append("")
@@ -187,17 +188,17 @@ class LanguageComparator:
         analysis.append("- **Python**: Automatic GC, reference counting, higher overhead")
         analysis.append("- **Go**: Automatic GC, optimized for low latency")
         analysis.append("- **Rust**: Manual ownership, zero-cost abstractions")
-        
+
         return '\n'.join(analysis)
-    
+
     def create_performance_charts(self, df: pd.DataFrame, output_dir: str):
         """Create performance comparison charts"""
         if len(df) == 0:
             print("No data available for charts")
             return
-        
+
         os.makedirs(output_dir, exist_ok=True)
-        
+
         # Startup time comparison
         if 'startup_time' in df.columns:
             plt.figure(figsize=(10, 6))
@@ -209,7 +210,7 @@ class LanguageComparator:
             plt.tight_layout()
             plt.savefig(f"{output_dir}/startup_time_comparison.png", dpi=300, bbox_inches='tight')
             plt.close()
-        
+
         # Single domain performance
         if 'single_domain_avg_time' in df.columns:
             plt.figure(figsize=(10, 6))
@@ -221,7 +222,7 @@ class LanguageComparator:
             plt.tight_layout()
             plt.savefig(f"{output_dir}/single_domain_performance.png", dpi=300, bbox_inches='tight')
             plt.close()
-        
+
         # Throughput comparison
         if 'bulk_max_throughput' in df.columns:
             plt.figure(figsize=(10, 6))
@@ -233,7 +234,7 @@ class LanguageComparator:
             plt.tight_layout()
             plt.savefig(f"{output_dir}/throughput_comparison.png", dpi=300, bbox_inches='tight')
             plt.close()
-        
+
         # Memory usage comparison
         if 'single_domain_avg_memory' in df.columns:
             plt.figure(figsize=(10, 6))
@@ -245,42 +246,42 @@ class LanguageComparator:
             plt.tight_layout()
             plt.savefig(f"{output_dir}/memory_usage_comparison.png", dpi=300, bbox_inches='tight')
             plt.close()
-        
+
         print(f"Charts saved to {output_dir}/")
-    
+
     def export_csv_data(self, df: pd.DataFrame, output_file: str):
         """Export performance data to CSV"""
         df.to_csv(output_file, index=False)
         print(f"Data exported to {output_file}")
-    
+
     def run_full_analysis(self, output_dir: str = "benchmarks/reports"):
         """Run complete comparative analysis"""
         os.makedirs(output_dir, exist_ok=True)
-        
+
         # Extract metrics
         df = self.extract_performance_metrics()
-        
+
         if len(df) == 0:
             print("No benchmark data available for analysis")
             return
-        
+
         print(f"Analyzing {len(df)} benchmark results...")
-        
+
         # Generate analysis report
         analysis = self.generate_paradigm_analysis(df)
         report_file = f"{output_dir}/paradigm_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
         with open(report_file, 'w') as f:
             f.write(analysis)
         print(f"Paradigm analysis saved to {report_file}")
-        
+
         # Create charts
         charts_dir = f"{output_dir}/charts"
         self.create_performance_charts(df, charts_dir)
-        
+
         # Export raw data
         csv_file = f"{output_dir}/performance_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
         self.export_csv_data(df, csv_file)
-        
+
         # Print summary
         print("\n=== Analysis Summary ===")
         print(f"Languages analyzed: {', '.join(df['language'].unique())}")
@@ -300,11 +301,11 @@ def main():
                        help="Output directory for analysis reports")
     parser.add_argument("--format", choices=["full", "charts", "csv", "report"],
                        default="full", help="Analysis format to generate")
-    
+
     args = parser.parse_args()
-    
+
     comparator = LanguageComparator(args.input)
-    
+
     if args.format == "full":
         comparator.run_full_analysis(args.output)
     elif args.format == "charts":
@@ -320,4 +321,4 @@ def main():
             f.write(analysis)
 
 if __name__ == "__main__":
-    main() 
+    main()

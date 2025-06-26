@@ -21,6 +21,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.whl
 
 # Virtual environments
 .env
@@ -30,6 +31,28 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
+
+# Go
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+dqix-go/dqix
+dqix-go/bin/
+dqix-go/pkg/
+dqix-go/src/
+go.work
+go.work.sum
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+dqix-rust/target/
 
 # IDEs and editors
 .vscode/
@@ -37,6 +60,9 @@ venv.bak/
 *.swp
 *.swo
 *~
+.cursor/
+.qodo/
+.claude/
 
 # Testing and coverage
 .coverage
@@ -73,3 +99,140 @@ Thumbs.db
 uv.lock
 temp/
 tmp/
+
+# DQIX specific temporary files
+dqix_export_*.json
+dqix_export_*.report
+.dqix_assessments/
+*.log
+benchmarks/results/
+benchmarks/output/
+
+# Deployment and infrastructure temp files
+cloudflare-worker-*.js
+dns-zone-*.txt
+nginx-*.conf
+verify-*.sh
+deploy_*.py
+create_*.py
+perfect_security_*.md
+
+# Generated documentation
+*_SUMMARY.md
+*_ANALYSIS.md
+*_IMPLEMENTATION_*.md
+*_ENHANCEMENT_*.md
+*_ARCHITECTURE*.md
+*_PRODUCTION_*.md
+
+# Build artifacts
+Dockerfile.tmp
+*.tmp
+.build/
+
+# Git directories to ignore
+.git/
+.github/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# DQIX specific
+# Generated reports
+dqix_report_*.html
+dqix_report_*.pdf
+dqix_report_*.json
+
+# Assessment data
+.dqix_assessments/
+assessments/
+bulk_assessments/
+visualizations/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Kubernetes secrets
+kubernetes/secrets/
+
+# Docker
+.dockerignore
+
+# Development files
+scratch/
+tmp/
+temp/
+notes.md
+todo.md

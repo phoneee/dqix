@@ -5,4 +5,4 @@ This layer contains:
 - Application Services (workflow coordination)
 - DTOs (data transfer objects)
 - Command/Query handlers
-""" 
+"""

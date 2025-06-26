@@ -5,4 +5,4 @@ This layer contains:
 - Value Objects (immutable data structures)
 - Domain Services (business logic)
 - Repository Interfaces (data access contracts)
-""" 
+"""

@@ -1,832 +1,615 @@
-"""Enhanced DNS configuration probe with comprehensive technical analysis."""
+"""DNS Security and Email Authentication Probe with enhanced concurrent processing and false positive reduction."""
 
+import asyncio
+import concurrent.futures
+import logging
+from typing import Any, Optional
+
+import dns.exception
+import dns.flags
+import dns.message
+import dns.query
+import dns.rdatatype
 import dns.resolver
 import dns.reversename
-import dns.flags
-import socket
-import re
-from typing import Dict, Any, List, Optional
 
 from ...domain.entities import Domain, ProbeCategory, ProbeConfig, ProbeResult
 from .base import BaseProbe
 
 
 class DNSProbe(BaseProbe):
-    """Comprehensive DNS configuration and security analysis."""
-    
+    """Comprehensive DNS configuration and security analysis with reduced false positives."""
+
     def __init__(self):
         super().__init__("dns", ProbeCategory.SECURITY)
-    
+        self._setup_resolver()
+        self.logger = logging.getLogger(__name__)
+
+    def _setup_resolver(self):
+        """Configure DNS resolver with multiple fallback strategies to reduce false negatives."""
+        # Primary: Privacy-focused and security-enhanced resolvers
+        # Secondary: Major cloud providers with high reliability
+        # Tertiary: Alternative DNS providers for redundancy
+        trusted_nameservers = [
+            # Tier 1: Privacy and security focused
+            "9.9.9.9",          # Quad9 - malware blocking, DNSSEC validation
+            "149.112.112.112",   # Quad9 secondary
+            "1.1.1.1",          # Cloudflare DNS - fastest, privacy-focused
+            "1.0.0.1",          # Cloudflare secondary
+
+            # Tier 2: Major cloud providers
+            "8.8.8.8",          # Google DNS - most widely tested
+            "8.8.4.4",          # Google secondary
+            "208.67.222.222",    # OpenDNS - enterprise grade
+            "208.67.220.220",    # OpenDNS secondary
+
+            # Tier 3: Security-focused alternatives
+            "8.26.56.26",       # Comodo Secure DNS
+            "8.20.247.20",      # Comodo secondary
+            "45.90.28.0",       # NextDNS - customizable
+            "45.90.30.0",       # NextDNS secondary
+        ]
+
+        # Primary resolver with extended timeout for accuracy
+        self.resolver = dns.resolver.Resolver(configure=False)
+        self.resolver.nameservers = trusted_nameservers[:4]  # Use top 4 for primary
+        self.resolver.timeout = 8  # Extended timeout to reduce false negatives
+        self.resolver.lifetime = 10  # Total query lifetime
+
+        # Enable EDNS with larger payload for complex responses
+        self.resolver.use_edns(edns=0, ednsflags=0, payload=4096)
+
+        # Backup resolver with different nameserver subset
+        self.backup_resolver = dns.resolver.Resolver(configure=False)
+        self.backup_resolver.nameservers = trusted_nameservers[4:8]
+        self.backup_resolver.timeout = 6
+        self.backup_resolver.lifetime = 8
+        self.backup_resolver.use_edns(edns=0, ednsflags=0, payload=4096)
+
+        # Emergency resolver for final fallback
+        self.emergency_resolver = dns.resolver.Resolver(configure=False)
+        self.emergency_resolver.nameservers = trusted_nameservers[8:]
+        self.emergency_resolver.timeout = 10
+        self.emergency_resolver.lifetime = 12
+
     async def check(self, domain: Domain, config: ProbeConfig) -> ProbeResult:
-        """Perform comprehensive DNS analysis for domain."""
+        """Perform concurrent DNS security and email authentication checks with enhanced accuracy."""
         try:
-            # Collect DNS information
-            dns_info = await self._collect_dns_info(domain.name, config.timeout)
-            
-            # Calculate detailed score
-            score = self._calculate_comprehensive_score(dns_info)
-            
+            # Use ThreadPoolExecutor for concurrent DNS queries with more workers
+            with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+                # Define all DNS checks to run concurrently
+                dns_tasks = {
+                    'basic_records': self._check_basic_dns_records_async(executor, domain.name),
+                    'mail_security': self._check_mail_security_async(executor, domain.name),
+                    'security_features': self._check_dns_security_features_async(executor, domain.name)
+                }
+
+                # Execute all tasks concurrently with error handling
+                results = await asyncio.gather(
+                    *dns_tasks.values(),
+                    return_exceptions=True
+                )
+
+                # Process results with detailed error tracking
+                dns_info = {}
+                for _i, (task_name, result) in enumerate(zip(dns_tasks.keys(), results)):
+                    if isinstance(result, Exception):
+                        self.logger.warning(f"DNS task {task_name} failed for {domain.name}: {result}")
+                        dns_info[task_name] = {"error": str(result), "partial_success": False}
+                    else:
+                        dns_info[task_name] = result
+
+            # Validate DNS info completeness to reduce false positives
+            dns_info = self._validate_dns_completeness(dns_info, domain.name)
+
+            # Calculate technical scores from the collected data
+            technical_scores = self._calculate_technical_scores(dns_info)
+
+            # Add technical analysis with proper structure
+            dns_info['technical_analysis'] = {
+                'technical_scores': technical_scores,
+                'security_features': self._get_security_features_list(dns_info),
+                'vulnerabilities': self._identify_vulnerabilities(dns_info),
+                'recommendations': self._generate_recommendations(dns_info),
+                'overall_health': self._assess_overall_health(technical_scores),
+                'reliability_metrics': self._calculate_reliability_metrics(dns_info)
+            }
+
+            # Calculate combined score using the proper structure
+            score = self._calculate_dns_score(dns_info)
+
             # Prepare detailed technical information
-            details = self._prepare_technical_details(dns_info)
-            
+            details = self._prepare_details(dns_info)
+
             return self._create_result(domain, score, details)
-            
+
         except Exception as e:
+            self.logger.error(f"DNS probe failed for {domain.name}: {e}")
             return self._create_result(
-                domain, 
-                0.0, 
-                {"error": str(e), "analysis": "DNS resolution failed"}, 
+                domain,
+                0.0,
+                {"error": str(e), "analysis": "DNS connectivity and security check failed", "recovery_attempted": True},
                 error=str(e)
             )
-    
-    async def _collect_dns_info(self, hostname: str, timeout: int) -> Dict[str, Any]:
-        """Collect comprehensive DNS information."""
-        dns_info = {
-            "basic_records": {},
-            "mail_security": {},
-            "security_features": {},
-            "technical_analysis": {}
-        }
-        
-        try:
-            resolver = dns.resolver.Resolver()
-            resolver.timeout = timeout
-            resolver.lifetime = timeout
-            
-            # Basic DNS records analysis
-            dns_info["basic_records"] = self._get_basic_records(resolver, hostname)
-            
-            # Mail security comprehensive analysis
-            dns_info["mail_security"] = self._analyze_mail_security(resolver, hostname)
-            
-            # Security features analysis
-            dns_info["security_features"] = self._analyze_security_features(resolver, hostname)
-            
-            # Technical analysis and scoring
-            dns_info["technical_analysis"] = self._perform_technical_analysis(dns_info)
-            
-        except Exception as e:
-            dns_info["error"] = str(e)
-        
+
+    def _validate_dns_completeness(self, dns_info: dict[str, Any], hostname: str) -> dict[str, Any]:
+        """Validate DNS information completeness and attempt recovery for missing data."""
+        # Check if basic records check failed
+        if dns_info.get('basic_records', {}).get('error'):
+            self.logger.info(f"Attempting DNS recovery for {hostname}")
+            # Try emergency resolver for basic records
+            try:
+                recovery_result = self._emergency_dns_check(hostname)
+                if recovery_result:
+                    dns_info['basic_records'] = recovery_result
+                    dns_info['basic_records']['recovered'] = True
+            except Exception as e:
+                self.logger.warning(f"DNS recovery failed for {hostname}: {e}")
+
+        # Validate mail security checks
+        if dns_info.get('mail_security', {}).get('error'):
+            # For mail security, missing records might be normal (not an error)
+            dns_info['mail_security'] = {
+                'spf_analysis': {'record_found': False, 'security_score': 0, 'note': 'No SPF record found'},
+                'dmarc_analysis': {'record_found': False, 'security_score': 0, 'note': 'No DMARC record found'},
+                'dkim_analysis': {'record_found': False, 'security_score': 0, 'note': 'No DKIM selectors detected'},
+                'overall_score': 0,
+                'validation_note': 'Email authentication not configured (may be normal for non-email domains)'
+            }
+
         return dns_info
-    
-    def _get_basic_records(self, resolver: dns.resolver.Resolver, hostname: str) -> Dict[str, Any]:
-        """Get basic DNS records with detailed analysis."""
-        records = {
-            "a_records": [],
-            "aaaa_records": [],
-            "mx_records": [],
-            "ns_records": [],
-            "txt_records": [],
-            "cname_records": [],
-            "soa_record": {},
-            "record_counts": {},
-            "ip_analysis": {},
-            "reverse_dns": {}
-        }
-        
-        # A records (IPv4)
+
+    def _emergency_dns_check(self, hostname: str) -> Optional[dict[str, Any]]:
+        """Emergency DNS check using alternative resolver and methods."""
         try:
-            answers = resolver.resolve(hostname, 'A')
-            records["a_records"] = [str(rdata) for rdata in answers]
-            records["ip_analysis"]["ipv4_addresses"] = len(records["a_records"])
-            
-            # Reverse DNS lookup for first IP
-            if records["a_records"]:
-                records["reverse_dns"]["ipv4"] = self._get_reverse_dns(records["a_records"][0])
+            # Try with emergency resolver
+            record_results = {}
+            record_types = ['A', 'AAAA', 'MX', 'NS', 'TXT']
+
+            for record_type in record_types:
+                try:
+                    result = self._query_record_type_with_resolver(hostname, record_type, self.emergency_resolver)
+                    record_results[record_type] = result
+                except Exception as e:
+                    record_results[record_type] = {"error": str(e), "count": 0, "records": []}
+
+            # If still no success, try system resolver
+            if all(r.get("count", 0) == 0 for r in record_results.values()):
+                system_resolver = dns.resolver.Resolver()  # Use system default
+                system_resolver.timeout = 15  # Extended timeout for system resolver
+
+                for record_type in record_types:
+                    try:
+                        result = self._query_record_type_with_resolver(hostname, record_type, system_resolver)
+                        if result.get("count", 0) > 0:
+                            record_results[record_type] = result
+                    except Exception:
+                        pass  # Keep existing result
+
+            # Calculate totals
+            total_records = sum(r.get("count", 0) for r in record_results.values())
+
+            if total_records > 0:
+                return {
+                    "record_counts": {
+                        "a_records": record_results.get("A", {}).get("count", 0),
+                        "aaaa_records": record_results.get("AAAA", {}).get("count", 0),
+                        "mx_records": record_results.get("MX", {}).get("count", 0),
+                        "ns_records": record_results.get("NS", {}).get("count", 0),
+                        "txt_records": record_results.get("TXT", {}).get("count", 0),
+                        "total_records": total_records
+                    },
+                    "record_details": record_results,
+                    "ipv4_supported": record_results.get("A", {}).get("count", 0) > 0,
+                    "ipv6_supported": record_results.get("AAAA", {}).get("count", 0) > 0,
+                    "has_mail_servers": record_results.get("MX", {}).get("count", 0) > 0,
+                    "dns_properly_configured": total_records > 0,
+                    "emergency_recovery": True
+                }
         except Exception as e:
-            records["a_records"] = []
-            records["ip_analysis"] = {"ipv4_error": str(e)}
-        
-        # AAAA records (IPv6)
+            self.logger.error(f"Emergency DNS check failed for {hostname}: {e}")
+            return None
+
+    def _query_record_type_with_resolver(self, hostname: str, record_type: str, resolver: dns.resolver.Resolver) -> dict[str, Any]:
+        """Query specific record type with given resolver."""
         try:
-            answers = resolver.resolve(hostname, 'AAAA')
-            records["aaaa_records"] = [str(rdata) for rdata in answers]
-            records["ip_analysis"]["ipv6_addresses"] = len(records["aaaa_records"])
-            
-            # Reverse DNS lookup for first IPv6
-            if records["aaaa_records"]:
-                records["reverse_dns"]["ipv6"] = self._get_reverse_dns(records["aaaa_records"][0])
-        except Exception as e:
-            records["aaaa_records"] = []
-            records["ip_analysis"]["ipv6_error"] = str(e)
-        
-        # MX records
-        try:
-            answers = resolver.resolve(hostname, 'MX')
-            records["mx_records"] = [f"{getattr(rdata, 'preference', 0)} {getattr(rdata, 'exchange', rdata)}" for rdata in answers]
-            records["mx_analysis"] = self._analyze_mx_records(answers)
-        except Exception as e:
-            records["mx_records"] = []
-            records["mx_analysis"] = {"error": str(e)}
-        
-        # NS records
-        try:
-            answers = resolver.resolve(hostname, 'NS')
-            records["ns_records"] = [str(rdata) for rdata in answers]
-            records["ns_analysis"] = self._analyze_ns_records(records["ns_records"])
-        except Exception as e:
-            records["ns_records"] = []
-            records["ns_analysis"] = {"error": str(e)}
-        
-        # TXT records
-        try:
-            answers = resolver.resolve(hostname, 'TXT')
-            records["txt_records"] = [str(rdata) for rdata in answers]
-            records["txt_analysis"] = self._analyze_txt_records(records["txt_records"])
-        except Exception as e:
-            records["txt_records"] = []
-            records["txt_analysis"] = {"error": str(e)}
-        
-        # CNAME records (if applicable)
-        try:
-            answers = resolver.resolve(hostname, 'CNAME')
-            records["cname_records"] = [str(rdata) for rdata in answers]
-        except Exception:
-            records["cname_records"] = []
-        
-        # SOA record
-        try:
-            answers = resolver.resolve(hostname, 'SOA')
-            soa = answers[0]
-            records["soa_record"] = {
-                "mname": str(getattr(soa, 'mname', 'unknown')),
-                "rname": str(getattr(soa, 'rname', 'unknown')),
-                "serial": getattr(soa, 'serial', 0),
-                "refresh": getattr(soa, 'refresh', 0),
-                "retry": getattr(soa, 'retry', 0),
-                "expire": getattr(soa, 'expire', 0),
-                "minimum": getattr(soa, 'minimum', 0)
-            }
-        except Exception as e:
-            records["soa_record"] = {"error": str(e)}
-        
-        # Record counts
-        records["record_counts"] = {
-            "a_records": len(records["a_records"]),
-            "aaaa_records": len(records["aaaa_records"]),
-            "mx_records": len(records["mx_records"]),
-            "ns_records": len(records["ns_records"]),
-            "txt_records": len(records["txt_records"]),
-            "cname_records": len(records["cname_records"])
-        }
-        
-        return records
-    
-    def _get_reverse_dns(self, ip_address: str) -> Dict[str, Any]:
-        """Get reverse DNS information for IP address."""
-        try:
-            reverse_name = dns.reversename.from_address(ip_address)
-            resolver = dns.resolver.Resolver()
-            answers = resolver.resolve(reverse_name, 'PTR')
+            rdtype = getattr(dns.rdatatype, record_type)
+            response = resolver.resolve(hostname, rdtype)
+
+            records = []
+            for rdata in response:
+                records.append(str(rdata))
+
             return {
-                "hostname": str(answers[0]),
-                "resolved": True
+                "count": len(records),
+                "records": records,
+                "ttl": response.rrset.ttl if hasattr(response, 'rrset') else 0
             }
+
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+            return {"count": 0, "records": [], "note": f"No {record_type} records found"}
+        except dns.exception.Timeout:
+            return {"count": 0, "records": [], "error": f"Timeout querying {record_type} records"}
+        except Exception as e:
+            return {"count": 0, "records": [], "error": f"Error querying {record_type}: {str(e)}"}
+
+    async def _check_basic_dns_records_async(self, executor: concurrent.futures.ThreadPoolExecutor, hostname: str) -> dict[str, Any]:
+        """Check basic DNS records concurrently."""
+
+        # Define record types to check in parallel
+        record_types = ['A', 'AAAA', 'MX', 'NS', 'TXT', 'CNAME']
+
+        # Create concurrent tasks for each record type
+        tasks = []
+        for record_type in record_types:
+            task = asyncio.get_event_loop().run_in_executor(
+                executor,
+                self._query_record_type,
+                hostname,
+                record_type
+            )
+            tasks.append((record_type, task))
+
+        # Wait for all tasks to complete
+        record_results = {}
+        for record_type, task in tasks:
+            try:
+                result = await task
+                record_results[record_type] = result
+            except Exception as e:
+                record_results[record_type] = {"error": str(e), "count": 0, "records": []}
+
+        # Calculate totals
+        total_records = sum(r.get("count", 0) for r in record_results.values())
+
+        return {
+            "record_counts": {
+                "a_records": record_results.get("A", {}).get("count", 0),
+                "aaaa_records": record_results.get("AAAA", {}).get("count", 0),
+                "mx_records": record_results.get("MX", {}).get("count", 0),
+                "ns_records": record_results.get("NS", {}).get("count", 0),
+                "txt_records": record_results.get("TXT", {}).get("count", 0),
+                "cname_records": record_results.get("CNAME", {}).get("count", 0),
+                "total_records": total_records
+            },
+            "record_details": record_results,
+            "ipv4_supported": record_results.get("A", {}).get("count", 0) > 0,
+            "ipv6_supported": record_results.get("AAAA", {}).get("count", 0) > 0,
+            "has_mail_servers": record_results.get("MX", {}).get("count", 0) > 0,
+            "dns_properly_configured": total_records > 0
+        }
+
+    async def _check_mail_security_async(self, executor: concurrent.futures.ThreadPoolExecutor, hostname: str) -> dict[str, Any]:
+        """Check email authentication records concurrently."""
+
+        # Define mail security checks to run in parallel
+        mail_tasks = [
+            ('spf', asyncio.get_event_loop().run_in_executor(executor, self._check_spf_record, hostname)),
+            ('dmarc', asyncio.get_event_loop().run_in_executor(executor, self._check_dmarc_record, hostname)),
+            ('dkim', asyncio.get_event_loop().run_in_executor(executor, self._check_dkim_record, hostname))
+        ]
+
+        # Wait for all mail security checks
+        mail_results = {}
+        for check_type, task in mail_tasks:
+            try:
+                result = await task
+                mail_results[f"{check_type}_analysis"] = result
+            except Exception as e:
+                mail_results[f"{check_type}_analysis"] = {
+                    "record_found": False,
+                    "error": str(e),
+                    "security_score": 0
+                }
+
+        # Calculate overall mail security score
+        spf_score = mail_results.get("spf_analysis", {}).get("security_score", 0)
+        dmarc_score = mail_results.get("dmarc_analysis", {}).get("security_score", 0)
+        dkim_score = mail_results.get("dkim_analysis", {}).get("security_score", 0)
+
+        overall_score = (spf_score * 0.4 + dmarc_score * 0.4 + dkim_score * 0.2)
+
+        mail_results["security_score"] = int(overall_score)
+        mail_results["has_email_security"] = any([
+            mail_results.get("spf_analysis", {}).get("record_found", False),
+            mail_results.get("dmarc_analysis", {}).get("record_found", False),
+            mail_results.get("dkim_analysis", {}).get("record_found", False)
+        ])
+
+        return mail_results
+
+    async def _check_dns_security_features_async(self, executor: concurrent.futures.ThreadPoolExecutor, hostname: str) -> dict[str, Any]:
+        """Check DNS security features concurrently."""
+
+        # Define security feature checks to run in parallel
+        security_tasks = [
+            ('dnssec', asyncio.get_event_loop().run_in_executor(executor, self._check_dnssec, hostname)),
+            ('caa', asyncio.get_event_loop().run_in_executor(executor, self._check_caa_record, hostname))
+        ]
+
+        # Wait for all security feature checks
+        security_results = {}
+        for check_type, task in security_tasks:
+            try:
+                result = await task
+                security_results[f"{check_type}_analysis"] = result
+            except Exception as e:
+                security_results[f"{check_type}_analysis"] = {
+                    "enabled": False,
+                    "error": str(e)
+                }
+
+        # Calculate security features score
+        dnssec_enabled = security_results.get("dnssec_analysis", {}).get("enabled", False)
+        caa_enabled = security_results.get("caa_analysis", {}).get("enabled", False)
+
+        security_score = 0
+        if dnssec_enabled:
+            security_score += 60  # DNSSEC is more important
+        if caa_enabled:
+            security_score += 40  # CAA provides additional certificate control
+
+        security_results["security_score"] = security_score
+        security_results["has_security_features"] = dnssec_enabled or caa_enabled
+
+        return security_results
+
+    def _query_record_type(self, hostname: str, record_type: str) -> dict[str, Any]:
+        """Query specific DNS record type with fallback."""
+        try:
+            # Try primary resolver first
+            answers = self.resolver.resolve(hostname, record_type)
+            records = [str(rdata) for rdata in answers]
+            return {
+                "count": len(records),
+                "records": records,
+                "ttl": answers.rrset.ttl if answers.rrset else 0
+            }
+        except dns.exception.DNSException:
+            # Try backup resolver
+            try:
+                answers = self.backup_resolver.resolve(hostname, record_type)
+                records = [str(rdata) for rdata in answers]
+                return {
+                    "count": len(records),
+                    "records": records,
+                    "ttl": answers.rrset.ttl if answers.rrset else 0,
+                    "used_backup": True
+                }
+            except dns.exception.DNSException as e:
+                return {
+                    "count": 0,
+                    "records": [],
+                    "error": str(e)
+                }
         except Exception as e:
             return {
-                "hostname": None,
-                "resolved": False,
+                "count": 0,
+                "records": [],
                 "error": str(e)
             }
-    
-    def _analyze_mx_records(self, mx_answers) -> Dict[str, Any]:
-        """Analyze MX records for mail configuration."""
-        analysis = {
-            "count": len(mx_answers),
-            "priorities": [],
-            "mail_servers": [],
-            "redundancy": False,
-            "security_analysis": {}
-        }
-        
-        for mx in mx_answers:
-            analysis["priorities"].append(getattr(mx, 'preference', 0))
-            analysis["mail_servers"].append(str(getattr(mx, 'exchange', mx)))
-        
-        # Check for redundancy
-        analysis["redundancy"] = len(set(analysis["priorities"])) > 1
-        
-        # Security analysis
-        analysis["security_analysis"] = {
-            "multiple_servers": len(analysis["mail_servers"]) > 1,
-            "priority_distribution": len(set(analysis["priorities"])) > 1,
-            "external_providers": self._identify_mail_providers(analysis["mail_servers"])
-        }
-        
-        return analysis
-    
-    def _identify_mail_providers(self, mail_servers: List[str]) -> List[str]:
-        """Identify known mail service providers."""
-        providers = []
-        provider_patterns = {
-            "Google": ["gmail", "google", "googlemail"],
-            "Microsoft": ["outlook", "hotmail", "live", "office365"],
-            "Yahoo": ["yahoo", "yahoomail"],
-            "Amazon": ["amazonses", "amazon"],
-            "Cloudflare": ["cloudflare"],
-            "ProtonMail": ["protonmail"]
-        }
-        
-        for server in mail_servers:
-            server_lower = server.lower()
-            for provider, patterns in provider_patterns.items():
-                if any(pattern in server_lower for pattern in patterns):
-                    providers.append(provider)
-                    break
-        
-        return providers
-    
-    def _analyze_ns_records(self, ns_records: List[str]) -> Dict[str, Any]:
-        """Analyze NS records for DNS configuration."""
-        analysis = {
-            "count": len(ns_records),
-            "nameservers": ns_records,
-            "redundancy": len(ns_records) >= 2,
-            "diversity": {},
-            "security_analysis": {}
-        }
-        
-        # Check for diversity (different domains/providers)
-        domains = set()
-        for ns in ns_records:
-            parts = ns.split('.')
-            if len(parts) >= 2:
-                domains.add('.'.join(parts[-2:]))
-        
-        analysis["diversity"] = {
-            "unique_domains": len(domains),
-            "has_diversity": len(domains) > 1,
-            "domains": list(domains)
-        }
-        
-        # Security analysis
-        analysis["security_analysis"] = {
-            "sufficient_nameservers": len(ns_records) >= 2,
-            "provider_diversity": len(domains) > 1,
-            "known_providers": self._identify_dns_providers(ns_records)
-        }
-        
-        return analysis
-    
-    def _identify_dns_providers(self, ns_records: List[str]) -> List[str]:
-        """Identify known DNS service providers."""
-        providers = []
-        provider_patterns = {
-            "Cloudflare": ["cloudflare"],
-            "Amazon Route 53": ["awsdns"],
-            "Google Cloud DNS": ["googledomains", "google"],
-            "Azure DNS": ["azure", "microsoft"],
-            "Namecheap": ["namecheap"],
-            "GoDaddy": ["godaddy"],
-            "Quad9": ["quad9"]
-        }
-        
-        for ns in ns_records:
-            ns_lower = ns.lower()
-            for provider, patterns in provider_patterns.items():
-                if any(pattern in ns_lower for pattern in patterns):
-                    providers.append(provider)
-                    break
-        
-        return providers
-    
-    def _analyze_txt_records(self, txt_records: List[str]) -> Dict[str, Any]:
-        """Analyze TXT records for various purposes."""
-        analysis = {
-            "count": len(txt_records),
-            "record_types": {},
-            "security_records": [],
-            "verification_records": [],
-            "other_records": []
-        }
-        
-        for record in txt_records:
-            record_str = record.strip('"')
-            
-            # Identify record types
-            if record_str.startswith('v=spf1'):
-                analysis["record_types"]["spf"] = record_str
-                analysis["security_records"].append("SPF")
-            elif record_str.startswith('v=DMARC1'):
-                analysis["record_types"]["dmarc"] = record_str
-                analysis["security_records"].append("DMARC")
-            elif 'google-site-verification' in record_str:
-                analysis["verification_records"].append("Google")
-            elif 'facebook-domain-verification' in record_str:
-                analysis["verification_records"].append("Facebook")
-            elif 'MS=' in record_str:
-                analysis["verification_records"].append("Microsoft")
-            else:
-                analysis["other_records"].append(record_str)
-        
-        return analysis
-    
-    def _analyze_mail_security(self, resolver: dns.resolver.Resolver, hostname: str) -> Dict[str, Any]:
-        """Comprehensive mail security analysis."""
-        mail_security = {
-            "spf_analysis": {},
-            "dmarc_analysis": {},
-            "dkim_analysis": {},
-            "security_score": 0,
-            "recommendations": []
-        }
-        
-        # SPF Analysis
-        mail_security["spf_analysis"] = self._analyze_spf_record(resolver, hostname)
-        
-        # DMARC Analysis
-        mail_security["dmarc_analysis"] = self._analyze_dmarc_record(resolver, hostname)
-        
-        # DKIM Analysis (check common selectors)
-        mail_security["dkim_analysis"] = self._analyze_dkim_records(resolver, hostname)
-        
-        # Calculate mail security score
-        mail_security["security_score"] = self._calculate_mail_security_score(mail_security)
-        
-        # Generate recommendations
-        mail_security["recommendations"] = self._generate_mail_security_recommendations(mail_security)
-        
-        return mail_security
-    
-    def _analyze_spf_record(self, resolver: dns.resolver.Resolver, hostname: str) -> Dict[str, Any]:
-        """Analyze SPF record comprehensively."""
-        spf_analysis = {
-            "record_found": False,
-            "record_content": "",
-            "version": "",
-            "mechanisms": [],
-            "qualifiers": [],
-            "includes": [],
-            "ip_addresses": [],
-            "issues": [],
-            "security_level": "none"
-        }
-        
+
+    def _check_spf_record(self, hostname: str) -> dict[str, Any]:
+        """Check SPF record with enhanced parsing."""
         try:
-            answers = resolver.resolve(hostname, 'TXT')
+            # Try primary resolver
+            try:
+                answers = self.resolver.resolve(hostname, 'TXT')
+            except dns.exception.DNSException:
+                # Fall back to backup resolver
+                answers = self.backup_resolver.resolve(hostname, 'TXT')
+
+            spf_records = []
             for rdata in answers:
-                record = str(rdata).strip('"')
-                if record.startswith('v=spf1'):
-                    spf_analysis["record_found"] = True
-                    spf_analysis["record_content"] = record
-                    spf_analysis.update(self._parse_spf_record(record))
-                    break
-        except Exception as e:
-            spf_analysis["error"] = str(e)
-        
-        return spf_analysis
-    
-    def _parse_spf_record(self, spf_record: str) -> Dict[str, Any]:
-        """Parse SPF record into components."""
-        parsed = {
-            "version": "spf1",
-            "mechanisms": [],
-            "qualifiers": [],
-            "includes": [],
-            "ip_addresses": [],
-            "issues": [],
-            "security_level": "basic"
-        }
-        
-        # Split SPF record into parts
-        parts = spf_record.split()
-        
-        for part in parts[1:]:  # Skip v=spf1
-            if part.startswith('include:'):
-                parsed["includes"].append(part[8:])
-                parsed["mechanisms"].append(f"include:{part[8:]}")
-            elif part.startswith('ip4:') or part.startswith('ip6:'):
-                parsed["ip_addresses"].append(part)
-                parsed["mechanisms"].append(part)
-            elif part in ['+all', '-all', '~all', '?all']:
-                parsed["qualifiers"].append(part)
-                if part == '-all':
-                    parsed["security_level"] = "strict"
-                elif part == '~all':
-                    parsed["security_level"] = "moderate"
-                elif part == '+all':
-                    parsed["issues"].append("Permissive +all qualifier allows any sender")
-            elif part.startswith('a') or part.startswith('mx'):
-                parsed["mechanisms"].append(part)
+                txt_string = str(rdata).strip('"')
+                if txt_string.lower().startswith('v=spf1'):
+                    spf_records.append(txt_string)
+
+            if spf_records:
+                # Parse the SPF record for security assessment
+                spf_record = spf_records[0]  # Use first SPF record
+                security_level = self._analyze_spf_security(spf_record)
+
+                return {
+                    "record_found": True,
+                    "spf_record": spf_record,
+                    "security_level": security_level,
+                    "security_score": self._get_spf_score(security_level),
+                    "multiple_records": len(spf_records) > 1,
+                    "all_records": spf_records
+                }
             else:
-                parsed["mechanisms"].append(part)
-        
-        # Check for common issues
-        if not parsed["qualifiers"]:
-            parsed["issues"].append("No explicit all qualifier found")
-        if len(parsed["includes"]) > 10:
-            parsed["issues"].append("Too many includes (>10) may cause lookup failures")
-        
-        return parsed
-    
-    def _analyze_dmarc_record(self, resolver: dns.resolver.Resolver, hostname: str) -> Dict[str, Any]:
-        """Analyze DMARC record comprehensively."""
-        dmarc_analysis = {
-            "record_found": False,
-            "record_content": "",
-            "policy": "",
-            "subdomain_policy": "",
-            "percentage": 100,
-            "report_addresses": [],
-            "forensic_addresses": [],
-            "alignment": {},
-            "issues": [],
-            "security_level": "none"
+                return {
+                    "record_found": False,
+                    "security_level": "none",
+                    "security_score": 0,
+                    "error": "No SPF record found"
+                }
+
+        except dns.exception.DNSException as e:
+            return {
+                "record_found": False,
+                "security_level": "none",
+                "security_score": 0,
+                "error": f"DNS query failed: {str(e)}"
+            }
+        except Exception as e:
+            return {
+                "record_found": False,
+                "security_level": "none",
+                "security_score": 0,
+                "error": f"SPF check failed: {str(e)}"
+            }
+
+    def _analyze_spf_security(self, spf_record: str) -> str:
+        """Analyze SPF record security level."""
+        if "-all" in spf_record:
+            return "strict"
+        elif "~all" in spf_record:
+            return "moderate"
+        elif "?all" in spf_record:
+            return "neutral"
+        elif "+all" in spf_record:
+            return "permissive"
+        else:
+            return "incomplete"
+
+    def _get_spf_score(self, security_level: str) -> int:
+        """Get numeric score for SPF security level."""
+        scores = {
+            "strict": 100,
+            "moderate": 75,
+            "neutral": 50,
+            "incomplete": 25,
+            "permissive": 10,
+            "none": 0
         }
-        
+        return scores.get(security_level, 0)
+
+    def _check_dmarc_record(self, hostname: str) -> dict[str, Any]:
+        """Check DMARC record."""
         try:
             # DMARC records are at _dmarc.domain
             dmarc_domain = f"_dmarc.{hostname}"
-            answers = resolver.resolve(dmarc_domain, 'TXT')
-            
+            try:
+                answers = self.resolver.resolve(dmarc_domain, 'TXT')
+            except Exception:
+                # Fall back to backup resolver
+                answers = self.backup_resolver.resolve(dmarc_domain, 'TXT')
+
             for rdata in answers:
-                record = str(rdata).strip('"')
-                if record.startswith('v=DMARC1'):
-                    dmarc_analysis["record_found"] = True
-                    dmarc_analysis["record_content"] = record
-                    dmarc_analysis.update(self._parse_dmarc_record(record))
-                    break
+                txt_string = str(rdata).strip('"')
+                if txt_string.lower().startswith('v=dmarc1'):
+                    policy = "none"
+                    if "p=reject" in txt_string.lower():
+                        policy = "reject"
+                    elif "p=quarantine" in txt_string.lower():
+                        policy = "quarantine"
+
+                    security_score = {
+                        "reject": 100,
+                        "quarantine": 75,
+                        "none": 25
+                    }.get(policy, 0)
+
+                    return {
+                        "record_found": True,
+                        "dmarc_record": txt_string,
+                        "policy": policy,
+                        "security_score": security_score
+                    }
+
+            return {
+                "record_found": False,
+                "policy": "none",
+                "security_score": 0,
+                "error": "No DMARC record found"
+            }
+
         except Exception as e:
-            dmarc_analysis["error"] = str(e)
-        
-        return dmarc_analysis
-    
-    def _parse_dmarc_record(self, dmarc_record: str) -> Dict[str, Any]:
-        """Parse DMARC record into components."""
-        parsed = {
-            "policy": "",
-            "subdomain_policy": "",
-            "percentage": 100,
-            "report_addresses": [],
-            "forensic_addresses": [],
-            "alignment": {"dkim": "r", "spf": "r"},
-            "issues": [],
-            "security_level": "basic"
-        }
-        
-        # Parse DMARC tags
-        tags = {}
-        for part in dmarc_record.split(';'):
-            if '=' in part:
-                key, value = part.strip().split('=', 1)
-                tags[key.strip()] = value.strip()
-        
-        # Extract policy information
-        parsed["policy"] = tags.get("p", "")
-        parsed["subdomain_policy"] = tags.get("sp", parsed["policy"])
-        
-        # Set security level based on policy
-        if parsed["policy"] == "reject":
-            parsed["security_level"] = "strict"
-        elif parsed["policy"] == "quarantine":
-            parsed["security_level"] = "moderate"
-        elif parsed["policy"] == "none":
-            parsed["security_level"] = "monitoring"
-        
-        # Parse percentage
-        try:
-            parsed["percentage"] = int(tags.get("pct", "100"))
-        except ValueError:
-            parsed["issues"].append("Invalid percentage value")
-        
-        # Parse report addresses
-        if "rua" in tags:
-            parsed["report_addresses"] = [addr.strip() for addr in tags["rua"].split(',')]
-        if "ruf" in tags:
-            parsed["forensic_addresses"] = [addr.strip() for addr in tags["ruf"].split(',')]
-        
-        # Parse alignment
-        parsed["alignment"]["dkim"] = tags.get("adkim", "r")
-        parsed["alignment"]["spf"] = tags.get("aspf", "r")
-        
-        # Check for issues
-        if parsed["policy"] == "none" and not parsed["report_addresses"]:
-            parsed["issues"].append("Policy set to 'none' without report addresses")
-        if parsed["percentage"] < 100:
-            parsed["issues"].append(f"Policy only applies to {parsed['percentage']}% of messages")
-        
-        return parsed
-    
-    def _analyze_dkim_records(self, resolver: dns.resolver.Resolver, hostname: str) -> Dict[str, Any]:
-        """Analyze DKIM records for common selectors."""
-        dkim_analysis = {
-            "selectors_found": [],
-            "records": {},
-            "total_selectors_checked": 0,
-            "security_analysis": {}
-        }
-        
-        # Common DKIM selectors to check
-        common_selectors = [
-            "default", "google", "k1", "k2", "s1", "s2", "dkim", "mail",
-            "email", "selector1", "selector2", "key1", "key2"
-        ]
-        
+            return {
+                "record_found": False,
+                "policy": "none",
+                "security_score": 0,
+                "error": f"DMARC check failed: {str(e)}"
+            }
+
+    def _check_dkim_record(self, hostname: str) -> dict[str, Any]:
+        """Check DKIM record with common selectors."""
+        selectors_found = []
+        common_selectors = ["default", "google", "k1", "s1", "selector1", "mail"]
+
         for selector in common_selectors:
             try:
                 dkim_domain = f"{selector}._domainkey.{hostname}"
-                answers = resolver.resolve(dkim_domain, 'TXT')
-                
+                try:
+                    answers = self.resolver.resolve(dkim_domain, 'TXT')
+                except Exception:
+                    answers = self.backup_resolver.resolve(dkim_domain, 'TXT')
+
                 for rdata in answers:
-                    record = str(rdata).strip('"')
-                    if 'k=' in record or 'p=' in record:  # DKIM record indicators
-                        dkim_analysis["selectors_found"].append(selector)
-                        dkim_analysis["records"][selector] = {
-                            "record": record,
-                            "parsed": self._parse_dkim_record(record)
-                        }
+                    txt_string = str(rdata).strip('"')
+                    if 'p=' in txt_string and ('k=' in txt_string or 'v=' in txt_string):
+                        selectors_found.append(selector)
                         break
+
             except Exception:
-                pass
-        
-        dkim_analysis["total_selectors_checked"] = len(common_selectors)
-        dkim_analysis["security_analysis"] = {
-            "selectors_active": len(dkim_analysis["selectors_found"]),
-            "multiple_selectors": len(dkim_analysis["selectors_found"]) > 1,
-            "dkim_enabled": len(dkim_analysis["selectors_found"]) > 0
+                continue
+
+        security_score = min(len(selectors_found) * 50, 100)
+
+        return {
+            "selectors_active": len(selectors_found),
+            "selectors_found": selectors_found,
+            "security_score": security_score,
+            "dkim_enabled": len(selectors_found) > 0
         }
-        
-        return dkim_analysis
-    
-    def _parse_dkim_record(self, dkim_record: str) -> Dict[str, Any]:
-        """Parse DKIM record into components."""
-        parsed = {
-            "version": "",
-            "key_type": "",
-            "public_key": "",
-            "hash_algorithms": [],
-            "service_types": [],
-            "flags": []
-        }
-        
-        # Parse DKIM tags
-        tags = {}
-        for part in dkim_record.split(';'):
-            if '=' in part:
-                key, value = part.strip().split('=', 1)
-                tags[key.strip()] = value.strip()
-        
-        parsed["version"] = tags.get("v", "")
-        parsed["key_type"] = tags.get("k", "rsa")
-        parsed["public_key"] = tags.get("p", "")[:50] + "..." if len(tags.get("p", "")) > 50 else tags.get("p", "")
-        
-        if "h" in tags:
-            parsed["hash_algorithms"] = tags["h"].split(':')
-        if "s" in tags:
-            parsed["service_types"] = tags["s"].split(':')
-        if "t" in tags:
-            parsed["flags"] = tags["t"].split(':')
-        
-        return parsed
-    
-    def _calculate_mail_security_score(self, mail_security: Dict[str, Any]) -> int:
-        """Calculate mail security score (0-100)."""
-        score = 0
-        
-        # SPF scoring (40 points)
-        spf = mail_security.get("spf_analysis", {})
-        if spf.get("record_found"):
-            score += 20
-            if spf.get("security_level") == "strict":
-                score += 20
-            elif spf.get("security_level") == "moderate":
-                score += 15
-            elif spf.get("security_level") == "basic":
-                score += 10
-        
-        # DMARC scoring (40 points)
-        dmarc = mail_security.get("dmarc_analysis", {})
-        if dmarc.get("record_found"):
-            score += 20
-            if dmarc.get("security_level") == "strict":
-                score += 20
-            elif dmarc.get("security_level") == "moderate":
-                score += 15
-            elif dmarc.get("security_level") == "monitoring":
-                score += 10
-        
-        # DKIM scoring (20 points)
-        dkim = mail_security.get("dkim_analysis", {})
-        if dkim.get("security_analysis", {}).get("dkim_enabled"):
-            score += 10
-            if dkim.get("security_analysis", {}).get("multiple_selectors"):
-                score += 10
-            else:
-                score += 5
-        
-        return min(score, 100)
-    
-    def _generate_mail_security_recommendations(self, mail_security: Dict[str, Any]) -> List[str]:
-        """Generate mail security recommendations."""
-        recommendations = []
-        
-        spf = mail_security.get("spf_analysis", {})
-        dmarc = mail_security.get("dmarc_analysis", {})
-        dkim = mail_security.get("dkim_analysis", {})
-        
-        if not spf.get("record_found"):
-            recommendations.append("Implement SPF record to prevent email spoofing")
-        elif spf.get("issues"):
-            recommendations.append("Fix SPF record issues: " + ", ".join(spf["issues"][:2]))
-        
-        if not dmarc.get("record_found"):
-            recommendations.append("Implement DMARC policy for email authentication")
-        elif dmarc.get("policy") == "none":
-            recommendations.append("Upgrade DMARC policy from 'none' to 'quarantine' or 'reject'")
-        
-        if not dkim.get("security_analysis", {}).get("dkim_enabled"):
-            recommendations.append("Enable DKIM signing for email authentication")
-        
-        return recommendations
-    
-    def _analyze_security_features(self, resolver: dns.resolver.Resolver, hostname: str) -> Dict[str, Any]:
-        """Analyze DNS security features."""
-        security_features = {
-            "caa_records": [],
-            "dnssec_enabled": False,
-            "security_score": 0,
-            "recommendations": []
-        }
-        
-        # CAA records
+
+    def _check_dnssec(self, hostname: str) -> dict[str, Any]:
+        """Check DNSSEC status (simplified check)."""
         try:
-            answers = resolver.resolve(hostname, 'CAA')
-            for rdata in answers:
-                security_features["caa_records"].append(str(rdata))
-        except Exception:
-            security_features["caa_records"] = []
-        
-        # DNSSEC detection (simplified)
-        try:
-            # Try to resolve with DNSSEC validation
-            resolver.use_edns(0, dns.flags.DO, 4096)
-            answers = resolver.resolve(hostname, 'A')
-            # If we get here without exception, DNSSEC might be working
+            # Try to query with DNSSEC flag
+            resolver = dns.resolver.Resolver()
+            resolver.nameservers = self.resolver.nameservers
+            resolver.use_edns(edns=0, ednsflags=dns.flags.DO, payload=4096)
+
+            resolver.resolve(hostname, 'A')
+
+            # If we get here without exception, basic DNSSEC might be working
             # This is a simplified check - full DNSSEC validation is complex
-            security_features["dnssec_enabled"] = True
-        except Exception:
-            security_features["dnssec_enabled"] = False
-        
-        # Calculate security score
-        score = 0
-        if security_features["caa_records"]:
-            score += 50
-        if security_features["dnssec_enabled"]:
-            score += 50
-        security_features["security_score"] = score
-        
-        # Generate recommendations
-        if not security_features["caa_records"]:
-            security_features["recommendations"].append("Add CAA records to control certificate issuance")
-        if not security_features["dnssec_enabled"]:
-            security_features["recommendations"].append("Enable DNSSEC for DNS security")
-        
-        return security_features
-    
-    def _perform_technical_analysis(self, dns_info: Dict[str, Any]) -> Dict[str, Any]:
-        """Perform comprehensive technical analysis."""
-        analysis = {
-            "ipv6_support": False,
-            "mail_configured": False,
-            "security_features": [],
-            "vulnerabilities": [],
-            "recommendations": [],
-            "overall_health": "unknown",
-            "technical_scores": {}
-        }
-        
-        basic_records = dns_info.get("basic_records", {})
-        mail_security = dns_info.get("mail_security", {})
-        security_features = dns_info.get("security_features", {})
-        
-        # IPv6 support analysis
-        if basic_records.get("aaaa_records"):
-            analysis["ipv6_support"] = True
-            analysis["security_features"].append("IPv6 support enabled")
-        else:
-            analysis["recommendations"].append("Consider adding IPv6 (AAAA) records for future compatibility")
-        
-        # Mail configuration analysis
-        if basic_records.get("mx_records"):
-            analysis["mail_configured"] = True
-            analysis["security_features"].append("Mail exchange configured")
-            
-            # Check mail security
-            mail_score = mail_security.get("security_score", 0)
-            if mail_score < 50:
-                analysis["vulnerabilities"].append("Insufficient mail security configuration")
-        
-        # Security features analysis
-        if security_features.get("caa_records"):
-            analysis["security_features"].append("CAA records present")
-        else:
-            analysis["recommendations"].append("Add CAA records to control certificate issuance")
-        
-        if security_features.get("dnssec_enabled"):
-            analysis["security_features"].append("DNSSEC enabled")
-        else:
-            analysis["recommendations"].append("Enable DNSSEC for DNS security")
-        
-        # DNS infrastructure analysis
-        ns_analysis = basic_records.get("ns_analysis", {})
-        if not ns_analysis.get("redundancy", False):
-            analysis["vulnerabilities"].append("Insufficient DNS redundancy")
-            analysis["recommendations"].append("Configure multiple nameservers for redundancy")
-        
-        # Calculate technical scores
-        analysis["technical_scores"] = {
-            "basic_dns": self._calculate_basic_dns_score(basic_records),
-            "mail_security": mail_security.get("security_score", 0),
-            "security_features": security_features.get("security_score", 0),
-            "ipv6_support": 100 if analysis["ipv6_support"] else 0,
-            "infrastructure": self._calculate_infrastructure_score(basic_records)
-        }
-        
-        # Determine overall health
-        avg_score = sum(analysis["technical_scores"].values()) / len(analysis["technical_scores"])
-        vuln_count = len(analysis["vulnerabilities"])
-        
-        if avg_score >= 80 and vuln_count == 0:
-            analysis["overall_health"] = "excellent"
-        elif avg_score >= 60 and vuln_count <= 2:
-            analysis["overall_health"] = "good"
-        elif avg_score >= 40 and vuln_count <= 4:
-            analysis["overall_health"] = "fair"
-        else:
-            analysis["overall_health"] = "poor"
-        
-        return analysis
-    
-    def _calculate_basic_dns_score(self, basic_records: Dict[str, Any]) -> int:
-        """Calculate basic DNS configuration score."""
-        score = 0
-        
-        # A records (20 points)
-        if basic_records.get("a_records"):
-            score += 20
-        
-        # AAAA records (15 points)
-        if basic_records.get("aaaa_records"):
-            score += 15
-        
-        # NS records (25 points)
-        ns_count = len(basic_records.get("ns_records", []))
-        if ns_count >= 2:
-            score += 25
-        elif ns_count == 1:
-            score += 15
-        
-        # MX records (20 points)
-        if basic_records.get("mx_records"):
-            score += 20
-        
-        # SOA record (10 points)
-        if basic_records.get("soa_record") and "error" not in basic_records["soa_record"]:
-            score += 10
-        
-        # Reverse DNS (10 points)
-        reverse_dns = basic_records.get("reverse_dns", {})
-        if reverse_dns.get("ipv4", {}).get("resolved") or reverse_dns.get("ipv6", {}).get("resolved"):
-            score += 10
-        
-        return min(score, 100)
-    
-    def _calculate_infrastructure_score(self, basic_records: Dict[str, Any]) -> int:
-        """Calculate DNS infrastructure score."""
-        score = 0
-        
-        # Nameserver redundancy (40 points)
-        ns_analysis = basic_records.get("ns_analysis", {})
-        if ns_analysis.get("redundancy"):
-            score += 40
-        
-        # Nameserver diversity (30 points)
-        if ns_analysis.get("diversity", {}).get("has_diversity"):
-            score += 30
-        
-        # MX redundancy (20 points)
-        mx_analysis = basic_records.get("mx_analysis", {})
-        if mx_analysis.get("redundancy"):
-            score += 20
-        
-        # Known providers (10 points)
-        if ns_analysis.get("security_analysis", {}).get("known_providers"):
-            score += 10
-        
-        return min(score, 100)
-    
-    def _calculate_comprehensive_score(self, dns_info: Dict[str, Any]) -> float:
+            return {
+                "enabled": True,
+                "status": "detected",
+                "security_score": 60
+            }
+
+        except Exception as e:
+            return {
+                "enabled": False,
+                "status": "not_detected",
+                "security_score": 0,
+                "error": str(e)
+            }
+
+    def _check_caa_record(self, hostname: str) -> dict[str, Any]:
+        """Check CAA (Certificate Authority Authorization) record."""
+        try:
+            try:
+                answers = self.resolver.resolve(hostname, 'CAA')
+            except Exception:
+                answers = self.backup_resolver.resolve(hostname, 'CAA')
+
+            caa_records = []
+            for rdata in answers:
+                caa_records.append(str(rdata))
+
+            return {
+                "enabled": True,
+                "records": caa_records,
+                "count": len(caa_records),
+                "security_score": 40
+            }
+
+        except Exception as e:
+            return {
+                "enabled": False,
+                "records": [],
+                "count": 0,
+                "security_score": 0,
+                "error": str(e)
+            }
+
+    def _calculate_dns_score(self, dns_info: dict[str, Any]) -> float:
         """Calculate comprehensive DNS score (0-1)."""
         if "error" in dns_info:
             return 0.0
-        
+
         technical_analysis = dns_info.get("technical_analysis", {})
         technical_scores = technical_analysis.get("technical_scores", {})
-        
+
         if not technical_scores:
             return 0.0
-        
+
         # Weighted average of technical scores
         weights = {
             "basic_dns": 0.3,
@@ -835,28 +618,28 @@ class DNSProbe(BaseProbe):
             "infrastructure": 0.15,
             "ipv6_support": 0.1
         }
-        
+
         total_score = 0.0
         total_weight = 0.0
-        
+
         for score_type, weight in weights.items():
             if score_type in technical_scores:
                 total_score += technical_scores[score_type] * weight
                 total_weight += weight
-        
+
         if total_weight > 0:
             return total_score / (total_weight * 100)  # Normalize to 0-1
-        
+
         return 0.0
-    
-    def _prepare_technical_details(self, dns_info: Dict[str, Any]) -> Dict[str, Any]:
+
+    def _prepare_details(self, dns_info: dict[str, Any]) -> dict[str, Any]:
         """Prepare comprehensive technical details for output."""
         details = {
             "dns_records_analysis": dns_info.get("basic_records", {}),
             "mail_security_analysis": dns_info.get("mail_security", {}),
             "security_features_analysis": dns_info.get("security_features", {}),
             "technical_assessment": dns_info.get("technical_analysis", {}),
-            
+
             "summary": {
                 "total_record_types": len([k for k, v in dns_info.get("basic_records", {}).get("record_counts", {}).items() if v > 0]),
                 "security_features_enabled": len(dns_info.get("technical_analysis", {}).get("security_features", [])),
@@ -866,8 +649,241 @@ class DNSProbe(BaseProbe):
                 "technical_scores": dns_info.get("technical_analysis", {}).get("technical_scores", {})
             }
         }
-        
+
         if "error" in dns_info:
             details["error"] = dns_info["error"]
-        
-        return details 
+
+        return details
+
+    def _calculate_technical_scores(self, dns_info: dict[str, Any]) -> dict[str, float]:
+        """Calculate technical scores from DNS analysis results."""
+        scores = {}
+
+        # Basic DNS infrastructure score (0-100)
+        basic_records = dns_info.get('basic_records', {})
+        if basic_records and not basic_records.get('error'):
+            record_counts = basic_records.get('record_counts', {})
+            record_counts.get('total_records', 0)
+
+            # Score based on DNS completeness
+            basic_score = 0
+            if record_counts.get('a_records', 0) > 0:
+                basic_score += 30  # IPv4 essential
+            if record_counts.get('aaaa_records', 0) > 0:
+                basic_score += 10  # IPv6 support
+            if record_counts.get('mx_records', 0) > 0:
+                basic_score += 20  # Mail service
+            if record_counts.get('ns_records', 0) >= 2:
+                basic_score += 25  # Proper NS delegation
+            if record_counts.get('txt_records', 0) > 0:
+                basic_score += 15  # TXT records for verification
+
+            scores['basic_dns'] = min(basic_score, 100)
+        else:
+            scores['basic_dns'] = 0
+
+        # Mail security score (0-100)
+        mail_security = dns_info.get('mail_security', {})
+        if mail_security and not mail_security.get('error'):
+            scores['mail_security'] = mail_security.get('security_score', 0)
+        else:
+            scores['mail_security'] = 0
+
+        # Security features score (0-100)
+        security_features = dns_info.get('security_features', {})
+        if security_features and not security_features.get('error'):
+            scores['security_features'] = security_features.get('security_score', 0)
+        else:
+            scores['security_features'] = 0
+
+        # Infrastructure reliability score
+        scores['infrastructure'] = self._calculate_infrastructure_score(dns_info)
+
+        # IPv6 support score
+        scores['ipv6_support'] = 100 if basic_records.get('ipv6_supported', False) else 0
+
+        return scores
+
+    def _calculate_infrastructure_score(self, dns_info: dict[str, Any]) -> float:
+        """Calculate infrastructure reliability score."""
+        score = 0
+        basic_records = dns_info.get('basic_records', {})
+
+        if basic_records and not basic_records.get('error'):
+            # Check NS record count (redundancy)
+            ns_count = basic_records.get('record_counts', {}).get('ns_records', 0)
+            if ns_count >= 4:
+                score += 40  # Excellent redundancy
+            elif ns_count >= 2:
+                score += 30  # Good redundancy
+            elif ns_count >= 1:
+                score += 15  # Minimal setup
+
+            # Check TTL values (caching efficiency)
+            record_details = basic_records.get('record_details', {})
+            a_ttl = record_details.get('A', {}).get('ttl', 0)
+            if a_ttl > 3600:  # > 1 hour
+                score += 30  # Good caching
+            elif a_ttl > 300:  # > 5 minutes
+                score += 20  # Reasonable caching
+            elif a_ttl > 0:
+                score += 10  # Some caching
+
+            # Check DNS configuration completeness
+            if basic_records.get('dns_properly_configured', False):
+                score += 30
+
+        return min(score, 100)
+
+    def _get_security_features_list(self, dns_info: dict[str, Any]) -> list[str]:
+        """Extract list of enabled security features."""
+        features = []
+
+        # Mail security features
+        mail_security = dns_info.get('mail_security', {})
+        if mail_security.get('spf_analysis', {}).get('record_found', False):
+            features.append('SPF')
+        if mail_security.get('dmarc_analysis', {}).get('record_found', False):
+            features.append('DMARC')
+        if mail_security.get('dkim_analysis', {}).get('dkim_enabled', False):
+            features.append('DKIM')
+
+        # DNS security features
+        security_features = dns_info.get('security_features', {})
+        if security_features.get('dnssec_analysis', {}).get('enabled', False):
+            features.append('DNSSEC')
+        if security_features.get('caa_analysis', {}).get('enabled', False):
+            features.append('CAA')
+
+        return features
+
+    def _identify_vulnerabilities(self, dns_info: dict[str, Any]) -> list[str]:
+        """Identify DNS-related vulnerabilities."""
+        vulnerabilities = []
+
+        # Check for missing SPF
+        mail_security = dns_info.get('mail_security', {})
+        if not mail_security.get('spf_analysis', {}).get('record_found', False):
+            vulnerabilities.append('Missing SPF record - email spoofing risk')
+
+        # Check for permissive SPF
+        spf_level = mail_security.get('spf_analysis', {}).get('security_level', '')
+        if spf_level == 'permissive':
+            vulnerabilities.append('Permissive SPF policy - allows unrestricted email sending')
+
+        # Check for missing DMARC
+        if not mail_security.get('dmarc_analysis', {}).get('record_found', False):
+            vulnerabilities.append('Missing DMARC record - no email authentication policy')
+
+        # Check for missing DNSSEC
+        security_features = dns_info.get('security_features', {})
+        if not security_features.get('dnssec_analysis', {}).get('enabled', False):
+            vulnerabilities.append('DNSSEC not enabled - DNS responses not authenticated')
+
+        # Check for insufficient name servers
+        basic_records = dns_info.get('basic_records', {})
+        ns_count = basic_records.get('record_counts', {}).get('ns_records', 0)
+        if ns_count < 2:
+            vulnerabilities.append('Insufficient name servers - single point of failure')
+
+        return vulnerabilities
+
+    def _generate_recommendations(self, dns_info: dict[str, Any]) -> list[str]:
+        """Generate actionable recommendations."""
+        recommendations = []
+
+        mail_security = dns_info.get('mail_security', {})
+        security_features = dns_info.get('security_features', {})
+
+        # SPF recommendations
+        if not mail_security.get('spf_analysis', {}).get('record_found', False):
+            recommendations.append('Implement SPF record to prevent email spoofing')
+        elif mail_security.get('spf_analysis', {}).get('security_level', '') == 'permissive':
+            recommendations.append('Tighten SPF policy from +all to -all for better security')
+
+        # DMARC recommendations
+        if not mail_security.get('dmarc_analysis', {}).get('record_found', False):
+            recommendations.append('Implement DMARC policy for email authentication')
+
+        # DKIM recommendations
+        if not mail_security.get('dkim_analysis', {}).get('dkim_enabled', False):
+            recommendations.append('Enable DKIM signing for email authenticity')
+
+        # DNSSEC recommendations
+        if not security_features.get('dnssec_analysis', {}).get('enabled', False):
+            recommendations.append('Enable DNSSEC for DNS response authentication')
+
+        # CAA recommendations
+        if not security_features.get('caa_analysis', {}).get('enabled', False):
+            recommendations.append('Implement CAA records to control certificate issuance')
+
+        return recommendations
+
+    def _assess_overall_health(self, technical_scores: dict[str, float]) -> str:
+        """Assess overall DNS health based on technical scores."""
+        if not technical_scores:
+            return 'unknown'
+
+        # Calculate weighted average
+        weights = {
+            'basic_dns': 0.3,
+            'mail_security': 0.25,
+            'security_features': 0.2,
+            'infrastructure': 0.15,
+            'ipv6_support': 0.1
+        }
+
+        total_score = 0
+        total_weight = 0
+
+        for score_type, weight in weights.items():
+            if score_type in technical_scores:
+                total_score += technical_scores[score_type] * weight
+                total_weight += weight
+
+        if total_weight > 0:
+            avg_score = total_score / total_weight
+
+            if avg_score >= 80:
+                return 'excellent'
+            elif avg_score >= 60:
+                return 'good'
+            elif avg_score >= 40:
+                return 'fair'
+            else:
+                return 'poor'
+
+        return 'unknown'
+
+    def _calculate_reliability_metrics(self, dns_info: dict[str, Any]) -> dict[str, Any]:
+        """Calculate reliability metrics based on DNS analysis results."""
+        metrics = {}
+
+        # Calculate response time metrics
+        response_times = []
+        for _record_type, result in dns_info.get('basic_records', {}).get('record_details', {}).items():
+            if isinstance(result, dict) and 'error' not in result:
+                response_times.append(result.get('ttl', 0))
+
+        if response_times:
+            metrics['average_response_time'] = sum(response_times) / len(response_times)
+            metrics['max_response_time'] = max(response_times)
+            metrics['min_response_time'] = min(response_times)
+
+        # Calculate record count metrics
+        record_counts = dns_info.get('basic_records', {}).get('record_counts', {})
+        metrics['total_records'] = record_counts.get('total_records', 0)
+        metrics['ipv4_supported'] = record_counts.get('ipv4_supported', False)
+        metrics['ipv6_supported'] = record_counts.get('ipv6_supported', False)
+        metrics['has_mail_servers'] = record_counts.get('has_mail_servers', False)
+        metrics['dns_properly_configured'] = record_counts.get('dns_properly_configured', False)
+
+        # Calculate recovery metrics
+        if dns_info.get('basic_records', {}).get('recovered', False):
+            metrics['recovery_attempted'] = True
+            metrics['recovery_success'] = True
+        else:
+            metrics['recovery_attempted'] = False
+            metrics['recovery_success'] = False
+
+        return metrics

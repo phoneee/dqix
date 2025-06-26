@@ -55,7 +55,7 @@ pip install dqix
 
 ### **Development Installation**
 ```bash
-git clone https://github.com/dqix/dqix
+git clone https://github.com/phoneee/dqix
 cd dqix
 pip install -e .
 ```
@@ -636,4 +636,4 @@ dqix bulk <(echo "$DOMAINS" | tr ' ' '\n') \
 ---
 
 *Last Updated: June 2025*  
-*For support and updates, visit: [GitHub Repository](https://github.com/dqix/dqix)* 
+*For support and updates, visit: [GitHub Repository](https://github.com/phoneee/dqix)* 

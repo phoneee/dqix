@@ -1,28 +1,28 @@
 """Base probe infrastructure."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from ...domain.entities import Domain, ProbeCategory, ProbeConfig, ProbeResult
 
 
 class BaseProbe(ABC):
     """Base class for all probes with simplified interface."""
-    
+
     def __init__(self, probe_id: str, category: ProbeCategory):
         self.probe_id = probe_id
         self.category = category
-    
+
     @abstractmethod
     async def check(self, domain: Domain, config: ProbeConfig) -> ProbeResult:
         """Check domain and return result."""
         pass
-    
+
     def _create_result(
-        self, 
-        domain: Domain, 
-        score: float, 
-        details: Dict[str, Any],
+        self,
+        domain: Domain,
+        score: float,
+        details: dict[str, Any],
         error: Optional[str] = None
     ) -> ProbeResult:
         """Helper to create probe result."""
@@ -33,4 +33,4 @@ class BaseProbe(ABC):
             category=self.category,
             details=details,
             error=error
-        ) 
+        )

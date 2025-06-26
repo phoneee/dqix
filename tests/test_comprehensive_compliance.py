@@ -1,14 +1,13 @@
 """Comprehensive compliance testing for DQIX Internet Governance Framework."""
 
 import unittest
-from unittest.mock import Mock, patch
+
 import yaml
 
 from dqix.core.academic_references import (
-    ComplianceMetrics,
+    InternetGovernanceLevels,
     calculate_compliance_metrics,
     generate_governance_report,
-    InternetGovernanceLevels,
 )
 
 
@@ -39,7 +38,7 @@ class TestComprehensiveCompliance(unittest.TestCase):
         """Test that scoring weights in each level sum to approximately 1.0."""
         # Load configuration from file
         try:
-            with open("dqix/presets/all_levels.yaml", "r") as f:
+            with open("dqix/presets/all_levels.yaml") as f:
                 config = yaml.safe_load(f)
         except FileNotFoundError:
             self.skipTest("Configuration file not found")
@@ -48,7 +47,7 @@ class TestComprehensiveCompliance(unittest.TestCase):
             if level_name in config:
                 probes = config[level_name]["probes"]
                 total_weight = sum(probes.values())
-                
+
                 # Allow for small floating point variations
                 self.assertAlmostEqual(
                     total_weight, 1.0, places=2,
@@ -58,7 +57,7 @@ class TestComprehensiveCompliance(unittest.TestCase):
     def test_compliance_categories_coverage(self):
         """Test that compliance categories cover all aspects properly."""
         metrics = calculate_compliance_metrics(self.sample_probe_results)
-        
+
         # Verify all compliance areas are measured
         self.assertGreater(metrics.transport_security_score, 0.0)
         self.assertGreater(metrics.dns_security_score, 0.0)
@@ -74,7 +73,7 @@ class TestComprehensiveCompliance(unittest.TestCase):
             InternetGovernanceLevels.STANDARD,
             InternetGovernanceLevels.ADVANCED,
         ]
-        
+
         # Verify progressive target scores
         for i in range(len(levels) - 1):
             self.assertLess(
@@ -92,19 +91,19 @@ class TestComprehensiveCompliance(unittest.TestCase):
             "spf": 0.4,      # Below baseline
             "other_probe": 0.9,  # High score but not baseline
         }
-        
+
         metrics = calculate_compliance_metrics(failing_baseline_results)
-        
+
         # Overall score should be affected by baseline failures
         self.assertLess(metrics.overall_compliance_score, 0.6)
         self.assertEqual(metrics.compliance_level, "needs_improvement")
 
     def test_excellence_bonus_scoring(self):
         """Test that excellence in all areas provides bonus scoring."""
-        excellent_results = {k: 0.95 for k in self.sample_probe_results.keys()}
-        
+        excellent_results = dict.fromkeys(self.sample_probe_results.keys(), 0.95)
+
         metrics = calculate_compliance_metrics(excellent_results)
-        
+
         # Should achieve excellent compliance level
         self.assertGreaterEqual(metrics.overall_compliance_score, 0.9)
         self.assertEqual(metrics.compliance_level, "excellent")
@@ -121,9 +120,9 @@ class TestComprehensiveCompliance(unittest.TestCase):
             "privacy_policy": 0.30,
             "accessibility": 0.30,
         }
-        
+
         metrics = calculate_compliance_metrics(security_heavy_results)
-        
+
         # Security should be high, but overall should be limited by other areas
         self.assertGreater(metrics.transport_security_score, 0.9)
         self.assertLess(metrics.overall_compliance_score, 0.8)
@@ -136,7 +135,7 @@ class TestComprehensiveCompliance(unittest.TestCase):
             probe_results=self.sample_probe_results,
             target_level=InternetGovernanceLevels.STANDARD,
         )
-        
+
         # Verify all required sections are present
         required_sections = [
             "domain",
@@ -148,7 +147,7 @@ class TestComprehensiveCompliance(unittest.TestCase):
             "recommendations",
             "framework",
         ]
-        
+
         for section in required_sections:
             self.assertIn(section, report, f"Missing required section: {section}")
 
@@ -162,21 +161,21 @@ class TestComprehensiveCompliance(unittest.TestCase):
             "headers": 0.4,    # Should trigger headers recommendation
             "accessibility": 0.3, # Should trigger accessibility recommendation
         }
-        
+
         report = generate_governance_report(
             domain="example.com",
             score=0.35,
             probe_results=problematic_results,
             target_level=InternetGovernanceLevels.STANDARD,
         )
-        
+
         recommendations = report["recommendations"]
         missing_requirements = report["missing_requirements"]
-        
+
         # Should have specific recommendations for each low-scoring area
         self.assertTrue(len(recommendations) >= 4)
         self.assertTrue(len(missing_requirements) >= 4)
-        
+
         # Check for specific recommendation categories
         self.assertIn("Transport Security", missing_requirements)
         self.assertIn("DNS Security", missing_requirements)
@@ -190,12 +189,12 @@ class TestComprehensiveCompliance(unittest.TestCase):
             (0.70, "adequate"),
             (0.45, "needs_improvement"),
         ]
-        
+
         for score, expected_level in test_cases:
             # Create probe results that would achieve this score
-            uniform_results = {k: score for k in self.sample_probe_results.keys()}
+            uniform_results = dict.fromkeys(self.sample_probe_results.keys(), score)
             metrics = calculate_compliance_metrics(uniform_results)
-            
+
             # The exact score might differ due to weighting, but level should be consistent
             if expected_level == "excellent":
                 self.assertGreaterEqual(metrics.overall_compliance_score, 0.9)
@@ -217,14 +216,14 @@ class TestComprehensiveCompliance(unittest.TestCase):
             "dnssec": 0.30,
             "headers": 0.30,
         }
-        
+
         metrics = calculate_compliance_metrics(privacy_strong_results)
-        
+
         # Privacy should be high
         self.assertGreater(metrics.gdpr_compliance_score, 0.9)
         self.assertTrue(metrics.privacy_policy_present)
         self.assertTrue(metrics.cookie_consent_present)
-        
+
         # But overall should be limited by security weaknesses
         self.assertLess(metrics.overall_compliance_score, 0.7)
 
@@ -232,15 +231,15 @@ class TestComprehensiveCompliance(unittest.TestCase):
         """Test WCAG compliance level assignment accuracy."""
         test_cases = [
             (0.95, "AA"),
-            (0.85, "A"), 
+            (0.85, "A"),
             (0.60, "none"),
             (0.0, "none"),
         ]
-        
+
         for accessibility_score, expected_level in test_cases:
             probe_results = {"accessibility": accessibility_score}
             metrics = calculate_compliance_metrics(probe_results)
-            
+
             self.assertEqual(
                 metrics.wcag_compliance_level, expected_level,
                 f"Score {accessibility_score} should result in WCAG level {expected_level}"
@@ -255,23 +254,23 @@ class TestComprehensiveCompliance(unittest.TestCase):
             "tls": 0.8,        # Good for multistakeholder calc
             "dnssec": 0.7,     # DNS security
             "spf": 0.72,       # SPF for email security
-            "dmarc": 0.78,     # DMARC for email security  
+            "dmarc": 0.78,     # DMARC for email security
             "dkim": 0.75,      # DKIM for email security
             "headers": 0.8,    # Web security
         }
-        
+
         metrics = calculate_compliance_metrics(transparency_results)
-        
+
         # Verify governance scoring
         self.assertEqual(metrics.transparency_score, 0.9)
         self.assertEqual(metrics.accountability_score, 0.8)
-        
+
         # Multistakeholder score should be average of security scores
-        # It uses: transport_security (tls), dns_security (dnssec), 
+        # It uses: transport_security (tls), dns_security (dnssec),
         # email_security (avg of spf/dmarc/dkim), web_security (headers)
-        expected_email_security = (0.72 + 0.78 + 0.75) / 3  # 0.75
+        (0.72 + 0.78 + 0.75) / 3  # 0.75
         expected_multistakeholder = (0.8 + 0.7 + 0.75 + 0.8) / 4  # 0.7625
-        
+
         self.assertAlmostEqual(
             metrics.multistakeholder_score, expected_multistakeholder, places=2
         )
@@ -283,7 +282,7 @@ class TestConfigurationValidation(unittest.TestCase):
     def test_configuration_file_structure(self):
         """Test that configuration file has proper structure."""
         try:
-            with open("dqix/presets/all_levels.yaml", "r") as f:
+            with open("dqix/presets/all_levels.yaml") as f:
                 config = yaml.safe_load(f)
         except FileNotFoundError:
             self.skipTest("Configuration file not found")
@@ -302,20 +301,20 @@ class TestConfigurationValidation(unittest.TestCase):
     def test_compliance_categories_consistency(self):
         """Test that compliance categories are properly defined."""
         try:
-            with open("dqix/presets/all_levels.yaml", "r") as f:
+            with open("dqix/presets/all_levels.yaml") as f:
                 config = yaml.safe_load(f)
         except FileNotFoundError:
             self.skipTest("Configuration file not found")
 
         if "compliance_categories" in config:
             categories = config["compliance_categories"]
-            
+
             # Verify category weights sum to 1.0
             total_weight = sum(cat["weight"] for cat in categories.values())
             self.assertAlmostEqual(total_weight, 1.0, places=2)
-            
+
             # Verify each category has required fields
-            for cat_name, cat_config in categories.items():
+            for _cat_name, cat_config in categories.items():
                 self.assertIn("weight", cat_config)
                 self.assertIn("description", cat_config)
                 self.assertIn("critical_probes", cat_config)
@@ -323,4 +322,4 @@ class TestConfigurationValidation(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main() 
+    unittest.main()
