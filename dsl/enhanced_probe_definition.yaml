@@ -1,0 +1,515 @@
+# DQIX Enhanced Probe Definition Language (PDL)
+# Comprehensive Domain Quality Assessment
+# Based on international standards and best practices
+
+version: "2.0"
+metadata:
+  name: "DQIX Enhanced Quality Assessment"
+  description: "Comprehensive domain quality index with international standards"
+  authors: ["DQIX Team"]
+  license: "MIT"
+  standard_compliance: ["SSL Labs", "Mozilla Observatory", "Google PageSpeed", "WCAG 2.1"]
+
+# Global configuration
+config:
+  timeout_seconds: 45
+  max_retries: 3
+  user_agent: "DQIX/2.0 (Enhanced Quality Assessment)"
+  concurrent_probes: true
+  
+# Enhanced scoring system - 7 levels (A+ to F)
+quality_levels:
+  exceptional:    # A+ (95-100)
+    min_score: 0.95
+    max_score: 1.00
+    grade: "A+"
+    description: "Exceptional - Best in class"
+    color: "#00C851"
+  excellent:      # A (85-94)
+    min_score: 0.85
+    max_score: 0.94
+    grade: "A"
+    description: "Excellent - Industry leading"
+    color: "#2E7D32"
+  good:          # B (75-84)
+    min_score: 0.75
+    max_score: 0.84
+    grade: "B"
+    description: "Good - Above average"
+    color: "#4CAF50"
+  acceptable:    # C (65-74)
+    min_score: 0.65
+    max_score: 0.74
+    grade: "C"
+    description: "Acceptable - Meets standards"
+    color: "#FF9800"
+  poor:          # D (55-64)
+    min_score: 0.55
+    max_score: 0.64
+    grade: "D"
+    description: "Poor - Below standards"
+    color: "#FF5722"
+  very_poor:     # E (45-54)
+    min_score: 0.45
+    max_score: 0.54
+    grade: "E"
+    description: "Very Poor - Significant issues"
+    color: "#F44336"
+  critical:      # F (0-44)
+    min_score: 0.00
+    max_score: 0.44
+    grade: "F"
+    description: "Critical - Major problems"
+    color: "#B71C1C"
+
+# Enhanced domain weights - Based on real-world security analysis
+domain_weights:
+  security: 0.40      # 40% - Most critical (increased from analysis)
+  performance: 0.20   # 20% - User experience
+  infrastructure: 0.15 # 15% - Technical foundation
+  accessibility: 0.10  # 10% - Inclusivity
+  seo: 0.10           # 10% - Discoverability
+  privacy: 0.05       # 5% - Data protection (decreased to emphasize security)
+
+# Comprehensive probe definitions
+domains:
+  # SECURITY DOMAIN (35% weight)
+  security:
+    name: "Security Assessment"
+    description: "Comprehensive security analysis"
+    weight: 0.35
+    probes:
+      tls_security:
+        name: "TLS/SSL Security"
+        weight: 0.25
+        checks:
+          - name: "protocol_version"
+            type: "tls_handshake"
+            scoring:
+              tls13: 100
+              tls12: 85
+              tls11: 40
+              tls10: 20
+              ssl3: 0
+          - name: "cipher_strength"
+            type: "cipher_analysis"
+            scoring:
+              strong_modern: 100
+              strong_legacy: 80
+              medium: 60
+              weak: 20
+              broken: 0
+          - name: "certificate_validity"
+            type: "certificate_check"
+            scoring:
+              perfect: 100
+              good: 85
+              acceptable: 70
+              issues: 40
+              invalid: 0
+
+      dns_security:
+        name: "DNS Security"
+        weight: 0.25  # Increased from 0.20 due to email security importance
+        checks:
+          - name: "dnssec_validation"
+            type: "dnssec_query"
+            scoring:
+              enabled_valid: 100
+              enabled_invalid: 50
+              disabled: 0
+          - name: "mail_security"
+            type: "email_security"
+            sub_checks:
+              spf:
+                scoring:
+                  strict_policy_with_all: 100  # "v=spf1 ... -all"
+                  strict_policy_soft_fail: 80  # "v=spf1 ... ~all"
+                  basic_policy: 60
+                  missing: 0
+              dmarc:
+                scoring:
+                  reject_policy_with_reports: 100  # "p=reject; rua=..."
+                  reject_policy: 90
+                  quarantine_policy: 80
+                  none_policy: 40
+                  missing: 0
+              dkim:
+                scoring:
+                  rsa_2048_or_higher: 100
+                  rsa_1024: 80
+                  basic_setup: 70
+                  missing: 0
+          - name: "caa_records"
+            type: "dns_query"
+            record_type: "CAA"
+            scoring:
+              comprehensive_policy: 100  # Multiple CAs with iodef
+              basic_policy: 80
+              missing: 0
+
+      security_headers:
+        name: "HTTP Security Headers"
+        weight: 0.25  # Increased from 0.20 - critical for XSS protection
+        checks:
+          - name: "hsts_header"
+            type: "http_header"
+            header: "Strict-Transport-Security"
+            scoring:
+              perfect_with_preload: 100      # "max-age=31536000; includeSubDomains; preload"
+              good_with_subdomains: 90       # "max-age=31536000; includeSubDomains"
+              basic_long_maxage: 70          # "max-age=31536000"
+              basic_short_maxage: 50         # "max-age=3600"
+              missing: 0
+          - name: "csp_header"
+            type: "http_header"
+            header: "Content-Security-Policy"
+            scoring:
+              strict_with_nonce_and_report: 100  # default-src 'none'; script-src 'nonce-...'; report-uri
+              strict_with_nonce: 90              # default-src 'none'; script-src 'nonce-...'
+              moderate_policy: 80                # Basic CSP with some restrictions
+              basic_policy: 60                   # Minimal CSP
+              missing: 0
+          - name: "frame_protection"
+            type: "http_header"
+            header: "X-Frame-Options"
+            scoring:
+              deny: 100                      # "DENY"
+              sameorigin: 90                 # "SAMEORIGIN"
+              allow_from: 70                 # "ALLOW-FROM uri"
+              missing: 0
+          - name: "content_type_protection"
+            type: "http_header"
+            header: "X-Content-Type-Options"
+            scoring:
+              nosniff: 100                   # "nosniff"
+              missing: 0
+          - name: "referrer_policy"
+            type: "http_header"
+            header: "Referrer-Policy"
+            scoring:
+              strict_origin_when_cross_origin: 100  # Best balance
+              no_referrer_when_downgrade: 90        # Good default
+              strict_origin: 85                     # Very secure
+              no_referrer: 80                       # Most secure but may break functionality
+              missing: 0
+          - name: "permissions_policy"
+            type: "http_header"
+            header: "Permissions-Policy"
+            scoring:
+              comprehensive_restrictions: 100    # Multiple features restricted
+              basic_restrictions: 80             # Some features restricted
+              missing: 0
+
+      https_implementation:
+        name: "HTTPS Implementation"
+        weight: 0.15
+        checks:
+          - name: "https_accessibility"
+            type: "http_request"
+            url_scheme: "https"
+            scoring:
+              fast_response_under_500ms: 100
+              good_response_under_1000ms: 90
+              acceptable_response_under_2000ms: 80
+              slow_response: 60
+              timeout_or_error: 0
+          - name: "http_to_https_redirect"
+            type: "redirect_analysis"
+            scoring:
+              direct_301_redirect: 100       # Direct HTTP -> HTTPS
+              direct_302_redirect: 95        # Direct HTTP -> HTTPS (temporary)
+              chain_redirect_to_https: 80    # Multiple redirects but ends in HTTPS
+              https_available_no_redirect: 40 # HTTPS works but no redirect
+              http_only: 0                   # No HTTPS available
+
+      vulnerability_assessment:
+        name: "Vulnerability Assessment"
+        weight: 0.10
+        checks:
+          - name: "known_vulnerabilities"
+            type: "security_scan"
+            scoring:
+              no_vulnerabilities: 100
+              low_risk: 80
+              medium_risk: 60
+              high_risk: 30
+              critical: 0
+
+      certificate_management:
+        name: "Certificate Management"
+        weight: 0.10
+        checks:
+          - name: "certificate_chain"
+            type: "cert_chain_analysis"
+            scoring:
+              perfect_chain: 100
+              good_chain: 85
+              issues: 60
+              broken: 0
+
+  # PERFORMANCE DOMAIN (20% weight)
+  performance:
+    name: "Performance Assessment"
+    description: "Speed and optimization analysis"
+    weight: 0.20
+    probes:
+      page_speed:
+        name: "Page Load Speed"
+        weight: 0.40
+        checks:
+          - name: "first_contentful_paint"
+            type: "core_web_vital"
+            scoring:
+              excellent: 100  # < 1.8s
+              good: 80        # < 3.0s
+              needs_improvement: 50 # < 5.0s
+              poor: 0         # >= 5.0s
+
+      core_web_vitals:
+        name: "Core Web Vitals"
+        weight: 0.30
+        checks:
+          - name: "largest_contentful_paint"
+            type: "core_web_vital"
+            scoring:
+              excellent: 100  # < 2.5s
+              good: 80        # < 4.0s
+              poor: 0         # >= 4.0s
+          - name: "cumulative_layout_shift"
+            type: "core_web_vital"
+            scoring:
+              excellent: 100  # < 0.1
+              good: 80        # < 0.25
+              poor: 0         # >= 0.25
+
+      resource_optimization:
+        name: "Resource Optimization"
+        weight: 0.20
+        checks:
+          - name: "compression"
+            type: "content_encoding"
+            scoring:
+              modern_compression: 100  # Brotli
+              standard_compression: 80 # Gzip
+              no_compression: 0
+
+      caching_strategy:
+        name: "Caching Strategy"
+        weight: 0.10
+        checks:
+          - name: "cache_headers"
+            type: "cache_analysis"
+            scoring:
+              optimal: 100
+              good: 80
+              basic: 60
+              poor: 0
+
+  # INFRASTRUCTURE DOMAIN (15% weight)
+  infrastructure:
+    name: "Infrastructure Assessment"
+    description: "Technical infrastructure analysis"
+    weight: 0.15
+    probes:
+      ipv6_support:
+        name: "IPv6 Support"
+        weight: 0.40
+        checks:
+          - name: "ipv6_availability"
+            type: "aaaa_query"
+            scoring:
+              full_support: 100
+              partial_support: 70
+              no_support: 0
+
+      cdn_implementation:
+        name: "CDN Implementation"
+        weight: 0.35
+        checks:
+          - name: "cdn_detection"
+            type: "cdn_analysis"
+            scoring:
+              global_cdn: 100
+              regional_cdn: 80
+              basic_cdn: 60
+              no_cdn: 0
+
+      geographic_distribution:
+        name: "Geographic Distribution"
+        weight: 0.25
+        checks:
+          - name: "global_presence"
+            type: "geo_analysis"
+            scoring:
+              global: 100
+              multi_region: 80
+              single_region: 60
+              local_only: 40
+
+  # ACCESSIBILITY DOMAIN (10% weight)
+  accessibility:
+    name: "Accessibility Assessment"
+    description: "Web accessibility compliance"
+    weight: 0.10
+    probes:
+      wcag_compliance:
+        name: "WCAG Compliance"
+        weight: 0.70
+        checks:
+          - name: "accessibility_scan"
+            type: "a11y_analysis"
+            scoring:
+              wcag_aaa: 100
+              wcag_aa: 85
+              wcag_a: 70
+              non_compliant: 0
+
+      usability_features:
+        name: "Usability Features"
+        weight: 0.30
+        checks:
+          - name: "keyboard_navigation"
+            type: "usability_check"
+            scoring:
+              full_support: 100
+              partial_support: 70
+              no_support: 0
+
+  # SEO DOMAIN (10% weight)
+  seo:
+    name: "SEO Assessment"
+    description: "Search engine optimization analysis"
+    weight: 0.10
+    probes:
+      meta_optimization:
+        name: "Meta Tags Optimization"
+        weight: 0.40
+        checks:
+          - name: "meta_tags"
+            type: "meta_analysis"
+            scoring:
+              comprehensive: 100
+              good: 80
+              basic: 60
+              missing: 0
+
+      structured_data:
+        name: "Structured Data"
+        weight: 0.30
+        checks:
+          - name: "schema_markup"
+            type: "structured_data"
+            scoring:
+              rich_markup: 100
+              basic_markup: 80
+              no_markup: 0
+
+      mobile_friendliness:
+        name: "Mobile Friendliness"
+        weight: 0.30
+        checks:
+          - name: "mobile_optimization"
+            type: "mobile_analysis"
+            scoring:
+              fully_optimized: 100
+              partially_optimized: 70
+              not_optimized: 0
+
+  # PRIVACY DOMAIN (10% weight)
+  privacy:
+    name: "Privacy Assessment"
+    description: "Data protection and privacy compliance"
+    weight: 0.10
+    probes:
+      gdpr_compliance:
+        name: "GDPR Compliance"
+        weight: 0.60
+        checks:
+          - name: "privacy_policy"
+            type: "privacy_analysis"
+            scoring:
+              comprehensive: 100
+              basic: 80
+              missing: 0
+          - name: "cookie_consent"
+            type: "cookie_analysis"
+            scoring:
+              compliant: 100
+              basic: 70
+              missing: 0
+
+      data_protection:
+        name: "Data Protection"
+        weight: 0.40
+        checks:
+          - name: "data_security"
+            type: "data_analysis"
+            scoring:
+              excellent: 100
+              good: 80
+              poor: 40
+              critical: 0
+
+# Output configuration
+output:
+  formats:
+    - json
+    - yaml
+    - csv
+    - html
+    - pdf
+    - xml
+    
+  report_sections:
+    executive_summary:
+      - overall_grade
+      - domain_scores
+      - key_findings
+      - recommendations
+    
+    detailed_analysis:
+      - probe_results
+      - technical_details
+      - compliance_status
+      - improvement_roadmap
+    
+    comparative_analysis:
+      - industry_benchmarks
+      - competitor_comparison
+      - trend_analysis
+
+# Internationalization
+i18n:
+  default_language: "en"
+  supported_languages:
+    - "en"  # English
+    - "th"  # Thai
+    - "ja"  # Japanese
+    - "zh"  # Chinese
+    - "es"  # Spanish
+    - "fr"  # French
+    - "de"  # German
+    - "pt"  # Portuguese
+    - "ru"  # Russian
+    - "ar"  # Arabic
+
+# Error handling and resilience
+error_handling:
+  network_timeout: "partial_score"
+  dns_failure: "record_failure_continue"
+  certificate_error: "security_warning"
+  http_error: "document_status"
+  probe_failure: "skip_with_penalty"
+  
+  retry_strategy:
+    max_retries: 3
+    backoff_multiplier: 2
+    max_backoff: 30
+
+# Quality assurance
+quality_assurance:
+  cross_validation: true
+  consistency_checks: true
+  benchmark_validation: true
+  statistical_validation: true 

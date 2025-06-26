@@ -1,0 +1,256 @@
+# DQIX Probe Definition Language (PDL)
+# Domain-Specific Language for defining security probes
+# Shared across Python, Go, and Rust implementations
+
+version: "1.0"
+metadata:
+  name: "DQIX Core Probes"
+  description: "Domain Quality Index probe definitions"
+  authors: ["DQIX Team"]
+  license: "MIT"
+
+# Global configuration
+config:
+  timeout_seconds: 30
+  max_retries: 3
+  user_agent: "DQIX/1.0 (Domain Quality Assessment)"
+  
+# Scoring weights (must sum to 1.0)
+weights:
+  tls: 0.25
+  dns: 0.25
+  security_headers: 0.25
+  https: 0.25
+
+# Probe definitions
+probes:
+  # TLS Security Probe
+  tls:
+    name: "TLS Security Analysis"
+    category: "security"
+    priority: 1
+    
+    checks:
+      - name: "protocol_version"
+        type: "tls_handshake"
+        target: "443"
+        criteria:
+          minimum_version: "TLSv1.2"
+          preferred_version: "TLSv1.3"
+        scoring:
+          tls13: 100
+          tls12: 80
+          tls11: 40
+          tls10: 20
+          ssl3: 0
+          
+      - name: "cipher_strength"
+        type: "cipher_analysis"
+        criteria:
+          minimum_bits: 128
+          preferred_bits: 256
+        scoring:
+          aes256: 100
+          aes128: 80
+          weak_cipher: 20
+          
+      - name: "certificate_validity"
+        type: "certificate_check"
+        criteria:
+          valid_chain: true
+          not_expired: true
+          proper_hostname: true
+        scoring:
+          all_valid: 100
+          minor_issues: 60
+          major_issues: 20
+
+  # DNS Security Probe  
+  dns:
+    name: "DNS Security Analysis"
+    category: "security"
+    priority: 2
+    
+    checks:
+      - name: "dnssec_validation"
+        type: "dnssec_query"
+        criteria:
+          dnssec_enabled: true
+        scoring:
+          enabled: 100
+          disabled: 0
+          
+      - name: "ipv6_support"
+        type: "aaaa_query"
+        criteria:
+          has_ipv6: true
+        scoring:
+          has_aaaa: 100
+          no_aaaa: 60
+          
+      - name: "mail_security"
+        type: "txt_record_analysis"
+        sub_checks:
+          spf:
+            query: "TXT"
+            pattern: "v=spf1"
+            scoring:
+              strict_policy: 100
+              soft_policy: 80
+              missing: 0
+          dmarc:
+            query: "TXT"
+            domain_prefix: "_dmarc"
+            pattern: "v=DMARC1"
+            scoring:
+              reject_policy: 100
+              quarantine_policy: 80
+              none_policy: 40
+              missing: 0
+              
+      - name: "caa_records"
+        type: "caa_query"
+        criteria:
+          has_caa: true
+        scoring:
+          restrictive_caa: 100
+          permissive_caa: 80
+          no_caa: 60
+
+  # Security Headers Probe
+  security_headers:
+    name: "HTTP Security Headers"
+    category: "security"
+    priority: 3
+    
+    checks:
+      - name: "hsts_header"
+        type: "http_header"
+        header: "Strict-Transport-Security"
+        criteria:
+          present: true
+          min_max_age: 31536000  # 1 year
+          include_subdomains: true
+          preload: true
+        scoring:
+          perfect: 100
+          good: 80
+          basic: 60
+          missing: 0
+          
+      - name: "csp_header"
+        type: "http_header"
+        header: "Content-Security-Policy"
+        criteria:
+          present: true
+          no_unsafe_inline: true
+          no_unsafe_eval: true
+        scoring:
+          strict_policy: 100
+          moderate_policy: 80
+          basic_policy: 60
+          missing: 0
+          
+      - name: "frame_options"
+        type: "http_header"
+        header: "X-Frame-Options"
+        criteria:
+          values: ["DENY", "SAMEORIGIN"]
+        scoring:
+          deny: 100
+          sameorigin: 80
+          missing: 0
+          
+      - name: "content_type_options"
+        type: "http_header"
+        header: "X-Content-Type-Options"
+        criteria:
+          value: "nosniff"
+        scoring:
+          present: 100
+          missing: 0
+
+  # HTTPS Accessibility Probe
+  https:
+    name: "HTTPS Accessibility"
+    category: "security"
+    priority: 4
+    
+    checks:
+      - name: "https_accessible"
+        type: "https_request"
+        port: 443
+        criteria:
+          status_codes: [200, 301, 302]
+          response_time_ms: 5000
+        scoring:
+          fast_response: 100    # < 1s
+          normal_response: 80   # < 3s
+          slow_response: 60     # < 5s
+          timeout: 0
+          
+      - name: "http_redirect"
+        type: "http_request"
+        port: 80
+        criteria:
+          redirects_to_https: true
+          redirect_codes: [301, 302, 307, 308]
+        scoring:
+          permanent_redirect: 100  # 301, 308
+          temporary_redirect: 80   # 302, 307
+          no_redirect: 0
+          
+      - name: "redirect_efficiency"
+        type: "redirect_chain"
+        criteria:
+          max_hops: 3
+          direct_https: true
+        scoring:
+          direct: 100
+          one_hop: 80
+          two_hops: 60
+          many_hops: 40
+
+# Output formats
+output:
+  formats:
+    - json
+    - yaml
+    - csv
+    - html
+    
+  fields:
+    summary:
+      - domain
+      - overall_score
+      - compliance_level
+      - timestamp
+      
+    detailed:
+      - probe_results
+      - individual_scores
+      - recommendations
+      - technical_details
+
+# Compliance levels based on overall score
+compliance_levels:
+  advanced: 0.85    # >= 85%
+  standard: 0.70    # >= 70%
+  basic: 0.50       # >= 50%
+  needs_improvement: 0.0  # < 50%
+
+# Error handling
+error_handling:
+  network_timeout: "skip_check"
+  dns_failure: "record_failure"
+  certificate_error: "partial_score"
+  http_error: "record_status"
+
+# Internationalization
+i18n:
+  default_language: "en"
+  supported_languages:
+    - "en"
+    - "th"
+    - "ja"
+    - "zh" 
