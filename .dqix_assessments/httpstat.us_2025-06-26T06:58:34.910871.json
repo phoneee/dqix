@@ -1,0 +1,76 @@
+{
+  "domain": "httpstat.us",
+  "overall_score": 0.48333333333333334,
+  "compliance_level": "basic",
+  "timestamp": "2025-06-26T06:58:34.910871",
+  "probe_results": [
+    {
+      "probe_id": "tls",
+      "score": 0.9999999999999999,
+      "category": "security",
+      "details": {
+        "tls_version": "TLSv1.3",
+        "cipher_suite": "TLS_AES_256_GCM_SHA384",
+        "certificate_subject": [
+          [
+            [
+              "commonName",
+              "httpstat.us"
+            ]
+          ]
+        ],
+        "certificate_issuer": [
+          [
+            [
+              "countryName",
+              "US"
+            ]
+          ],
+          [
+            [
+              "organizationName",
+              "DigiCert, Inc."
+            ]
+          ],
+          [
+            [
+              "commonName",
+              "GeoTrust Global TLS RSA4096 SHA256 2022 CA1"
+            ]
+          ]
+        ],
+        "expires": "Nov 16 23:59:59 2025 GMT"
+      },
+      "error": null
+    },
+    {
+      "probe_id": "dns",
+      "score": 0.2,
+      "category": "security",
+      "details": {
+        "a_records": [
+          "20.40.202.3"
+        ],
+        "aaaa_records": [],
+        "mx_records": [],
+        "spf_records": [],
+        "dmarc_records": []
+      },
+      "error": null
+    },
+    {
+      "probe_id": "security_headers",
+      "score": 0.25,
+      "category": "security",
+      "details": {
+        "strict-transport-security": "max-age=2592000",
+        "x-frame-options": null,
+        "x-content-type-options": null,
+        "x-xss-protection": null,
+        "content-security-policy": null,
+        "referrer-policy": null
+      },
+      "error": null
+    }
+  ]
+}

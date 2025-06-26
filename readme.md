@@ -1,178 +1,341 @@
-# DQIX - Domain Quality Index
+# 🔍 DQIX - Domain Quality Index
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+**Advanced domain assessment and analysis tool with clean architecture**
 
-A modern, clean architecture implementation for assessing domain quality across security, performance, and compliance dimensions.
+DQIX is a comprehensive Python library for measuring domain quality, security, and compliance. Built with clean architecture principles, it provides detailed analysis of domains through various probes and generates actionable insights.
 
-## 🚀 Quick Start
+## ✨ Features
 
-### Installation
+### 🚀 Enhanced CLI Interface
+- **Detailed Analysis**: Comprehensive probe results with scoring and recommendations
+- **Multiple Output Formats**: Table, JSON, and chart visualizations
+- **Bulk Assessment**: Process multiple domains from files with progress tracking
+- **Domain Comparison**: Side-by-side analysis of multiple domains
+- **Visualization**: ASCII charts, graphs, and dashboard-style output
+- **Export Capabilities**: Save results in JSON, CSV, and detailed reports
+
+### 🔬 Assessment Capabilities
+- **TLS/SSL Security**: Certificate validation, protocol analysis, cipher strength
+- **DNS Security**: DNSSEC validation, CAA records, DNS configuration
+- **Security Headers**: HSTS, CSP, X-Frame-Options, and other security headers
+- **Compliance Levels**: Basic, Enhanced, and Critical Infrastructure compliance
+- **Scoring System**: 0-100 scoring with detailed breakdown
+
+### 📊 Visualization & Reporting
+- **Interactive Charts**: Bar charts, histograms, pie charts, radar charts
+- **Performance Matrix**: Cross-domain probe comparison
+- **Dashboard Views**: Comprehensive assessment summaries
+- **Trend Analysis**: Performance trends across multiple assessments
+- **Real-time Progress**: Live progress indicators for bulk operations
+
+## 🛠️ Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/dqix.git
+git clone https://github.com/yourusername/dqix.git
 cd dqix
 
 # Install dependencies
-pip install dnspython httpx cryptography pydantic typer rich
-
-# Or install from pyproject.toml
 pip install -e .
+
+# Or install from PyPI (when available)
+pip install dqix
 ```
 
-### Basic Usage
+## 🚀 Quick Start
+
+### Single Domain Assessment
 
 ```bash
-# Assess a single domain
+# Basic assessment
 python -m dqix assess example.com
 
+# Detailed analysis with recommendations
+python -m dqix assess example.com --verbose --detailed --recommendations
+
+# Chart visualization
+python -m dqix assess example.com --format chart
+
+# Save results
+python -m dqix assess example.com --save results.json
+```
+
+### Bulk Domain Assessment
+
+```bash
 # Assess multiple domains from file
 python -m dqix assess-bulk domains.txt
 
-# List available probes
-python -m dqix list-probes
+# Detailed bulk analysis with comparison
+python -m dqix assess-bulk domains.txt --verbose --compare
+
+# Generate comprehensive report
+python -m dqix assess-bulk domains.txt --report bulk_report.json
+
+# Save individual results
+python -m dqix assess-bulk domains.txt --save-dir ./results/
 ```
 
-### Programmatic Usage
+### Domain Comparison
+
+```bash
+# Compare multiple domains
+python -m dqix compare google.com github.com stackoverflow.com
+
+# Detailed comparison with verbose output
+python -m dqix compare google.com example.com --verbose
+
+# Save comparison results
+python -m dqix compare domain1.com domain2.com --save comparison.json
+```
+
+### Available Probes
+
+```bash
+# List all available probes
+python -m dqix list-probes
+
+# Detailed probe information
+python -m dqix list-probes --detailed
+
+# Filter by category
+python -m dqix list-probes --category security
+```
+
+## 📈 Advanced Examples
+
+### Bulk Assessment with Visualization
 
 ```python
-import asyncio
-from dqix.application.use_cases import AssessDomainCommand, AssessDomainUseCase
-from dqix.domain.entities import ProbeConfig
+from examples.advanced_bulk_assessment import BulkAssessmentAnalyzer
 
-# Create assessment use case (see examples/ for full setup)
-async def assess_domain():
-    use_case = create_assessment_use_case()  # See examples/
-    
-    command = AssessDomainCommand(
-        domain_name="example.com",
-        probe_config=ProbeConfig(timeout=30)
-    )
-    
-    result = await use_case.execute(command)
-    print(f"Score: {result.overall_score:.2f}")
-    print(f"Level: {result.compliance_level.value}")
+# Create analyzer
+analyzer = BulkAssessmentAnalyzer()
 
-asyncio.run(assess_domain())
+# Load domains from CSV
+domains = analyzer.load_domains_from_csv("domains.csv")
+
+# Assess with progress tracking
+results = await analyzer.assess_domains_with_progress(domains)
+
+# Generate comprehensive analysis
+analysis = analyzer.analyze_results(results)
+
+# Create visual summary
+analyzer.print_visual_summary(analysis)
+
+# Export results
+analyzer.export_results(results, analysis)
+```
+
+### Visualization Dashboard
+
+```python
+from examples.visualization_demo import DomainAssessmentVisualizer
+
+visualizer = DomainAssessmentVisualizer()
+
+# Create various visualizations
+bar_chart = visualizer.create_score_bar_chart(results)
+matrix = visualizer.create_probe_performance_matrix(results)
+dashboard = visualizer.create_comparison_dashboard(results)
+
+print(bar_chart)
+print(matrix)
+print(dashboard)
+```
+
+## 📊 Sample Output
+
+### Enhanced CLI Assessment
+```
+🔍 Domain Assessment Report
+═══════════════════════════════════════════════════════════════════════════════════
+Domain: example.com
+Timestamp: 2025-01-27 10:30:45
+Overall Score: 85.3/100
+Compliance Level: Enhanced
+
+████████████████████████████████████████████████████████████████████████████████████ 85.3/100
+
+📊 Probe Analysis Results
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Probe              ┃ Category      ┃ Score    ┃ Status     ┃ Details                      ┃
+┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ TLS_Probe          │ Security      │ 90.0     │ ✅ Success │ No issues detected           │
+│ DNS_Probe          │ Security      │ 85.5     │ ✅ Success │ No issues detected           │
+│ SecurityHeaders    │ Security      │ 80.5     │ ✅ Success │ Missing some headers         │
+└────────────────────┴───────────────┴──────────┴────────────┴──────────────────────────────┘
+
+💡 Recommendations:
+  🛡️ Implement additional security headers
+  🔒 Consider upgrading TLS configuration and certificates
+```
+
+### Bulk Assessment Dashboard
+```
+🖥️ DOMAIN ASSESSMENT DASHBOARD
+════════════════════════════════════════════════════════════════════════════════════════════════════
+Generated: 2025-01-27 10:35:22
+Domains Assessed: 10
+
+📊 SUMMARY STATISTICS
+──────────────────────────────────────────────────────
+Average Score:     82.45
+Highest Score:     95.20
+Lowest Score:      65.30
+Score Range:       29.90
+
+🏆 TOP PERFORMERS
+──────────────────────────────
+1. google.com          95.2
+2. github.com           88.7
+3. cloudflare.com       86.4
+
+⚠️ NEEDS ATTENTION
+──────────────────────────────
+1. example.org          65.3
+2. httpstat.us          72.1
+3. httpbin.org          74.8
 ```
 
 ## 🏗️ Architecture
 
-DQIX follows **Clean Architecture** principles with clear separation of concerns:
+DQIX follows clean architecture principles with clear separation of concerns:
 
 ```
 dqix/
-├── domain/           # 🏛️ Core business logic (no dependencies)
-│   ├── entities.py   # Business objects (Domain, ProbeResult, etc.)
-│   ├── services.py   # Business logic (ScoringService, ValidationService)
-│   └── repositories.py # Data access interfaces
-├── application/      # 🚀 Use cases and orchestration
-│   └── use_cases.py  # Business workflows (AssessDomainUseCase)
-├── infrastructure/   # 🔧 External services and I/O
-│   ├── probes/       # Domain checking implementations
-│   └── repositories.py # Data persistence
-└── interfaces/       # 🖥️ User interaction
-    └── cli.py        # Command-line interface
+├── domain/           # Business logic and entities
+├── application/      # Use cases and orchestration
+├── infrastructure/   # External services and probes
+└── interfaces/       # CLI and user interaction
 ```
 
-### Key Benefits
+### Key Components
 
-- **🧪 Testable**: Each layer can be tested independently
-- **🔧 Maintainable**: Changes are isolated to specific layers  
-- **📖 Readable**: Clear structure and naming conventions
-- **🚀 Scalable**: Easy to add new probes or use cases
+- **Domain Layer**: Core business entities and rules
+- **Application Layer**: Use cases that orchestrate domain operations
+- **Infrastructure Layer**: Probes, repositories, and external services
+- **Interface Layer**: CLI commands and user interactions
 
-## 🔬 Available Probes
+## 🔧 Configuration
 
-| Probe | Category | Description |
-|-------|----------|-------------|
-| **TLS** | Security | SSL/TLS configuration and certificate analysis |
-| **DNS** | Security | DNS records, SPF, DMARC validation |
-| **Security Headers** | Security | HTTP security headers analysis |
+### Probe Configuration
 
-Each probe returns a score from 0.0 (worst) to 1.0 (best).
+```python
+from dqix.domain.entities import ProbeConfig
 
-## 📊 Compliance Levels
-
-- **Basic** (0.0-0.6): Essential security requirements
-- **Standard** (0.7-0.8): Comprehensive security practices
-- **Advanced** (0.9-1.0): Best practice implementation
-
-## 📚 Examples
-
-The `examples/` directory contains comprehensive usage examples:
-
-- **`domain_assessment_demo.py`**: Single and multiple domain assessment
-- **`bulk_assessment_demo.py`**: Large-scale domain analysis
-- **`probe_demo.py`**: Individual probe testing and configuration
-
-## 🛠️ Development
-
-### Setup Development Environment
-
-```bash
-# Install development dependencies
-pip install -e ".[dev]"
-
-# Install pre-commit hooks
-pre-commit install
-
-# Run tests
-pytest
-
-# Run linting
-ruff check .
-
-# Run type checking
-mypy dqix/
+config = ProbeConfig(
+    timeout=30,              # Request timeout in seconds
+    retry_count=2,           # Number of retries
+    cache_enabled=True,      # Enable result caching
+    max_concurrent=10        # Maximum concurrent operations
+)
 ```
 
-### Adding New Probes
-
-1. Create probe class in `dqix/infrastructure/probes/`
-2. Inherit from `BaseProbe`
-3. Implement `async def check(domain, config)` method
-4. Register in `implementations.py`
-
-Example:
+### Custom Probes
 
 ```python
 from dqix.infrastructure.probes.base import BaseProbe
 from dqix.domain.entities import ProbeCategory
 
-class MyProbe(BaseProbe):
-    def __init__(self):
-        super().__init__("my_probe", ProbeCategory.SECURITY)
+class CustomProbe(BaseProbe):
+    probe_id = "custom_probe"
+    category = ProbeCategory.SECURITY
     
-    async def check(self, domain, config):
-        # Your probe logic here
-        return self._create_result(domain, score, details)
+    async def execute(self, domain: str, config: ProbeConfig) -> ProbeResult:
+        # Your custom probe logic here
+        pass
 ```
 
-## 🎯 Design Principles
+## 📋 File Formats
 
-1. **Dependency Rule**: Inner layers don't depend on outer layers
-2. **Single Responsibility**: Each class has one reason to change
-3. **Interface Segregation**: Small, focused interfaces
-4. **Dependency Injection**: Dependencies injected at runtime
-5. **Fail Fast**: Validate inputs early and clearly
+### Domain Lists (TXT)
+```
+# Comments start with #
+google.com
+github.com
+example.com
+```
 
-## 📖 Documentation
+### Domain Lists (CSV)
+```csv
+domain,category,description,priority
+google.com,tech,Search engine,high
+github.com,tech,Code repository,medium
+example.com,demo,Example domain,low
+```
 
-- **Architecture Guide**: See `README_CLEAN_ARCHITECTURE.md`
-- **API Documentation**: Generated from inline docstrings
-- **Examples**: Comprehensive examples in `examples/` directory
-- **Contributing**: See `CONTRIBUTING.md`
+### Domain Lists (JSON)
+```json
+{
+  "domains": [
+    {
+      "domain": "google.com",
+      "category": "tech",
+      "description": "Search engine",
+      "priority": "high"
+    }
+  ]
+}
+```
+
+## 🧪 Development
+
+### Running Tests
+
+```bash
+# Run all tests
+make test
+
+# Run with coverage
+make test-coverage
+
+# Run specific test
+pytest tests/test_cli.py -v
+```
+
+### Code Quality
+
+```bash
+# Lint code
+make lint
+
+# Format code
+make format
+
+# Type checking
+make type-check
+
+# Security scan
+make security-check
+```
+
+### Development Setup
+
+```bash
+# Install development dependencies
+make dev-setup
+
+# Install pre-commit hooks
+make install-hooks
+
+# Run quality checks
+make quality
+```
 
 ## 🤝 Contributing
 
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Development Workflow
+
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes with tests
-4. Run quality checks: `make test lint type-check`
-5. Submit a pull request
+3. Make your changes
+4. Add tests for new functionality
+5. Run quality checks: `make quality`
+6. Submit a pull request
 
 ## 📄 License
 
@@ -180,10 +343,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Clean Architecture principles by Robert C. Martin
-- [Public Suffix List](https://publicsuffix.org/) for domain validation standards
-- Modern Python development tools: ruff, mypy, pytest, typer, rich
+- Built with clean architecture principles
+- Inspired by domain-driven design
+- Uses modern Python async/await patterns
+- Rich CLI interface powered by [Typer](https://typer.tiangolo.com/) and [Rich](https://rich.readthedocs.io/)
 
 ---
 
-**"Measuring domain quality with clean, maintainable code"** 🚀
+**DQIX**: Measuring domain quality, together, in the open. 🌐✨

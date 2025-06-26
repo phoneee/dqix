@@ -1,0 +1,2474 @@
+[
+  {
+    "domain": "github.com",
+    "timestamp": "2025-06-26T13:59:37.313521",
+    "overall_score": 0.835,
+    "compliance_level": "advanced",
+    "probe_results": [
+      {
+        "probe_id": "tls",
+        "domain": "github.com",
+        "score": 1.0,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "connection_analysis": {
+            "protocol_version": "TLSv1.3",
+            "cipher_suite": [
+              "TLS_AES_128_GCM_SHA256",
+              "TLSv1.3",
+              128
+            ],
+            "compression": null,
+            "supported_versions": {
+              "TLSv1.0": {
+                "supported": false,
+                "error": "[SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1010)"
+              },
+              "TLSv1.1": {
+                "supported": false,
+                "error": "[SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1010)"
+              },
+              "TLSv1.2": {
+                "supported": true,
+                "version": "TLSv1.2",
+                "cipher": [
+                  "ECDHE-ECDSA-AES128-GCM-SHA256",
+                  "TLSv1.2",
+                  128
+                ],
+                "compression": null
+              },
+              "TLSv1.3": {
+                "supported": true,
+                "version": "TLSv1.3",
+                "cipher": [
+                  "TLS_AES_128_GCM_SHA256",
+                  "TLSv1.3",
+                  128
+                ],
+                "compression": null
+              }
+            }
+          },
+          "certificate_analysis": {
+            "subject": {
+              "commonName": "github.com"
+            },
+            "issuer": {
+              "countryName": "GB",
+              "stateOrProvinceName": "Greater Manchester",
+              "localityName": "Salford",
+              "organizationName": "Sectigo Limited",
+              "commonName": "Sectigo ECC Domain Validation Secure Server CA"
+            },
+            "serial_number": "227830333772454795620750445496253172213",
+            "version": "v3",
+            "fingerprint_sha256": "b8bb81876833873942045a8df8f06219e00602ebcb4384c7abc24f18379c87f5",
+            "validity": {
+              "not_before": "2025-02-05T00:00:00+00:00",
+              "not_after": "2026-02-05T23:59:59+00:00",
+              "validity_period_days": 365,
+              "days_until_expiry": 224,
+              "is_expired": false,
+              "expires_soon": false,
+              "expires_very_soon": false
+            },
+            "public_key": {
+              "algorithm": "Ec",
+              "size_bits": 256,
+              "is_weak": false,
+              "details": {
+                "type": "Elliptic Curve",
+                "curve": "secp256r1",
+                "key_size": 256
+              }
+            },
+            "signature": {
+              "algorithm": "ecdsa-with-SHA256",
+              "is_weak": false,
+              "hash_algorithm": "SHA-256"
+            },
+            "extensions": {
+              "authorityKeyIdentifier": {
+                "critical": false,
+                "value": "<AuthorityKeyIdentifier(key_identifier=b'\\xf6\\x85\\n;\\x11\\x86\\xe1\\x04}\\x0e\\xaa\\x0b,\\xd2\\xee\\xccd{{\\xae', authority_cert_issuer=None, authority_cert_serial_number=None)>"
+              },
+              "subjectKeyIdentifier": {
+                "critical": false,
+                "value": "<SubjectKeyIdentifier(digest=b'S\\xc8\\x7f\\xde\\x9e\\x98N\\xc7M\\xd6\\xbc\\xde\\xab\\x95>0==\\xd1\\xc8')>"
+              },
+              "keyUsage": {
+                "critical": true,
+                "value": "<KeyUsage(digital_signature=True, content_commitment=False, key_encipherment=False, data_encipherment=False, key_agreement=False, key_cert_sign=False, crl_sign=False, encipher_only=False, decipher_only=False)>",
+                "key_usage_details": {
+                  "digital_signature": true,
+                  "key_encipherment": false,
+                  "key_agreement": false,
+                  "key_cert_sign": false,
+                  "crl_sign": false,
+                  "content_commitment": false,
+                  "data_encipherment": false
+                }
+              },
+              "basicConstraints": {
+                "critical": true,
+                "value": "<BasicConstraints(ca=False, path_length=None)>",
+                "basic_constraints_details": {
+                  "ca": false,
+                  "path_length": null
+                }
+              },
+              "extendedKeyUsage": {
+                "critical": false,
+                "value": "<ExtendedKeyUsage([<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.1, name=serverAuth)>, <ObjectIdentifier(oid=1.3.6.1.5.5.7.3.2, name=clientAuth)>])>",
+                "extended_key_usage_details": [
+                  "<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.1, name=serverAuth)>",
+                  "<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.2, name=clientAuth)>"
+                ]
+              },
+              "certificatePolicies": {
+                "critical": false,
+                "value": "<CertificatePolicies([<PolicyInformation(policy_identifier=<ObjectIdentifier(oid=1.3.6.1.4.1.6449.1.2.2.7, name=Unknown OID)>, policy_qualifiers=['https://sectigo.com/CPS'])>, <PolicyInformation(policy_identifier=<ObjectIdentifier(oid=2.23.140.1.2.1, name=Unknown OID)>, policy_qualifiers=None)>])>"
+              },
+              "authorityInfoAccess": {
+                "critical": false,
+                "value": "<AuthorityInformationAccess([<AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.2, name=caIssuers)>, access_location=<UniformResourceIdentifier(value='http://crt.sectigo.com/SectigoECCDomainValidationSecureServerCA.crt')>)>, <AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.1, name=OCSP)>, access_location=<UniformResourceIdentifier(value='http://ocsp.sectigo.com')>)>])>"
+              },
+              "signedCertificateTimestampList": {
+                "critical": false,
+                "value": "<PrecertificateSignedCertificateTimestamps([<cryptography.hazmat.bindings._rust.x509.Sct object at 0x105484780>, <cryptography.hazmat.bindings._rust.x509.Sct object at 0x105484810>, <cryptography.hazmat.bindings._rust.x509.Sct object at 0x1054848a0>])>"
+              },
+              "subjectAltName": {
+                "critical": false,
+                "value": "<SubjectAlternativeName(<GeneralNames([<DNSName(value='github.com')>, <DNSName(value='www.github.com')>])>)>",
+                "parsed_values": [
+                  "<DNSName(value='github.com')>",
+                  "<DNSName(value='www.github.com')>"
+                ]
+              }
+            },
+            "subject_alternative_names": [
+              "<DNSName(value='github.com')>",
+              "<DNSName(value='www.github.com')>"
+            ],
+            "validation": {
+              "self_signed": false,
+              "ca_certificate": false,
+              "wildcard_certificate": false,
+              "extended_validation": false
+            },
+            "security_assessment": {
+              "weak_signature": false,
+              "weak_key": false,
+              "deprecated_features": [],
+              "security_score": 100
+            }
+          },
+          "certificate_chain_analysis": {
+            "chain_length": 0,
+            "certificates": [],
+            "root_ca_trusted": false,
+            "intermediate_cas": [],
+            "error": "'SSLSocket' object has no attribute 'getpeercert_chain'"
+          },
+          "security_assessment": {
+            "protocol_security": {
+              "version": "TLSv1.3",
+              "is_modern": true,
+              "is_deprecated": false,
+              "security_level": "excellent"
+            },
+            "cipher_security": {
+              "cipher_name": "TLS_AES_128_GCM_SHA256",
+              "is_secure": true,
+              "key_exchange": "Unknown",
+              "encryption_algorithm": "AES-128-GCM",
+              "mac_algorithm": "AEAD (Authenticated Encryption)",
+              "security_level": "excellent"
+            },
+            "certificate_security": {
+              "security_score": 100,
+              "has_weak_signature": false,
+              "has_weak_key": false,
+              "deprecated_features": [],
+              "expires_soon": false
+            },
+            "vulnerabilities": [],
+            "recommendations": [],
+            "overall_security_level": "excellent"
+          },
+          "technical_summary": {
+            "connection_successful": true,
+            "modern_tls": true,
+            "secure_cipher": true,
+            "certificate_valid": true,
+            "vulnerabilities_found": 0,
+            "security_score": 100.0
+          }
+        }
+      },
+      {
+        "probe_id": "dns",
+        "domain": "github.com",
+        "score": 0.725,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "dns_records_analysis": {
+            "a_records": [
+              "20.205.243.166"
+            ],
+            "aaaa_records": [],
+            "mx_records": [
+              "10 alt4.aspmx.l.google.com.",
+              "5 alt1.aspmx.l.google.com.",
+              "5 alt2.aspmx.l.google.com.",
+              "1 aspmx.l.google.com.",
+              "10 alt3.aspmx.l.google.com."
+            ],
+            "ns_records": [
+              "ns-1283.awsdns-32.org.",
+              "ns-1707.awsdns-21.co.uk.",
+              "ns-421.awsdns-52.com.",
+              "ns-520.awsdns-01.net.",
+              "dns1.p08.nsone.net.",
+              "dns2.p08.nsone.net.",
+              "dns3.p08.nsone.net.",
+              "dns4.p08.nsone.net."
+            ],
+            "txt_records": [],
+            "cname_records": [],
+            "soa_record": {
+              "mname": "dns1.p08.nsone.net.",
+              "rname": "hostmaster.nsone.net.",
+              "serial": 1656468023,
+              "refresh": 43200,
+              "retry": 7200,
+              "expire": 1209600,
+              "minimum": 3600
+            },
+            "record_counts": {
+              "a_records": 1,
+              "aaaa_records": 0,
+              "mx_records": 5,
+              "ns_records": 8,
+              "txt_records": 0,
+              "cname_records": 0
+            },
+            "ip_analysis": {
+              "ipv4_addresses": 1,
+              "ipv6_error": "The DNS response does not contain an answer to the question: github.com. IN AAAA"
+            },
+            "reverse_dns": {
+              "ipv4": {
+                "hostname": null,
+                "resolved": false,
+                "error": "The DNS query name does not exist: 166.243.205.20.in-addr.arpa."
+              }
+            },
+            "mx_analysis": {
+              "count": 5,
+              "priorities": [
+                10,
+                5,
+                5,
+                1,
+                10
+              ],
+              "mail_servers": [
+                "alt4.aspmx.l.google.com.",
+                "alt1.aspmx.l.google.com.",
+                "alt2.aspmx.l.google.com.",
+                "aspmx.l.google.com.",
+                "alt3.aspmx.l.google.com."
+              ],
+              "redundancy": true,
+              "security_analysis": {
+                "multiple_servers": true,
+                "priority_distribution": true,
+                "external_providers": [
+                  "Google",
+                  "Google",
+                  "Google",
+                  "Google",
+                  "Google"
+                ]
+              }
+            },
+            "ns_analysis": {
+              "count": 8,
+              "nameservers": [
+                "ns-1283.awsdns-32.org.",
+                "ns-1707.awsdns-21.co.uk.",
+                "ns-421.awsdns-52.com.",
+                "ns-520.awsdns-01.net.",
+                "dns1.p08.nsone.net.",
+                "dns2.p08.nsone.net.",
+                "dns3.p08.nsone.net.",
+                "dns4.p08.nsone.net."
+              ],
+              "redundancy": true,
+              "diversity": {
+                "unique_domains": 4,
+                "has_diversity": true,
+                "domains": [
+                  "org.",
+                  "uk.",
+                  "net.",
+                  "com."
+                ]
+              },
+              "security_analysis": {
+                "sufficient_nameservers": true,
+                "provider_diversity": true,
+                "known_providers": [
+                  "Amazon Route 53",
+                  "Amazon Route 53",
+                  "Amazon Route 53",
+                  "Amazon Route 53"
+                ]
+              }
+            },
+            "txt_analysis": {
+              "error": "All nameservers failed to answer the query github.com. IN TXT: Server Do53:192.168.1.1@53 answered ; Server Do53:192.168.1.1@53 answered EOF"
+            }
+          },
+          "mail_security_analysis": {
+            "spf_analysis": {
+              "record_found": false,
+              "record_content": "",
+              "version": "",
+              "mechanisms": [],
+              "qualifiers": [],
+              "includes": [],
+              "ip_addresses": [],
+              "issues": [],
+              "security_level": "none",
+              "error": "All nameservers failed to answer the query github.com. IN TXT: Server Do53:192.168.1.1@53 answered ; Server Do53:192.168.1.1@53 answered EOF"
+            },
+            "dmarc_analysis": {
+              "record_found": true,
+              "record_content": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc@github.com",
+              "policy": "reject",
+              "subdomain_policy": "reject",
+              "percentage": 100,
+              "report_addresses": [
+                "mailto:dmarc@github.com"
+              ],
+              "forensic_addresses": [],
+              "alignment": {
+                "dkim": "r",
+                "spf": "r"
+              },
+              "issues": [],
+              "security_level": "strict"
+            },
+            "dkim_analysis": {
+              "selectors_found": [
+                "google",
+                "k1",
+                "k2",
+                "s2"
+              ],
+              "records": {
+                "google": {
+                  "record": "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj6T5sl/RwdSqGoYWaWaFbS2UAeyPrEmd0gogocmRfS441qwR8/0KB81Hw89P0l4YiFRrXYk7NVIGfyCRHAYYZUzCkGeOysI2EjgzLFhd/NEsbRzOEc/kWkK/RO6JFq/5lOn6M9AZw/ap9tds4JG9ApgNNdSpPxp9DmvpsOSgNMVflRxQFrk3kdS4RNAPKu/OP\" \"oA7dlR/A/pECryjRoYgENtDXzdnK70HgCekems6UDzxDj61cjyoKoXtEMF/QsaHEQ1Gjfv014rDJBsubk/kT5VqHkWHa/ia68Z5r228Ety/wFfQNjXTx/J7KGZ9GkZlKED659eiJcLnWcKDSiQlhwIDAQAB",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj6T5sl...",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "k1": {
+                  "record": "k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDbNrX2cY/GUKIFx2G/1I00ftdAj713WP9AQ1xir85i89sA2guU0ta4UX1Xzm06XIU6iBP41VwmPwBGRNofhBVR+e6WHUoNyIR4Bn84LVcfZE20rmDeXQblIupNWBqLXM1Q+VieI/eZu/7k9/vOkLSaQQdml4Cv8lb3PcnluMVIhQIDAQAB;",
+                  "parsed": {
+                    "version": "",
+                    "key_type": "rsa",
+                    "public_key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDbNrX2cY/GUK...",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "k2": {
+                  "record": "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv2aC2KjGKLOwTweBY5A9RpjsxaBXR9r7OAU6U8/zn92ivImI75naUujWbItRI/QmL1jy5PWGqLwoUA0b90ObWaLDc+i9MtTNmGeWO009hr20fIxhGg6XBT2kjZ1DTThopSe1nAndsupmcBwlQ5Q6LJ+ZAxLcujnPIxM0ZBLmgpkv8u6RfY4eFP8OLvdAW3oSu\" \"B0DyLDigQX4Sj8wBO4YIdQH6AAmBeOsidsKAFNFUCpc3vCxtBDR12U+cBg724l3sBkMQ8evnz6idnqxq9QAVYh8k4kJ+RP+6cqTdy7LjIm8xY/bQNpQIpGUAuDo2DjLcCDun9DAI4Q/3z+Q0o9QuQIDAQAB;",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv2aC2K...",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "s2": {
+                  "record": "k=rsa; t=s; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDkdB53C3fStFpuP36H/MH9BLzfUTxV65y8ANRCs/AI8sWSY+S4Q/nDmtPhYL1aUHpw2tMKOuTjEOxwHW3pcmzMmz/ttQZPkoRWpJLcR/I3ALvJtcc5sCIhhZTffZjqujsj/X5KGQhlGwsUTl62O41XJYKmON/gvC/cIbSVF8H/WwIDAQAB",
+                  "parsed": {
+                    "version": "",
+                    "key_type": "rsa",
+                    "public_key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDkdB53C3fStF...",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": [
+                      "s"
+                    ]
+                  }
+                }
+              },
+              "total_selectors_checked": 13,
+              "security_analysis": {
+                "selectors_active": 4,
+                "multiple_selectors": true,
+                "dkim_enabled": true
+              }
+            },
+            "security_score": 60,
+            "recommendations": [
+              "Implement SPF record to prevent email spoofing"
+            ]
+          },
+          "security_features_analysis": {
+            "caa_records": [
+              "0 issue \"globalsign.com\"",
+              "0 issue \"sectigo.com\"",
+              "0 issuewild \"digicert.com\"",
+              "0 issuewild \"sectigo.com\"",
+              "0 issue \"digicert.com\""
+            ],
+            "dnssec_enabled": true,
+            "security_score": 100,
+            "recommendations": []
+          },
+          "technical_assessment": {
+            "ipv6_support": false,
+            "mail_configured": true,
+            "security_features": [
+              "Mail exchange configured",
+              "CAA records present",
+              "DNSSEC enabled"
+            ],
+            "vulnerabilities": [],
+            "recommendations": [
+              "Consider adding IPv6 (AAAA) records for future compatibility"
+            ],
+            "overall_health": "good",
+            "technical_scores": {
+              "basic_dns": 75,
+              "mail_security": 60,
+              "security_features": 100,
+              "ipv6_support": 0,
+              "infrastructure": 100
+            }
+          },
+          "summary": {
+            "total_record_types": 3,
+            "security_features_enabled": 3,
+            "vulnerabilities_identified": 0,
+            "recommendations_count": 1,
+            "overall_health_score": "good",
+            "technical_scores": {
+              "basic_dns": 75,
+              "mail_security": 60,
+              "security_features": 100,
+              "ipv6_support": 0,
+              "infrastructure": 100
+            }
+          }
+        }
+      },
+      {
+        "probe_id": "security_headers",
+        "domain": "github.com",
+        "score": 0.78,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "https_accessible": true,
+          "http_redirects_to_https": true,
+          "response_time_ms": 122,
+          "security_headers_analysis": {
+            "hsts": {
+              "present": true,
+              "raw_value": "max-age=31536000; includeSubdomains; preload",
+              "parsed": {
+                "max_age": 31536000,
+                "include_subdomains": true,
+                "preload": true
+              },
+              "score": 100,
+              "issues": [],
+              "strengths": [
+                "Long max-age (1+ year)",
+                "Includes subdomains",
+                "Preload directive present"
+              ],
+              "security_level": "excellent"
+            },
+            "csp": {
+              "present": true,
+              "raw_value": "default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net/ productionresultssa1.blob.core.windows.net/ productionresultssa2.blob.core.windows.net/ productionresultssa3.blob.core.windows.net/ productionresultssa4.blob.core.windows.net/ productionresultssa5.blob.core.windows.net/ productionresultssa6.blob.core.windows.net/ productionresultssa7.blob.core.windows.net/ productionresultssa8.blob.core.windows.net/ productionresultssa9.blob.core.windows.net/ productionresultssa10.blob.core.windows.net/ productionresultssa11.blob.core.windows.net/ productionresultssa12.blob.core.windows.net/ productionresultssa13.blob.core.windows.net/ productionresultssa14.blob.core.windows.net/ productionresultssa15.blob.core.windows.net/ productionresultssa16.blob.core.windows.net/ productionresultssa17.blob.core.windows.net/ productionresultssa18.blob.core.windows.net/ productionresultssa19.blob.core.windows.net/ github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com github.githubassets.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com www.youtube-nocookie.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com/ user-images.githubusercontent.com/ private-user-images.githubusercontent.com opengraph.githubassets.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com images.ctfassets.net/8aevphvgewt8/; manifest-src 'self'; media-src github.com user-images.githubusercontent.com/ secured-user-images.githubusercontent.com/ private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com assets.ctfassets.net/8aevphvgewt8/ videos.ctfassets.net/8aevphvgewt8/; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/",
+              "directives": {
+                "default-src": [
+                  "'none'"
+                ],
+                "base-uri": [
+                  "'self'"
+                ],
+                "child-src": [
+                  "github.githubassets.com",
+                  "github.com/assets-cdn/worker/",
+                  "github.com/assets/",
+                  "gist.github.com/assets-cdn/worker/"
+                ],
+                "connect-src": [
+                  "'self'",
+                  "uploads.github.com",
+                  "www.githubstatus.com",
+                  "collector.github.com",
+                  "raw.githubusercontent.com",
+                  "api.github.com",
+                  "github-cloud.s3.amazonaws.com",
+                  "github-production-repository-file-5c1aeb.s3.amazonaws.com",
+                  "github-production-upload-manifest-file-7fdce7.s3.amazonaws.com",
+                  "github-production-user-asset-6210df.s3.amazonaws.com",
+                  "*.rel.tunnels.api.visualstudio.com",
+                  "wss://*.rel.tunnels.api.visualstudio.com",
+                  "objects-origin.githubusercontent.com",
+                  "copilot-proxy.githubusercontent.com",
+                  "proxy.individual.githubcopilot.com",
+                  "proxy.business.githubcopilot.com",
+                  "proxy.enterprise.githubcopilot.com",
+                  "*.actions.githubusercontent.com",
+                  "wss://*.actions.githubusercontent.com",
+                  "productionresultssa0.blob.core.windows.net/",
+                  "productionresultssa1.blob.core.windows.net/",
+                  "productionresultssa2.blob.core.windows.net/",
+                  "productionresultssa3.blob.core.windows.net/",
+                  "productionresultssa4.blob.core.windows.net/",
+                  "productionresultssa5.blob.core.windows.net/",
+                  "productionresultssa6.blob.core.windows.net/",
+                  "productionresultssa7.blob.core.windows.net/",
+                  "productionresultssa8.blob.core.windows.net/",
+                  "productionresultssa9.blob.core.windows.net/",
+                  "productionresultssa10.blob.core.windows.net/",
+                  "productionresultssa11.blob.core.windows.net/",
+                  "productionresultssa12.blob.core.windows.net/",
+                  "productionresultssa13.blob.core.windows.net/",
+                  "productionresultssa14.blob.core.windows.net/",
+                  "productionresultssa15.blob.core.windows.net/",
+                  "productionresultssa16.blob.core.windows.net/",
+                  "productionresultssa17.blob.core.windows.net/",
+                  "productionresultssa18.blob.core.windows.net/",
+                  "productionresultssa19.blob.core.windows.net/",
+                  "github-production-repository-image-32fea6.s3.amazonaws.com",
+                  "github-production-release-asset-2e65be.s3.amazonaws.com",
+                  "insights.github.com",
+                  "wss://alive.github.com",
+                  "api.githubcopilot.com",
+                  "api.individual.githubcopilot.com",
+                  "api.business.githubcopilot.com",
+                  "api.enterprise.githubcopilot.com",
+                  "github.githubassets.com"
+                ],
+                "font-src": [
+                  "github.githubassets.com"
+                ],
+                "form-action": [
+                  "'self'",
+                  "github.com",
+                  "gist.github.com",
+                  "copilot-workspace.githubnext.com",
+                  "objects-origin.githubusercontent.com"
+                ],
+                "frame-ancestors": [
+                  "'none'"
+                ],
+                "frame-src": [
+                  "viewscreen.githubusercontent.com",
+                  "notebooks.githubusercontent.com",
+                  "www.youtube-nocookie.com"
+                ],
+                "img-src": [
+                  "'self'",
+                  "data:",
+                  "blob:",
+                  "github.githubassets.com",
+                  "media.githubusercontent.com",
+                  "camo.githubusercontent.com",
+                  "identicons.github.com",
+                  "avatars.githubusercontent.com",
+                  "private-avatars.githubusercontent.com",
+                  "github-cloud.s3.amazonaws.com",
+                  "objects.githubusercontent.com",
+                  "release-assets.githubusercontent.com",
+                  "secured-user-images.githubusercontent.com/",
+                  "user-images.githubusercontent.com/",
+                  "private-user-images.githubusercontent.com",
+                  "opengraph.githubassets.com",
+                  "copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/",
+                  "github-production-user-asset-6210df.s3.amazonaws.com",
+                  "customer-stories-feed.github.com",
+                  "spotlights-feed.github.com",
+                  "objects-origin.githubusercontent.com",
+                  "*.githubusercontent.com",
+                  "images.ctfassets.net/8aevphvgewt8/"
+                ],
+                "manifest-src": [
+                  "'self'"
+                ],
+                "media-src": [
+                  "github.com",
+                  "user-images.githubusercontent.com/",
+                  "secured-user-images.githubusercontent.com/",
+                  "private-user-images.githubusercontent.com",
+                  "github-production-user-asset-6210df.s3.amazonaws.com",
+                  "gist.github.com",
+                  "github.githubassets.com",
+                  "assets.ctfassets.net/8aevphvgewt8/",
+                  "videos.ctfassets.net/8aevphvgewt8/"
+                ],
+                "script-src": [
+                  "github.githubassets.com"
+                ],
+                "style-src": [
+                  "'unsafe-inline'",
+                  "github.githubassets.com"
+                ],
+                "upgrade-insecure-requests": [],
+                "worker-src": [
+                  "github.githubassets.com",
+                  "github.com/assets-cdn/worker/",
+                  "github.com/assets/",
+                  "gist.github.com/assets-cdn/worker/"
+                ]
+              },
+              "score": 75,
+              "issues": [
+                "style-src: 'unsafe-inline'"
+              ],
+              "strengths": [
+                "default-src directive defined",
+                "script-src directive defined",
+                "style-src directive defined",
+                "img-src directive defined"
+              ],
+              "unsafe_directives": [
+                "style-src: 'unsafe-inline'"
+              ],
+              "security_level": "good"
+            },
+            "x_frame_options": {
+              "present": true,
+              "raw_value": "deny",
+              "score": 100,
+              "issues": [],
+              "strengths": [
+                "Completely blocks framing (DENY)"
+              ],
+              "security_level": "excellent"
+            },
+            "x_content_type_options": {
+              "present": true,
+              "raw_value": "nosniff",
+              "score": 100,
+              "issues": [],
+              "strengths": [
+                "MIME sniffing disabled (nosniff)"
+              ],
+              "security_level": "excellent"
+            },
+            "x_xss_protection": {
+              "present": true,
+              "raw_value": "0",
+              "score": 20,
+              "issues": [
+                "XSS protection explicitly disabled"
+              ],
+              "strengths": [],
+              "note": "X-XSS-Protection is deprecated; use CSP instead",
+              "security_level": "poor"
+            },
+            "referrer_policy": {
+              "present": true,
+              "raw_value": "origin-when-cross-origin, strict-origin-when-cross-origin",
+              "score": 30,
+              "issues": [
+                "Unrecognized referrer policy"
+              ],
+              "strengths": [],
+              "security_level": "poor"
+            },
+            "permissions_policy": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "Permissions-Policy header missing"
+              ],
+              "recommendation": "Consider adding Permissions-Policy to control browser features"
+            },
+            "additional_headers": {
+              "server_header": {
+                "present": true,
+                "raw_value": "github.com",
+                "score": 30,
+                "issues": [
+                  "Server information disclosed - consider removing or obfuscating"
+                ],
+                "recommendation": "Remove or obfuscate server header to reduce information disclosure"
+              },
+              "x_powered_by": {
+                "present": false,
+                "score": 100,
+                "strengths": [
+                  "X-Powered-By header not disclosed (good for security)"
+                ]
+              },
+              "expect_ct": {
+                "present": false,
+                "score": 0,
+                "note": "Expect-CT header missing (optional but recommended for CT monitoring)"
+              },
+              "cross_origin_headers": {}
+            }
+          },
+          "header_statistics": {
+            "total_headers": 18,
+            "security_headers_count": 6,
+            "information_disclosure": [
+              "Server: github.com"
+            ],
+            "missing_security_headers": [],
+            "header_categories": {
+              "security": [
+                "Strict-Transport-Security",
+                "X-Frame-Options",
+                "X-Content-Type-Options",
+                "X-XSS-Protection",
+                "Referrer-Policy",
+                "Content-Security-Policy"
+              ],
+              "caching": [
+                "Vary",
+                "Etag",
+                "Cache-Control"
+              ],
+              "content": [
+                "Content-Type",
+                "Content-Language",
+                "Content-Encoding"
+              ],
+              "server_info": [
+                "Server"
+              ],
+              "other": [
+                "Date",
+                "Accept-Ranges",
+                "Set-Cookie",
+                "X-GitHub-Request-Id",
+                "Transfer-Encoding"
+              ]
+            }
+          },
+          "security_assessment": {
+            "overall_score": 78,
+            "security_level": "good",
+            "critical_issues": [],
+            "warnings": [
+              "style-src: 'unsafe-inline'",
+              "XSS protection explicitly disabled",
+              "Unrecognized referrer policy",
+              "Missing security header: permissions_policy",
+              "Missing security header: additional_headers"
+            ],
+            "strengths": [
+              "Long max-age (1+ year)",
+              "Includes subdomains",
+              "Preload directive present",
+              "default-src directive defined",
+              "script-src directive defined",
+              "style-src directive defined",
+              "img-src directive defined",
+              "Completely blocks framing (DENY)",
+              "MIME sniffing disabled (nosniff)"
+            ],
+            "compliance_indicators": {}
+          },
+          "recommendations": [
+            "Remove unsafe CSP directives like 'unsafe-inline' and 'unsafe-eval'",
+            "Remove or obfuscate server information headers (Server, X-Powered-By)"
+          ],
+          "raw_headers": {
+            "Date": "Thu, 26 Jun 2025 06:59:34 GMT",
+            "Content-Type": "text/html; charset=utf-8",
+            "Vary": "X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Accept-Language,Accept-Encoding, Accept, X-Requested-With",
+            "Content-Language": "en-US",
+            "Etag": "W/\"24529024dba0514b91798f8b1855ac1a\"",
+            "Cache-Control": "max-age=0, private, must-revalidate",
+            "Strict-Transport-Security": "max-age=31536000; includeSubdomains; preload",
+            "X-Frame-Options": "deny",
+            "X-Content-Type-Options": "nosniff",
+            "X-XSS-Protection": "0",
+            "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+            "Content-Security-Policy": "default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net/ productionresultssa1.blob.core.windows.net/ productionresultssa2.blob.core.windows.net/ productionresultssa3.blob.core.windows.net/ productionresultssa4.blob.core.windows.net/ productionresultssa5.blob.core.windows.net/ productionresultssa6.blob.core.windows.net/ productionresultssa7.blob.core.windows.net/ productionresultssa8.blob.core.windows.net/ productionresultssa9.blob.core.windows.net/ productionresultssa10.blob.core.windows.net/ productionresultssa11.blob.core.windows.net/ productionresultssa12.blob.core.windows.net/ productionresultssa13.blob.core.windows.net/ productionresultssa14.blob.core.windows.net/ productionresultssa15.blob.core.windows.net/ productionresultssa16.blob.core.windows.net/ productionresultssa17.blob.core.windows.net/ productionresultssa18.blob.core.windows.net/ productionresultssa19.blob.core.windows.net/ github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com github.githubassets.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com www.youtube-nocookie.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com/ user-images.githubusercontent.com/ private-user-images.githubusercontent.com opengraph.githubassets.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com images.ctfassets.net/8aevphvgewt8/; manifest-src 'self'; media-src github.com user-images.githubusercontent.com/ secured-user-images.githubusercontent.com/ private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com assets.ctfassets.net/8aevphvgewt8/ videos.ctfassets.net/8aevphvgewt8/; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/",
+            "Server": "github.com",
+            "Content-Encoding": "gzip",
+            "Accept-Ranges": "bytes",
+            "Set-Cookie": "_gh_sess=zUj6SETGlFDFnQ650e8vicytOzYoSGqONHGGN3Cw20D7VAuhW93K2B9ySroiAESblGyltfn8c195uHs4DbibShBbZenC%2FKWjNHEFs3cTkmI3d37tGwolxDpj8OTDkaJG1YRBjpKG0cTJjd8d6doW90IX9hQ6JmdeTV%2B0JjUnK6%2Fb6x61KldHRt0yPGVsY%2FsLL3LN3sj6IUIS9Q%2FFOA0jE6c%2FTLlSAz8oPQwDApdhWqUR%2BztVAU2lLM4mKzPP8SyZ%2B5TZgWzwpR2DDSnqRKMMVQ%3D%3D--%2FPwDgx8gA4PuzRoe--CX8HKAGqpz0seYVxbSEYHQ%3D%3D; Path=/; HttpOnly; Secure; SameSite=Lax",
+            "X-GitHub-Request-Id": "ECDF:E05D7:F20623:104095B:685CEFD9",
+            "Transfer-Encoding": "chunked"
+          }
+        }
+      }
+    ],
+    "category_scores": {
+      "security": 0.835
+    },
+    "assessment_metadata": {
+      "timeout": 10,
+      "comprehensive": false,
+      "total_probes": 3,
+      "successful_probes": 3
+    }
+  },
+  {
+    "domain": "example.com",
+    "timestamp": "2025-06-26T13:59:38.011220",
+    "overall_score": 0.6033333333333334,
+    "compliance_level": "standard",
+    "probe_results": [
+      {
+        "probe_id": "tls",
+        "domain": "example.com",
+        "score": 1.0,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "connection_analysis": {
+            "protocol_version": "TLSv1.3",
+            "cipher_suite": [
+              "TLS_AES_256_GCM_SHA384",
+              "TLSv1.3",
+              256
+            ],
+            "compression": null,
+            "supported_versions": {
+              "TLSv1.0": {
+                "supported": false,
+                "error": "[SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1010)"
+              },
+              "TLSv1.1": {
+                "supported": false,
+                "error": "[SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1010)"
+              },
+              "TLSv1.2": {
+                "supported": true,
+                "version": "TLSv1.2",
+                "cipher": [
+                  "ECDHE-ECDSA-AES256-GCM-SHA384",
+                  "TLSv1.2",
+                  256
+                ],
+                "compression": null
+              },
+              "TLSv1.3": {
+                "supported": true,
+                "version": "TLSv1.3",
+                "cipher": [
+                  "TLS_AES_256_GCM_SHA384",
+                  "TLSv1.3",
+                  256
+                ],
+                "compression": null
+              }
+            }
+          },
+          "certificate_analysis": {
+            "subject": {
+              "countryName": "US",
+              "stateOrProvinceName": "California",
+              "localityName": "Los Angeles",
+              "organizationName": "Internet Corporation for Assigned Names and Numbers",
+              "commonName": "*.example.com"
+            },
+            "issuer": {
+              "countryName": "US",
+              "organizationName": "DigiCert Inc",
+              "commonName": "DigiCert Global G3 TLS ECC SHA384 2020 CA1"
+            },
+            "serial_number": "14416812407440461216471976375640436634",
+            "version": "v3",
+            "fingerprint_sha256": "455943cf819425761d1f950263ebf54755d8d684c25535943976f488bc79d23b",
+            "validity": {
+              "not_before": "2025-01-15T00:00:00+00:00",
+              "not_after": "2026-01-15T23:59:59+00:00",
+              "validity_period_days": 365,
+              "days_until_expiry": 203,
+              "is_expired": false,
+              "expires_soon": false,
+              "expires_very_soon": false
+            },
+            "public_key": {
+              "algorithm": "Ec",
+              "size_bits": 256,
+              "is_weak": false,
+              "details": {
+                "type": "Elliptic Curve",
+                "curve": "secp256r1",
+                "key_size": 256
+              }
+            },
+            "signature": {
+              "algorithm": "ecdsa-with-SHA384",
+              "is_weak": false,
+              "hash_algorithm": "SHA-384"
+            },
+            "extensions": {
+              "authorityKeyIdentifier": {
+                "critical": false,
+                "value": "<AuthorityKeyIdentifier(key_identifier=b'\\x8a#\\xeb\\x9ek\\xd7\\xf97]\\xf9m!9v\\x9a\\xa1g\\xde\\x10\\xa8', authority_cert_issuer=None, authority_cert_serial_number=None)>"
+              },
+              "subjectKeyIdentifier": {
+                "critical": false,
+                "value": "<SubjectKeyIdentifier(digest=b'\\xf0\\xc1j2\\r\\xec\\xda\\xc7\\xea\\x8f\\xcd\\rm\\x19\\x12Y\\xd1\\xber\\xed')>"
+              },
+              "subjectAltName": {
+                "critical": false,
+                "value": "<SubjectAlternativeName(<GeneralNames([<DNSName(value='*.example.com')>, <DNSName(value='example.com')>])>)>",
+                "parsed_values": [
+                  "<DNSName(value='*.example.com')>",
+                  "<DNSName(value='example.com')>"
+                ]
+              },
+              "certificatePolicies": {
+                "critical": false,
+                "value": "<CertificatePolicies([<PolicyInformation(policy_identifier=<ObjectIdentifier(oid=2.23.140.1.2.2, name=Unknown OID)>, policy_qualifiers=['http://www.digicert.com/CPS'])>])>"
+              },
+              "keyUsage": {
+                "critical": true,
+                "value": "<KeyUsage(digital_signature=True, content_commitment=False, key_encipherment=False, data_encipherment=False, key_agreement=True, key_cert_sign=False, crl_sign=False, encipher_only=False, decipher_only=False)>",
+                "key_usage_details": {
+                  "digital_signature": true,
+                  "key_encipherment": false,
+                  "key_agreement": true,
+                  "key_cert_sign": false,
+                  "crl_sign": false,
+                  "content_commitment": false,
+                  "data_encipherment": false,
+                  "encipher_only": false,
+                  "decipher_only": false
+                }
+              },
+              "extendedKeyUsage": {
+                "critical": false,
+                "value": "<ExtendedKeyUsage([<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.1, name=serverAuth)>, <ObjectIdentifier(oid=1.3.6.1.5.5.7.3.2, name=clientAuth)>])>",
+                "extended_key_usage_details": [
+                  "<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.1, name=serverAuth)>",
+                  "<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.2, name=clientAuth)>"
+                ]
+              },
+              "cRLDistributionPoints": {
+                "critical": false,
+                "value": "<CRLDistributionPoints([<DistributionPoint(full_name=[<UniformResourceIdentifier(value='http://crl3.digicert.com/DigiCertGlobalG3TLSECCSHA3842020CA1-2.crl')>], relative_name=None, reasons=None, crl_issuer=None)>, <DistributionPoint(full_name=[<UniformResourceIdentifier(value='http://crl4.digicert.com/DigiCertGlobalG3TLSECCSHA3842020CA1-2.crl')>], relative_name=None, reasons=None, crl_issuer=None)>])>"
+              },
+              "authorityInfoAccess": {
+                "critical": false,
+                "value": "<AuthorityInformationAccess([<AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.1, name=OCSP)>, access_location=<UniformResourceIdentifier(value='http://ocsp.digicert.com')>)>, <AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.2, name=caIssuers)>, access_location=<UniformResourceIdentifier(value='http://cacerts.digicert.com/DigiCertGlobalG3TLSECCSHA3842020CA1-2.crt')>)>])>"
+              },
+              "basicConstraints": {
+                "critical": true,
+                "value": "<BasicConstraints(ca=False, path_length=None)>",
+                "basic_constraints_details": {
+                  "ca": false,
+                  "path_length": null
+                }
+              },
+              "signedCertificateTimestampList": {
+                "critical": false,
+                "value": "<PrecertificateSignedCertificateTimestamps([<cryptography.hazmat.bindings._rust.x509.Sct object at 0x10545b2d0>, <cryptography.hazmat.bindings._rust.x509.Sct object at 0x10545b360>, <cryptography.hazmat.bindings._rust.x509.Sct object at 0x10545b3f0>])>"
+              }
+            },
+            "subject_alternative_names": [
+              "<DNSName(value='*.example.com')>",
+              "<DNSName(value='example.com')>"
+            ],
+            "validation": {
+              "self_signed": false,
+              "ca_certificate": false,
+              "wildcard_certificate": true,
+              "extended_validation": false
+            },
+            "security_assessment": {
+              "weak_signature": false,
+              "weak_key": false,
+              "deprecated_features": [],
+              "security_score": 100
+            }
+          },
+          "certificate_chain_analysis": {
+            "chain_length": 0,
+            "certificates": [],
+            "root_ca_trusted": false,
+            "intermediate_cas": [],
+            "error": "'SSLSocket' object has no attribute 'getpeercert_chain'"
+          },
+          "security_assessment": {
+            "protocol_security": {
+              "version": "TLSv1.3",
+              "is_modern": true,
+              "is_deprecated": false,
+              "security_level": "excellent"
+            },
+            "cipher_security": {
+              "cipher_name": "TLS_AES_256_GCM_SHA384",
+              "is_secure": true,
+              "key_exchange": "Unknown",
+              "encryption_algorithm": "AES-256-GCM",
+              "mac_algorithm": "AEAD (Authenticated Encryption)",
+              "security_level": "excellent"
+            },
+            "certificate_security": {
+              "security_score": 100,
+              "has_weak_signature": false,
+              "has_weak_key": false,
+              "deprecated_features": [],
+              "expires_soon": false
+            },
+            "vulnerabilities": [],
+            "recommendations": [],
+            "overall_security_level": "excellent"
+          },
+          "technical_summary": {
+            "connection_successful": true,
+            "modern_tls": true,
+            "secure_cipher": true,
+            "certificate_valid": true,
+            "vulnerabilities_found": 0,
+            "security_score": 100.0
+          }
+        }
+      },
+      {
+        "probe_id": "dns",
+        "domain": "example.com",
+        "score": 0.81,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "dns_records_analysis": {
+            "a_records": [
+              "23.215.0.136",
+              "23.215.0.138",
+              "96.7.128.175",
+              "96.7.128.198",
+              "23.192.228.80",
+              "23.192.228.84"
+            ],
+            "aaaa_records": [
+              "2600:1408:ec00:36::1736:7f31",
+              "2600:1406:3a00:21::173e:2e65",
+              "2600:1406:3a00:21::173e:2e66",
+              "2600:1406:bc00:53::b81e:94c8",
+              "2600:1406:bc00:53::b81e:94ce",
+              "2600:1408:ec00:36::1736:7f24"
+            ],
+            "mx_records": [
+              "0 ."
+            ],
+            "ns_records": [
+              "a.iana-servers.net.",
+              "b.iana-servers.net."
+            ],
+            "txt_records": [
+              "\"v=spf1 -all\"",
+              "\"_k2n1y4vw3qtb4skdx9e7dxt97qrmmq9\""
+            ],
+            "cname_records": [],
+            "soa_record": {
+              "mname": "ns.icann.org.",
+              "rname": "noc.dns.icann.org.",
+              "serial": 2025011691,
+              "refresh": 7200,
+              "retry": 3600,
+              "expire": 1209600,
+              "minimum": 3600
+            },
+            "record_counts": {
+              "a_records": 6,
+              "aaaa_records": 6,
+              "mx_records": 1,
+              "ns_records": 2,
+              "txt_records": 2,
+              "cname_records": 0
+            },
+            "ip_analysis": {
+              "ipv4_addresses": 6,
+              "ipv6_addresses": 6
+            },
+            "reverse_dns": {
+              "ipv4": {
+                "hostname": "a23-215-0-136.deploy.static.akamaitechnologies.com.",
+                "resolved": true
+              },
+              "ipv6": {
+                "hostname": "g2600-1408-ec00-0036-0000-0000-1736-7f31.deploy.static.akamaitechnologies.com.",
+                "resolved": true
+              }
+            },
+            "mx_analysis": {
+              "count": 1,
+              "priorities": [
+                0
+              ],
+              "mail_servers": [
+                "."
+              ],
+              "redundancy": false,
+              "security_analysis": {
+                "multiple_servers": false,
+                "priority_distribution": false,
+                "external_providers": []
+              }
+            },
+            "ns_analysis": {
+              "count": 2,
+              "nameservers": [
+                "a.iana-servers.net.",
+                "b.iana-servers.net."
+              ],
+              "redundancy": true,
+              "diversity": {
+                "unique_domains": 1,
+                "has_diversity": false,
+                "domains": [
+                  "net."
+                ]
+              },
+              "security_analysis": {
+                "sufficient_nameservers": true,
+                "provider_diversity": false,
+                "known_providers": []
+              }
+            },
+            "txt_analysis": {
+              "count": 2,
+              "record_types": {
+                "spf": "v=spf1 -all"
+              },
+              "security_records": [
+                "SPF"
+              ],
+              "verification_records": [],
+              "other_records": [
+                "_k2n1y4vw3qtb4skdx9e7dxt97qrmmq9"
+              ]
+            }
+          },
+          "mail_security_analysis": {
+            "spf_analysis": {
+              "record_found": true,
+              "record_content": "v=spf1 -all",
+              "version": "spf1",
+              "mechanisms": [],
+              "qualifiers": [
+                "-all"
+              ],
+              "includes": [],
+              "ip_addresses": [],
+              "issues": [],
+              "security_level": "strict"
+            },
+            "dmarc_analysis": {
+              "record_found": true,
+              "record_content": "v=DMARC1;p=reject;sp=reject;adkim=s;aspf=s",
+              "policy": "reject",
+              "subdomain_policy": "reject",
+              "percentage": 100,
+              "report_addresses": [],
+              "forensic_addresses": [],
+              "alignment": {
+                "dkim": "s",
+                "spf": "s"
+              },
+              "issues": [],
+              "security_level": "strict"
+            },
+            "dkim_analysis": {
+              "selectors_found": [
+                "default",
+                "google",
+                "k1",
+                "k2",
+                "s1",
+                "s2",
+                "dkim",
+                "mail",
+                "email",
+                "selector1",
+                "selector2",
+                "key1",
+                "key2"
+              ],
+              "records": {
+                "default": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "google": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "k1": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "k2": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "s1": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "s2": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "dkim": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "mail": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "email": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "selector1": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "selector2": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "key1": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                },
+                "key2": {
+                  "record": "v=DKIM1; p=",
+                  "parsed": {
+                    "version": "DKIM1",
+                    "key_type": "rsa",
+                    "public_key": "",
+                    "hash_algorithms": [],
+                    "service_types": [],
+                    "flags": []
+                  }
+                }
+              },
+              "total_selectors_checked": 13,
+              "security_analysis": {
+                "selectors_active": 13,
+                "multiple_selectors": true,
+                "dkim_enabled": true
+              }
+            },
+            "security_score": 100,
+            "recommendations": []
+          },
+          "security_features_analysis": {
+            "caa_records": [],
+            "dnssec_enabled": true,
+            "security_score": 50,
+            "recommendations": [
+              "Add CAA records to control certificate issuance"
+            ]
+          },
+          "technical_assessment": {
+            "ipv6_support": true,
+            "mail_configured": true,
+            "security_features": [
+              "IPv6 support enabled",
+              "Mail exchange configured",
+              "DNSSEC enabled"
+            ],
+            "vulnerabilities": [],
+            "recommendations": [
+              "Add CAA records to control certificate issuance"
+            ],
+            "overall_health": "good",
+            "technical_scores": {
+              "basic_dns": 100,
+              "mail_security": 100,
+              "security_features": 50,
+              "ipv6_support": 100,
+              "infrastructure": 40
+            }
+          },
+          "summary": {
+            "total_record_types": 5,
+            "security_features_enabled": 3,
+            "vulnerabilities_identified": 0,
+            "recommendations_count": 1,
+            "overall_health_score": "good",
+            "technical_scores": {
+              "basic_dns": 100,
+              "mail_security": 100,
+              "security_features": 50,
+              "ipv6_support": 100,
+              "infrastructure": 40
+            }
+          }
+        }
+      },
+      {
+        "probe_id": "security_headers",
+        "domain": "example.com",
+        "score": 0.0,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "https_accessible": true,
+          "http_redirects_to_https": false,
+          "response_time_ms": 8781,
+          "security_headers_analysis": {
+            "hsts": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "HSTS header missing - site vulnerable to SSL stripping attacks"
+              ],
+              "recommendation": "Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'"
+            },
+            "csp": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "CSP header missing - site vulnerable to XSS and injection attacks"
+              ],
+              "recommendation": "Implement Content Security Policy to prevent XSS attacks"
+            },
+            "x_frame_options": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "X-Frame-Options header missing - site vulnerable to clickjacking"
+              ],
+              "recommendation": "Add 'X-Frame-Options: DENY' or 'X-Frame-Options: SAMEORIGIN'"
+            },
+            "x_content_type_options": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "X-Content-Type-Options header missing - vulnerable to MIME sniffing"
+              ],
+              "recommendation": "Add 'X-Content-Type-Options: nosniff'"
+            },
+            "x_xss_protection": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "X-XSS-Protection header missing"
+              ],
+              "recommendation": "Add 'X-XSS-Protection: 1; mode=block' (though CSP is preferred)"
+            },
+            "referrer_policy": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "Referrer-Policy header missing - may leak sensitive URLs"
+              ],
+              "recommendation": "Add 'Referrer-Policy: strict-origin-when-cross-origin'"
+            },
+            "permissions_policy": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "Permissions-Policy header missing"
+              ],
+              "recommendation": "Consider adding Permissions-Policy to control browser features"
+            },
+            "additional_headers": {
+              "server_header": {
+                "present": false,
+                "score": 100,
+                "strengths": [
+                  "Server header not disclosed (good for security)"
+                ]
+              },
+              "x_powered_by": {
+                "present": false,
+                "score": 100,
+                "strengths": [
+                  "X-Powered-By header not disclosed (good for security)"
+                ]
+              },
+              "expect_ct": {
+                "present": false,
+                "score": 0,
+                "note": "Expect-CT header missing (optional but recommended for CT monitoring)"
+              },
+              "cross_origin_headers": {}
+            }
+          },
+          "header_statistics": {
+            "total_headers": 11,
+            "security_headers_count": 0,
+            "information_disclosure": [],
+            "missing_security_headers": [
+              "strict-transport-security",
+              "content-security-policy",
+              "x-frame-options",
+              "x-content-type-options",
+              "x-xss-protection",
+              "referrer-policy"
+            ],
+            "header_categories": {
+              "security": [],
+              "caching": [
+                "Etag",
+                "Last-Modified",
+                "Vary",
+                "Cache-Control"
+              ],
+              "content": [
+                "Content-Type",
+                "Content-Encoding",
+                "Content-Length"
+              ],
+              "server_info": [],
+              "other": [
+                "Accept-Ranges",
+                "Date",
+                "Alt-Svc",
+                "Connection"
+              ]
+            }
+          },
+          "security_assessment": {
+            "overall_score": 0,
+            "security_level": "poor",
+            "critical_issues": [
+              "Missing critical header: hsts",
+              "Missing critical header: csp"
+            ],
+            "warnings": [
+              "Missing security header: x_frame_options",
+              "Missing security header: x_content_type_options",
+              "Missing security header: x_xss_protection",
+              "Missing security header: referrer_policy",
+              "Missing security header: permissions_policy",
+              "Missing security header: additional_headers"
+            ],
+            "strengths": [],
+            "compliance_indicators": {}
+          },
+          "recommendations": [
+            "Implement HSTS: Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'",
+            "Implement CSP: Add Content-Security-Policy header to prevent XSS attacks",
+            "Add X-Frame-Options: DENY or SAMEORIGIN to prevent clickjacking",
+            "Add X-Content-Type-Options: nosniff to prevent MIME sniffing",
+            "Add Referrer-Policy: strict-origin-when-cross-origin"
+          ],
+          "raw_headers": {
+            "Accept-Ranges": "bytes",
+            "Content-Type": "text/html",
+            "Etag": "\"84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134\"",
+            "Last-Modified": "Mon, 13 Jan 2025 20:11:20 GMT",
+            "Vary": "Accept-Encoding",
+            "Content-Encoding": "gzip",
+            "Content-Length": "648",
+            "Cache-Control": "max-age=1180",
+            "Date": "Thu, 26 Jun 2025 06:59:37 GMT",
+            "Alt-Svc": "h3=\":443\"; ma=93600,h3-29=\":443\"; ma=93600",
+            "Connection": "keep-alive"
+          }
+        }
+      }
+    ],
+    "category_scores": {
+      "security": 0.6033333333333334
+    },
+    "assessment_metadata": {
+      "timeout": 10,
+      "comprehensive": false,
+      "total_probes": 3,
+      "successful_probes": 3
+    }
+  },
+  {
+    "domain": "google.com",
+    "timestamp": "2025-06-26T13:59:39.671590",
+    "overall_score": 0.6416666666666667,
+    "compliance_level": "standard",
+    "probe_results": [
+      {
+        "probe_id": "tls",
+        "domain": "google.com",
+        "score": 1.0,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "connection_analysis": {
+            "protocol_version": "TLSv1.3",
+            "cipher_suite": [
+              "TLS_AES_256_GCM_SHA384",
+              "TLSv1.3",
+              256
+            ],
+            "compression": null,
+            "supported_versions": {
+              "TLSv1.0": {
+                "supported": false,
+                "error": "[SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1010)"
+              },
+              "TLSv1.1": {
+                "supported": false,
+                "error": "[SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1010)"
+              },
+              "TLSv1.2": {
+                "supported": true,
+                "version": "TLSv1.2",
+                "cipher": [
+                  "ECDHE-ECDSA-AES128-GCM-SHA256",
+                  "TLSv1.2",
+                  128
+                ],
+                "compression": null
+              },
+              "TLSv1.3": {
+                "supported": true,
+                "version": "TLSv1.3",
+                "cipher": [
+                  "TLS_AES_256_GCM_SHA384",
+                  "TLSv1.3",
+                  256
+                ],
+                "compression": null
+              }
+            }
+          },
+          "certificate_analysis": {
+            "subject": {
+              "commonName": "*.google.com"
+            },
+            "issuer": {
+              "countryName": "US",
+              "organizationName": "Google Trust Services",
+              "commonName": "WE2"
+            },
+            "serial_number": "210580969569859730549410904375455803602",
+            "version": "v3",
+            "fingerprint_sha256": "342a0e4cb556506f9f278a70ddc2bfa77bc0f35f54ec1872235f7171d5602178",
+            "validity": {
+              "not_before": "2025-06-02T08:35:40+00:00",
+              "not_after": "2025-08-25T08:35:39+00:00",
+              "validity_period_days": 83,
+              "days_until_expiry": 60,
+              "is_expired": false,
+              "expires_soon": false,
+              "expires_very_soon": false
+            },
+            "public_key": {
+              "algorithm": "Ec",
+              "size_bits": 256,
+              "is_weak": false,
+              "details": {
+                "type": "Elliptic Curve",
+                "curve": "secp256r1",
+                "key_size": 256
+              }
+            },
+            "signature": {
+              "algorithm": "ecdsa-with-SHA256",
+              "is_weak": false,
+              "hash_algorithm": "SHA-256"
+            },
+            "extensions": {
+              "keyUsage": {
+                "critical": true,
+                "value": "<KeyUsage(digital_signature=True, content_commitment=False, key_encipherment=False, data_encipherment=False, key_agreement=False, key_cert_sign=False, crl_sign=False, encipher_only=False, decipher_only=False)>",
+                "key_usage_details": {
+                  "digital_signature": true,
+                  "key_encipherment": false,
+                  "key_agreement": false,
+                  "key_cert_sign": false,
+                  "crl_sign": false,
+                  "content_commitment": false,
+                  "data_encipherment": false
+                }
+              },
+              "extendedKeyUsage": {
+                "critical": false,
+                "value": "<ExtendedKeyUsage([<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.1, name=serverAuth)>])>",
+                "extended_key_usage_details": [
+                  "<ObjectIdentifier(oid=1.3.6.1.5.5.7.3.1, name=serverAuth)>"
+                ]
+              },
+              "basicConstraints": {
+                "critical": true,
+                "value": "<BasicConstraints(ca=False, path_length=None)>",
+                "basic_constraints_details": {
+                  "ca": false,
+                  "path_length": null
+                }
+              },
+              "subjectKeyIdentifier": {
+                "critical": false,
+                "value": "<SubjectKeyIdentifier(digest=b'\\\\\\x8a\\xba\\x88\\xc4\\xd2\\x8fV@\\xad\\xc2\\xd6\\xec\\xbe\\x1b\\xaa\\xfd\\xd3\\x1b\\t')>"
+              },
+              "authorityKeyIdentifier": {
+                "critical": false,
+                "value": "<AuthorityKeyIdentifier(key_identifier=b'u\\xbe\\xc4w\\xae\\x89\\xf6D7}\\xcf\\xb1h\\x1f\\x1d\\x1a\\xeb\\xdc4Y', authority_cert_issuer=None, authority_cert_serial_number=None)>"
+              },
+              "authorityInfoAccess": {
+                "critical": false,
+                "value": "<AuthorityInformationAccess([<AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.1, name=OCSP)>, access_location=<UniformResourceIdentifier(value='http://o.pki.goog/we2')>)>, <AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.2, name=caIssuers)>, access_location=<UniformResourceIdentifier(value='http://i.pki.goog/we2.crt')>)>])>"
+              },
+              "subjectAltName": {
+                "critical": false,
+                "value": "<SubjectAlternativeName(<GeneralNames([<DNSName(value='*.google.com')>, <DNSName(value='*.appengine.google.com')>, <DNSName(value='*.bdn.dev')>, <DNSName(value='*.origin-test.bdn.dev')>, <DNSName(value='*.cloud.google.com')>, <DNSName(value='*.crowdsource.google.com')>, <DNSName(value='*.datacompute.google.com')>, <DNSName(value='*.google.ca')>, <DNSName(value='*.google.cl')>, <DNSName(value='*.google.co.in')>, <DNSName(value='*.google.co.jp')>, <DNSName(value='*.google.co.uk')>, <DNSName(value=",
+                "parsed_values": [
+                  "<DNSName(value='*.google.com')>",
+                  "<DNSName(value='*.appengine.google.com')>",
+                  "<DNSName(value='*.bdn.dev')>",
+                  "<DNSName(value='*.origin-test.bdn.dev')>",
+                  "<DNSName(value='*.cloud.google.com')>",
+                  "<DNSName(value='*.crowdsource.google.com')>",
+                  "<DNSName(value='*.datacompute.google.com')>",
+                  "<DNSName(value='*.google.ca')>",
+                  "<DNSName(value='*.google.cl')>",
+                  "<DNSName(value='*.google.co.in')>",
+                  "<DNSName(value='*.google.co.jp')>",
+                  "<DNSName(value='*.google.co.uk')>",
+                  "<DNSName(value='*.google.com.ar')>",
+                  "<DNSName(value='*.google.com.au')>",
+                  "<DNSName(value='*.google.com.br')>",
+                  "<DNSName(value='*.google.com.co')>",
+                  "<DNSName(value='*.google.com.mx')>",
+                  "<DNSName(value='*.google.com.tr')>",
+                  "<DNSName(value='*.google.com.vn')>",
+                  "<DNSName(value='*.google.de')>",
+                  "<DNSName(value='*.google.es')>",
+                  "<DNSName(value='*.google.fr')>",
+                  "<DNSName(value='*.google.hu')>",
+                  "<DNSName(value='*.google.it')>",
+                  "<DNSName(value='*.google.nl')>",
+                  "<DNSName(value='*.google.pl')>",
+                  "<DNSName(value='*.google.pt')>",
+                  "<DNSName(value='*.googleapis.cn')>",
+                  "<DNSName(value='*.googlevideo.com')>",
+                  "<DNSName(value='*.gstatic.cn')>",
+                  "<DNSName(value='*.gstatic-cn.com')>",
+                  "<DNSName(value='googlecnapps.cn')>",
+                  "<DNSName(value='*.googlecnapps.cn')>",
+                  "<DNSName(value='googleapps-cn.com')>",
+                  "<DNSName(value='*.googleapps-cn.com')>",
+                  "<DNSName(value='gkecnapps.cn')>",
+                  "<DNSName(value='*.gkecnapps.cn')>",
+                  "<DNSName(value='googledownloads.cn')>",
+                  "<DNSName(value='*.googledownloads.cn')>",
+                  "<DNSName(value='recaptcha.net.cn')>",
+                  "<DNSName(value='*.recaptcha.net.cn')>",
+                  "<DNSName(value='recaptcha-cn.net')>",
+                  "<DNSName(value='*.recaptcha-cn.net')>",
+                  "<DNSName(value='widevine.cn')>",
+                  "<DNSName(value='*.widevine.cn')>",
+                  "<DNSName(value='ampproject.org.cn')>",
+                  "<DNSName(value='*.ampproject.org.cn')>",
+                  "<DNSName(value='ampproject.net.cn')>",
+                  "<DNSName(value='*.ampproject.net.cn')>",
+                  "<DNSName(value='google-analytics-cn.com')>",
+                  "<DNSName(value='*.google-analytics-cn.com')>",
+                  "<DNSName(value='googleadservices-cn.com')>",
+                  "<DNSName(value='*.googleadservices-cn.com')>",
+                  "<DNSName(value='googlevads-cn.com')>",
+                  "<DNSName(value='*.googlevads-cn.com')>",
+                  "<DNSName(value='googleapis-cn.com')>",
+                  "<DNSName(value='*.googleapis-cn.com')>",
+                  "<DNSName(value='googleoptimize-cn.com')>",
+                  "<DNSName(value='*.googleoptimize-cn.com')>",
+                  "<DNSName(value='doubleclick-cn.net')>",
+                  "<DNSName(value='*.doubleclick-cn.net')>",
+                  "<DNSName(value='*.fls.doubleclick-cn.net')>",
+                  "<DNSName(value='*.g.doubleclick-cn.net')>",
+                  "<DNSName(value='doubleclick.cn')>",
+                  "<DNSName(value='*.doubleclick.cn')>",
+                  "<DNSName(value='*.fls.doubleclick.cn')>",
+                  "<DNSName(value='*.g.doubleclick.cn')>",
+                  "<DNSName(value='dartsearch-cn.net')>",
+                  "<DNSName(value='*.dartsearch-cn.net')>",
+                  "<DNSName(value='googletraveladservices-cn.com')>",
+                  "<DNSName(value='*.googletraveladservices-cn.com')>",
+                  "<DNSName(value='googletagservices-cn.com')>",
+                  "<DNSName(value='*.googletagservices-cn.com')>",
+                  "<DNSName(value='googletagmanager-cn.com')>",
+                  "<DNSName(value='*.googletagmanager-cn.com')>",
+                  "<DNSName(value='googlesyndication-cn.com')>",
+                  "<DNSName(value='*.googlesyndication-cn.com')>",
+                  "<DNSName(value='*.safeframe.googlesyndication-cn.com')>",
+                  "<DNSName(value='app-measurement-cn.com')>",
+                  "<DNSName(value='*.app-measurement-cn.com')>",
+                  "<DNSName(value='gvt1-cn.com')>",
+                  "<DNSName(value='*.gvt1-cn.com')>",
+                  "<DNSName(value='gvt2-cn.com')>",
+                  "<DNSName(value='*.gvt2-cn.com')>",
+                  "<DNSName(value='2mdn-cn.net')>",
+                  "<DNSName(value='*.2mdn-cn.net')>",
+                  "<DNSName(value='googleflights-cn.net')>",
+                  "<DNSName(value='*.googleflights-cn.net')>",
+                  "<DNSName(value='admob-cn.com')>",
+                  "<DNSName(value='*.admob-cn.com')>",
+                  "<DNSName(value='googlesandbox-cn.com')>",
+                  "<DNSName(value='*.googlesandbox-cn.com')>",
+                  "<DNSName(value='*.safenup.googlesandbox-cn.com')>",
+                  "<DNSName(value='*.gstatic.com')>",
+                  "<DNSName(value='*.metric.gstatic.com')>",
+                  "<DNSName(value='*.gvt1.com')>",
+                  "<DNSName(value='*.gcpcdn.gvt1.com')>",
+                  "<DNSName(value='*.gvt2.com')>",
+                  "<DNSName(value='*.gcp.gvt2.com')>",
+                  "<DNSName(value='*.url.google.com')>",
+                  "<DNSName(value='*.youtube-nocookie.com')>",
+                  "<DNSName(value='*.ytimg.com')>",
+                  "<DNSName(value='ai.android')>",
+                  "<DNSName(value='android.com')>",
+                  "<DNSName(value='*.android.com')>",
+                  "<DNSName(value='*.flash.android.com')>",
+                  "<DNSName(value='g.cn')>",
+                  "<DNSName(value='*.g.cn')>",
+                  "<DNSName(value='g.co')>",
+                  "<DNSName(value='*.g.co')>",
+                  "<DNSName(value='goo.gl')>",
+                  "<DNSName(value='www.goo.gl')>",
+                  "<DNSName(value='google-analytics.com')>",
+                  "<DNSName(value='*.google-analytics.com')>",
+                  "<DNSName(value='google.com')>",
+                  "<DNSName(value='googlecommerce.com')>",
+                  "<DNSName(value='*.googlecommerce.com')>",
+                  "<DNSName(value='ggpht.cn')>",
+                  "<DNSName(value='*.ggpht.cn')>",
+                  "<DNSName(value='urchin.com')>",
+                  "<DNSName(value='*.urchin.com')>",
+                  "<DNSName(value='youtu.be')>",
+                  "<DNSName(value='youtube.com')>",
+                  "<DNSName(value='*.youtube.com')>",
+                  "<DNSName(value='music.youtube.com')>",
+                  "<DNSName(value='*.music.youtube.com')>",
+                  "<DNSName(value='youtubeeducation.com')>",
+                  "<DNSName(value='*.youtubeeducation.com')>",
+                  "<DNSName(value='youtubekids.com')>",
+                  "<DNSName(value='*.youtubekids.com')>",
+                  "<DNSName(value='yt.be')>",
+                  "<DNSName(value='*.yt.be')>",
+                  "<DNSName(value='android.clients.google.com')>",
+                  "<DNSName(value='*.android.google.cn')>",
+                  "<DNSName(value='*.chrome.google.cn')>",
+                  "<DNSName(value='*.developers.google.cn')>",
+                  "<DNSName(value='*.aistudio.google.com')>"
+                ]
+              },
+              "certificatePolicies": {
+                "critical": false,
+                "value": "<CertificatePolicies([<PolicyInformation(policy_identifier=<ObjectIdentifier(oid=2.23.140.1.2.1, name=Unknown OID)>, policy_qualifiers=None)>])>"
+              },
+              "cRLDistributionPoints": {
+                "critical": false,
+                "value": "<CRLDistributionPoints([<DistributionPoint(full_name=[<UniformResourceIdentifier(value='http://c.pki.goog/we2/Gt0Gl6QoGAU.crl')>], relative_name=None, reasons=None, crl_issuer=None)>])>"
+              },
+              "signedCertificateTimestampList": {
+                "critical": false,
+                "value": "<PrecertificateSignedCertificateTimestamps([<cryptography.hazmat.bindings._rust.x509.Sct object at 0x1054844b0>, <cryptography.hazmat.bindings._rust.x509.Sct object at 0x105484540>])>"
+              }
+            },
+            "subject_alternative_names": [
+              "<DNSName(value='*.google.com')>",
+              "<DNSName(value='*.appengine.google.com')>",
+              "<DNSName(value='*.bdn.dev')>",
+              "<DNSName(value='*.origin-test.bdn.dev')>",
+              "<DNSName(value='*.cloud.google.com')>",
+              "<DNSName(value='*.crowdsource.google.com')>",
+              "<DNSName(value='*.datacompute.google.com')>",
+              "<DNSName(value='*.google.ca')>",
+              "<DNSName(value='*.google.cl')>",
+              "<DNSName(value='*.google.co.in')>",
+              "<DNSName(value='*.google.co.jp')>",
+              "<DNSName(value='*.google.co.uk')>",
+              "<DNSName(value='*.google.com.ar')>",
+              "<DNSName(value='*.google.com.au')>",
+              "<DNSName(value='*.google.com.br')>",
+              "<DNSName(value='*.google.com.co')>",
+              "<DNSName(value='*.google.com.mx')>",
+              "<DNSName(value='*.google.com.tr')>",
+              "<DNSName(value='*.google.com.vn')>",
+              "<DNSName(value='*.google.de')>",
+              "<DNSName(value='*.google.es')>",
+              "<DNSName(value='*.google.fr')>",
+              "<DNSName(value='*.google.hu')>",
+              "<DNSName(value='*.google.it')>",
+              "<DNSName(value='*.google.nl')>",
+              "<DNSName(value='*.google.pl')>",
+              "<DNSName(value='*.google.pt')>",
+              "<DNSName(value='*.googleapis.cn')>",
+              "<DNSName(value='*.googlevideo.com')>",
+              "<DNSName(value='*.gstatic.cn')>",
+              "<DNSName(value='*.gstatic-cn.com')>",
+              "<DNSName(value='googlecnapps.cn')>",
+              "<DNSName(value='*.googlecnapps.cn')>",
+              "<DNSName(value='googleapps-cn.com')>",
+              "<DNSName(value='*.googleapps-cn.com')>",
+              "<DNSName(value='gkecnapps.cn')>",
+              "<DNSName(value='*.gkecnapps.cn')>",
+              "<DNSName(value='googledownloads.cn')>",
+              "<DNSName(value='*.googledownloads.cn')>",
+              "<DNSName(value='recaptcha.net.cn')>",
+              "<DNSName(value='*.recaptcha.net.cn')>",
+              "<DNSName(value='recaptcha-cn.net')>",
+              "<DNSName(value='*.recaptcha-cn.net')>",
+              "<DNSName(value='widevine.cn')>",
+              "<DNSName(value='*.widevine.cn')>",
+              "<DNSName(value='ampproject.org.cn')>",
+              "<DNSName(value='*.ampproject.org.cn')>",
+              "<DNSName(value='ampproject.net.cn')>",
+              "<DNSName(value='*.ampproject.net.cn')>",
+              "<DNSName(value='google-analytics-cn.com')>",
+              "<DNSName(value='*.google-analytics-cn.com')>",
+              "<DNSName(value='googleadservices-cn.com')>",
+              "<DNSName(value='*.googleadservices-cn.com')>",
+              "<DNSName(value='googlevads-cn.com')>",
+              "<DNSName(value='*.googlevads-cn.com')>",
+              "<DNSName(value='googleapis-cn.com')>",
+              "<DNSName(value='*.googleapis-cn.com')>",
+              "<DNSName(value='googleoptimize-cn.com')>",
+              "<DNSName(value='*.googleoptimize-cn.com')>",
+              "<DNSName(value='doubleclick-cn.net')>",
+              "<DNSName(value='*.doubleclick-cn.net')>",
+              "<DNSName(value='*.fls.doubleclick-cn.net')>",
+              "<DNSName(value='*.g.doubleclick-cn.net')>",
+              "<DNSName(value='doubleclick.cn')>",
+              "<DNSName(value='*.doubleclick.cn')>",
+              "<DNSName(value='*.fls.doubleclick.cn')>",
+              "<DNSName(value='*.g.doubleclick.cn')>",
+              "<DNSName(value='dartsearch-cn.net')>",
+              "<DNSName(value='*.dartsearch-cn.net')>",
+              "<DNSName(value='googletraveladservices-cn.com')>",
+              "<DNSName(value='*.googletraveladservices-cn.com')>",
+              "<DNSName(value='googletagservices-cn.com')>",
+              "<DNSName(value='*.googletagservices-cn.com')>",
+              "<DNSName(value='googletagmanager-cn.com')>",
+              "<DNSName(value='*.googletagmanager-cn.com')>",
+              "<DNSName(value='googlesyndication-cn.com')>",
+              "<DNSName(value='*.googlesyndication-cn.com')>",
+              "<DNSName(value='*.safeframe.googlesyndication-cn.com')>",
+              "<DNSName(value='app-measurement-cn.com')>",
+              "<DNSName(value='*.app-measurement-cn.com')>",
+              "<DNSName(value='gvt1-cn.com')>",
+              "<DNSName(value='*.gvt1-cn.com')>",
+              "<DNSName(value='gvt2-cn.com')>",
+              "<DNSName(value='*.gvt2-cn.com')>",
+              "<DNSName(value='2mdn-cn.net')>",
+              "<DNSName(value='*.2mdn-cn.net')>",
+              "<DNSName(value='googleflights-cn.net')>",
+              "<DNSName(value='*.googleflights-cn.net')>",
+              "<DNSName(value='admob-cn.com')>",
+              "<DNSName(value='*.admob-cn.com')>",
+              "<DNSName(value='googlesandbox-cn.com')>",
+              "<DNSName(value='*.googlesandbox-cn.com')>",
+              "<DNSName(value='*.safenup.googlesandbox-cn.com')>",
+              "<DNSName(value='*.gstatic.com')>",
+              "<DNSName(value='*.metric.gstatic.com')>",
+              "<DNSName(value='*.gvt1.com')>",
+              "<DNSName(value='*.gcpcdn.gvt1.com')>",
+              "<DNSName(value='*.gvt2.com')>",
+              "<DNSName(value='*.gcp.gvt2.com')>",
+              "<DNSName(value='*.url.google.com')>",
+              "<DNSName(value='*.youtube-nocookie.com')>",
+              "<DNSName(value='*.ytimg.com')>",
+              "<DNSName(value='ai.android')>",
+              "<DNSName(value='android.com')>",
+              "<DNSName(value='*.android.com')>",
+              "<DNSName(value='*.flash.android.com')>",
+              "<DNSName(value='g.cn')>",
+              "<DNSName(value='*.g.cn')>",
+              "<DNSName(value='g.co')>",
+              "<DNSName(value='*.g.co')>",
+              "<DNSName(value='goo.gl')>",
+              "<DNSName(value='www.goo.gl')>",
+              "<DNSName(value='google-analytics.com')>",
+              "<DNSName(value='*.google-analytics.com')>",
+              "<DNSName(value='google.com')>",
+              "<DNSName(value='googlecommerce.com')>",
+              "<DNSName(value='*.googlecommerce.com')>",
+              "<DNSName(value='ggpht.cn')>",
+              "<DNSName(value='*.ggpht.cn')>",
+              "<DNSName(value='urchin.com')>",
+              "<DNSName(value='*.urchin.com')>",
+              "<DNSName(value='youtu.be')>",
+              "<DNSName(value='youtube.com')>",
+              "<DNSName(value='*.youtube.com')>",
+              "<DNSName(value='music.youtube.com')>",
+              "<DNSName(value='*.music.youtube.com')>",
+              "<DNSName(value='youtubeeducation.com')>",
+              "<DNSName(value='*.youtubeeducation.com')>",
+              "<DNSName(value='youtubekids.com')>",
+              "<DNSName(value='*.youtubekids.com')>",
+              "<DNSName(value='yt.be')>",
+              "<DNSName(value='*.yt.be')>",
+              "<DNSName(value='android.clients.google.com')>",
+              "<DNSName(value='*.android.google.cn')>",
+              "<DNSName(value='*.chrome.google.cn')>",
+              "<DNSName(value='*.developers.google.cn')>",
+              "<DNSName(value='*.aistudio.google.com')>"
+            ],
+            "validation": {
+              "self_signed": false,
+              "ca_certificate": false,
+              "wildcard_certificate": true,
+              "extended_validation": false
+            },
+            "security_assessment": {
+              "weak_signature": false,
+              "weak_key": false,
+              "deprecated_features": [],
+              "security_score": 100
+            }
+          },
+          "certificate_chain_analysis": {
+            "chain_length": 0,
+            "certificates": [],
+            "root_ca_trusted": false,
+            "intermediate_cas": [],
+            "error": "'SSLSocket' object has no attribute 'getpeercert_chain'"
+          },
+          "security_assessment": {
+            "protocol_security": {
+              "version": "TLSv1.3",
+              "is_modern": true,
+              "is_deprecated": false,
+              "security_level": "excellent"
+            },
+            "cipher_security": {
+              "cipher_name": "TLS_AES_256_GCM_SHA384",
+              "is_secure": true,
+              "key_exchange": "Unknown",
+              "encryption_algorithm": "AES-256-GCM",
+              "mac_algorithm": "AEAD (Authenticated Encryption)",
+              "security_level": "excellent"
+            },
+            "certificate_security": {
+              "security_score": 100,
+              "has_weak_signature": false,
+              "has_weak_key": false,
+              "deprecated_features": [],
+              "expires_soon": false
+            },
+            "vulnerabilities": [],
+            "recommendations": [],
+            "overall_security_level": "excellent"
+          },
+          "technical_summary": {
+            "connection_successful": true,
+            "modern_tls": true,
+            "secure_cipher": true,
+            "certificate_valid": true,
+            "vulnerabilities_found": 0,
+            "security_score": 100.0
+          }
+        }
+      },
+      {
+        "probe_id": "dns",
+        "domain": "google.com",
+        "score": 0.775,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "dns_records_analysis": {
+            "a_records": [
+              "64.233.177.102",
+              "64.233.177.100",
+              "64.233.177.113",
+              "64.233.177.139",
+              "64.233.177.101",
+              "64.233.177.138"
+            ],
+            "aaaa_records": [
+              "2607:f8b0:4002:c08::8b",
+              "2607:f8b0:4002:c08::65",
+              "2607:f8b0:4002:c08::71",
+              "2607:f8b0:4002:c08::8a"
+            ],
+            "mx_records": [
+              "10 smtp.google.com."
+            ],
+            "ns_records": [
+              "ns4.google.com.",
+              "ns3.google.com.",
+              "ns1.google.com.",
+              "ns2.google.com."
+            ],
+            "txt_records": [],
+            "cname_records": [],
+            "soa_record": {
+              "mname": "ns1.google.com.",
+              "rname": "dns-admin.google.com.",
+              "serial": 775615251,
+              "refresh": 900,
+              "retry": 900,
+              "expire": 1800,
+              "minimum": 60
+            },
+            "record_counts": {
+              "a_records": 6,
+              "aaaa_records": 4,
+              "mx_records": 1,
+              "ns_records": 4,
+              "txt_records": 0,
+              "cname_records": 0
+            },
+            "ip_analysis": {
+              "ipv4_addresses": 6,
+              "ipv6_addresses": 4
+            },
+            "reverse_dns": {
+              "ipv4": {
+                "hostname": "yx-in-f102.1e100.net.",
+                "resolved": true
+              },
+              "ipv6": {
+                "hostname": "yx-in-f139.1e100.net.",
+                "resolved": true
+              }
+            },
+            "mx_analysis": {
+              "count": 1,
+              "priorities": [
+                10
+              ],
+              "mail_servers": [
+                "smtp.google.com."
+              ],
+              "redundancy": false,
+              "security_analysis": {
+                "multiple_servers": false,
+                "priority_distribution": false,
+                "external_providers": [
+                  "Google"
+                ]
+              }
+            },
+            "ns_analysis": {
+              "count": 4,
+              "nameservers": [
+                "ns4.google.com.",
+                "ns3.google.com.",
+                "ns1.google.com.",
+                "ns2.google.com."
+              ],
+              "redundancy": true,
+              "diversity": {
+                "unique_domains": 1,
+                "has_diversity": false,
+                "domains": [
+                  "com."
+                ]
+              },
+              "security_analysis": {
+                "sufficient_nameservers": true,
+                "provider_diversity": false,
+                "known_providers": [
+                  "Google Cloud DNS",
+                  "Google Cloud DNS",
+                  "Google Cloud DNS",
+                  "Google Cloud DNS"
+                ]
+              }
+            },
+            "txt_analysis": {
+              "error": "All nameservers failed to answer the query google.com. IN TXT: Server Do53:192.168.1.1@53 answered ; Server Do53:192.168.1.1@53 answered EOF"
+            }
+          },
+          "mail_security_analysis": {
+            "spf_analysis": {
+              "record_found": false,
+              "record_content": "",
+              "version": "",
+              "mechanisms": [],
+              "qualifiers": [],
+              "includes": [],
+              "ip_addresses": [],
+              "issues": [],
+              "security_level": "none",
+              "error": "All nameservers failed to answer the query google.com. IN TXT: Server Do53:192.168.1.1@53 answered ; Server Do53:192.168.1.1@53 answered EOF"
+            },
+            "dmarc_analysis": {
+              "record_found": true,
+              "record_content": "v=DMARC1; p=reject; rua=mailto:mailauth-reports@google.com",
+              "policy": "reject",
+              "subdomain_policy": "reject",
+              "percentage": 100,
+              "report_addresses": [
+                "mailto:mailauth-reports@google.com"
+              ],
+              "forensic_addresses": [],
+              "alignment": {
+                "dkim": "r",
+                "spf": "r"
+              },
+              "issues": [],
+              "security_level": "strict"
+            },
+            "dkim_analysis": {
+              "selectors_found": [],
+              "records": {},
+              "total_selectors_checked": 13,
+              "security_analysis": {
+                "selectors_active": 0,
+                "multiple_selectors": false,
+                "dkim_enabled": false
+              }
+            },
+            "security_score": 40,
+            "recommendations": [
+              "Implement SPF record to prevent email spoofing",
+              "Enable DKIM signing for email authentication"
+            ]
+          },
+          "security_features_analysis": {
+            "caa_records": [
+              "0 issue \"pki.goog\""
+            ],
+            "dnssec_enabled": true,
+            "security_score": 100,
+            "recommendations": []
+          },
+          "technical_assessment": {
+            "ipv6_support": true,
+            "mail_configured": true,
+            "security_features": [
+              "IPv6 support enabled",
+              "Mail exchange configured",
+              "CAA records present",
+              "DNSSEC enabled"
+            ],
+            "vulnerabilities": [
+              "Insufficient mail security configuration"
+            ],
+            "recommendations": [],
+            "overall_health": "good",
+            "technical_scores": {
+              "basic_dns": 100,
+              "mail_security": 40,
+              "security_features": 100,
+              "ipv6_support": 100,
+              "infrastructure": 50
+            }
+          },
+          "summary": {
+            "total_record_types": 4,
+            "security_features_enabled": 4,
+            "vulnerabilities_identified": 1,
+            "recommendations_count": 0,
+            "overall_health_score": "good",
+            "technical_scores": {
+              "basic_dns": 100,
+              "mail_security": 40,
+              "security_features": 100,
+              "ipv6_support": 100,
+              "infrastructure": 50
+            }
+          }
+        }
+      },
+      {
+        "probe_id": "security_headers",
+        "domain": "google.com",
+        "score": 0.15,
+        "category": "security",
+        "is_successful": true,
+        "error": null,
+        "technical_details": {
+          "https_accessible": true,
+          "http_redirects_to_https": false,
+          "response_time_ms": 6759,
+          "security_headers_analysis": {
+            "hsts": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "HSTS header missing - site vulnerable to SSL stripping attacks"
+              ],
+              "recommendation": "Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'"
+            },
+            "csp": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "CSP header missing - site vulnerable to XSS and injection attacks"
+              ],
+              "recommendation": "Implement Content Security Policy to prevent XSS attacks"
+            },
+            "x_frame_options": {
+              "present": true,
+              "raw_value": "SAMEORIGIN",
+              "score": 90,
+              "issues": [],
+              "strengths": [
+                "Allows same-origin framing (SAMEORIGIN)"
+              ],
+              "security_level": "excellent"
+            },
+            "x_content_type_options": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "X-Content-Type-Options header missing - vulnerable to MIME sniffing"
+              ],
+              "recommendation": "Add 'X-Content-Type-Options: nosniff'"
+            },
+            "x_xss_protection": {
+              "present": true,
+              "raw_value": "0",
+              "score": 20,
+              "issues": [
+                "XSS protection explicitly disabled"
+              ],
+              "strengths": [],
+              "note": "X-XSS-Protection is deprecated; use CSP instead",
+              "security_level": "poor"
+            },
+            "referrer_policy": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "Referrer-Policy header missing - may leak sensitive URLs"
+              ],
+              "recommendation": "Add 'Referrer-Policy: strict-origin-when-cross-origin'"
+            },
+            "permissions_policy": {
+              "present": false,
+              "score": 0,
+              "issues": [
+                "Permissions-Policy header missing"
+              ],
+              "recommendation": "Consider adding Permissions-Policy to control browser features"
+            },
+            "additional_headers": {
+              "server_header": {
+                "present": true,
+                "raw_value": "gws",
+                "score": 30,
+                "issues": [
+                  "Server information disclosed - consider removing or obfuscating"
+                ],
+                "recommendation": "Remove or obfuscate server header to reduce information disclosure"
+              },
+              "x_powered_by": {
+                "present": false,
+                "score": 100,
+                "strengths": [
+                  "X-Powered-By header not disclosed (good for security)"
+                ]
+              },
+              "expect_ct": {
+                "present": false,
+                "score": 0,
+                "note": "Expect-CT header missing (optional but recommended for CT monitoring)"
+              },
+              "cross_origin_headers": {}
+            }
+          },
+          "header_statistics": {
+            "total_headers": 14,
+            "security_headers_count": 2,
+            "information_disclosure": [
+              "Server: gws"
+            ],
+            "missing_security_headers": [
+              "strict-transport-security",
+              "content-security-policy",
+              "x-content-type-options",
+              "referrer-policy"
+            ],
+            "header_categories": {
+              "security": [
+                "X-XSS-Protection",
+                "X-Frame-Options"
+              ],
+              "caching": [
+                "Expires",
+                "Cache-Control"
+              ],
+              "content": [
+                "Content-Type",
+                "Content-Encoding"
+              ],
+              "server_info": [
+                "Server"
+              ],
+              "other": [
+                "Date",
+                "Content-Security-Policy-Report-Only",
+                "Accept-CH",
+                "P3P",
+                "Set-Cookie",
+                "Alt-Svc",
+                "Transfer-Encoding"
+              ]
+            }
+          },
+          "security_assessment": {
+            "overall_score": 15,
+            "security_level": "poor",
+            "critical_issues": [
+              "Missing critical header: hsts",
+              "Missing critical header: csp"
+            ],
+            "warnings": [
+              "Missing security header: x_content_type_options",
+              "XSS protection explicitly disabled",
+              "Missing security header: referrer_policy",
+              "Missing security header: permissions_policy",
+              "Missing security header: additional_headers"
+            ],
+            "strengths": [
+              "Allows same-origin framing (SAMEORIGIN)"
+            ],
+            "compliance_indicators": {}
+          },
+          "recommendations": [
+            "Implement HSTS: Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'",
+            "Implement CSP: Add Content-Security-Policy header to prevent XSS attacks",
+            "Add X-Content-Type-Options: nosniff to prevent MIME sniffing",
+            "Add Referrer-Policy: strict-origin-when-cross-origin",
+            "Remove or obfuscate server information headers (Server, X-Powered-By)"
+          ],
+          "raw_headers": {
+            "Date": "Thu, 26 Jun 2025 06:59:38 GMT",
+            "Expires": "-1",
+            "Cache-Control": "private, max-age=0",
+            "Content-Type": "text/html; charset=ISO-8859-1",
+            "Content-Security-Policy-Report-Only": "object-src 'none';base-uri 'self';script-src 'nonce-WxwSiQ40uxPptIG0LSvrOw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp",
+            "Accept-CH": "Sec-CH-Prefers-Color-Scheme",
+            "P3P": "CP=\"This is not a P3P policy! See g.co/p3phelp for more info.\"",
+            "Content-Encoding": "gzip",
+            "Server": "gws",
+            "X-XSS-Protection": "0",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Set-Cookie": "AEC=AVh_V2gY-R7qtFqLDdfqxeN2vwNSN09B4Td74XicNLn2gZqISWy5ccxOq6I; expires=Tue, 23-Dec-2025 06:59:38 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax",
+            "Alt-Svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+            "Transfer-Encoding": "chunked"
+          }
+        }
+      }
+    ],
+    "category_scores": {
+      "security": 0.6416666666666667
+    },
+    "assessment_metadata": {
+      "timeout": 10,
+      "comprehensive": false,
+      "total_probes": 3,
+      "successful_probes": 3
+    }
+  }
+]

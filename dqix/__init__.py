@@ -8,40 +8,26 @@ across security, performance, and compliance dimensions.
 
 ```python
 import asyncio
-from dqix.application.use_cases import AssessDomainCommand, AssessDomainUseCase
-from dqix.domain.entities import ProbeConfig
-from dqix.domain.services import AssessmentService, DomainValidationService, ScoringService
-from dqix.infrastructure.probes import ProbeExecutor
-from dqix.infrastructure.repositories import FileAssessmentRepository, InMemoryCacheRepository
+from dqix.application.use_cases import AssessDomainUseCase, BulkAssessDomainsUseCase
+from dqix.domain.entities import Domain, ProbeConfig
+from dqix.infrastructure.factory import InfrastructureFactory
 
 # Create use case with dependencies
 async def assess_domain():
-    # Infrastructure
-    probe_executor = ProbeExecutor()
-    assessment_repo = FileAssessmentRepository()
-    cache_repo = InMemoryCacheRepository()
-    
-    # Domain services
-    scoring_service = ScoringService()
-    validation_service = DomainValidationService()
-    assessment_service = AssessmentService(scoring_service, validation_service)
+    # Infrastructure factory
+    factory = InfrastructureFactory()
     
     # Use case
     use_case = AssessDomainUseCase(
-        probe_executor=probe_executor,
-        assessment_service=assessment_service,
-        validation_service=validation_service,
-        assessment_repo=assessment_repo,
-        cache_repo=cache_repo
+        probe_executor=factory.create_probe_executor(),
+        probe_registry=factory.create_probe_registry()
     )
     
     # Execute assessment
-    command = AssessDomainCommand(
-        domain_name="example.com",
-        probe_config=ProbeConfig()
-    )
+    domain = Domain("example.com")
+    config = ProbeConfig()
     
-    result = await use_case.execute(command)
+    result = await use_case.execute(domain, config)
     print(f"Score: {result.overall_score:.2f}")
     print(f"Level: {result.compliance_level.value}")
 
@@ -61,7 +47,7 @@ DQIX follows Clean Architecture principles with four distinct layers:
 ## Available Probes
 
 - **TLS Probe**: Checks SSL/TLS configuration and certificate validity
-- **DNS Probe**: Validates DNS records, SPF, DMARC configuration
+- **DNS Probe**: Validates DNS records, SPF, DMARC, DNSSEC configuration
 - **Security Headers Probe**: Analyzes HTTP security headers
 
 ## Command Line Usage
@@ -70,11 +56,17 @@ DQIX follows Clean Architecture principles with four distinct layers:
 # Assess single domain
 python -m dqix assess example.com
 
-# Assess multiple domains
-python -m dqix assess-bulk domains.txt
+# DNS analysis
+python -m dqix dns analyze example.com
+
+# TLS analysis  
+python -m dqix tls analyze example.com
+
+# Security headers analysis
+python -m dqix security headers example.com
 
 # List available probes
-python -m dqix list-probes
+python -m dqix probe list
 ```
 
 See examples/ directory for more detailed usage patterns.
@@ -100,10 +92,8 @@ from .domain.services import (
 )
 
 from .application.use_cases import (
-    AssessDomainCommand,
     AssessDomainUseCase,
-    AssessDomainsCommand,
-    AssessDomainsUseCase,
+    BulkAssessDomainsUseCase,
 )
 
 __all__ = [
@@ -125,8 +115,6 @@ __all__ = [
     "AssessmentService",
     
     # Application use cases
-    "AssessDomainCommand",
     "AssessDomainUseCase",
-    "AssessDomainsCommand",
-    "AssessDomainsUseCase",
+    "BulkAssessDomainsUseCase",
 ]
