@@ -1,0 +1,199 @@
+# DQIX Universal Configuration Schema
+# Eliminates hardcoded constants across all language implementations
+# Version: 2.0.0
+
+# Core Assessment Configuration
+assessment:
+  timeout_seconds: 30
+  concurrent_limit: 4
+  retry_count: 3
+  cache_enabled: true
+
+# Probe Level Classifications
+probe_levels:
+  critical:
+    level: 1
+    icon: "🔐"
+    description: "Critical Security"
+    header: "🚨 CRITICAL SECURITY"
+    color: "red"
+    probes:
+      - "tls"
+      - "tls_security"
+      - "security_headers"
+  
+  important:
+    level: 2
+    icon: "🌐"
+    description: "Important Configuration"
+    header: "⚠️  IMPORTANT CONFIGURATION"
+    color: "yellow"
+    probes:
+      - "https"
+      - "https_access"
+      - "dns"
+      - "dns_security"
+  
+  informational:
+    level: 3
+    icon: "🔍"
+    description: "Best Practices"
+    header: "ℹ️  BEST PRACTICES"
+    color: "blue"
+    probes:
+      - "accessibility"
+      - "performance"
+      - "compliance"
+
+# Probe Display Names
+probe_display_names:
+  tls: "TLS/SSL Security"
+  tls_security: "TLS/SSL Security"
+  dns: "DNS Security"
+  dns_security: "DNS Security"
+  https: "HTTPS Configuration"
+  https_access: "HTTPS Configuration"
+  security_headers: "Security Headers"
+
+# Probe Icons
+probe_icons:
+  tls: "🔐"
+  tls_security: "🔐"
+  dns: "🌍"
+  dns_security: "🌍"
+  https: "🌐"
+  https_access: "🌐"
+  security_headers: "🛡️"
+  default: "🔍"
+
+# Scoring System
+scoring:
+  levels:
+    "A+":
+      min_score: 0.95
+      max_score: 1.00
+      description: "Exceptional security and compliance"
+    "A":
+      min_score: 0.85
+      max_score: 0.94
+      description: "Excellent security posture"
+    "B":
+      min_score: 0.75
+      max_score: 0.84
+      description: "Good security with minor improvements needed"
+    "C":
+      min_score: 0.65
+      max_score: 0.74
+      description: "Adequate security with several improvements needed"
+    "D":
+      min_score: 0.55
+      max_score: 0.64
+      description: "Below average security, significant improvements required"
+    "E":
+      min_score: 0.45
+      max_score: 0.54
+      description: "Poor security posture, immediate attention required"
+    "F":
+      min_score: 0.00
+      max_score: 0.44
+      description: "Critical security issues, urgent action required"
+
+  # Score Status Indicators
+  status_thresholds:
+    excellent:
+      min_score: 0.8
+      icon: "✅"
+      status: "EXCELLENT"
+      color: "green"
+    good:
+      min_score: 0.6
+      icon: "⚠️"
+      status: "GOOD"
+      color: "yellow"
+    fair:
+      min_score: 0.4
+      icon: "🔶"
+      status: "FAIR"
+      color: "yellow"
+    poor:
+      min_score: 0.0
+      icon: "❌"
+      status: "POOR"
+      color: "red"
+
+# Progress Bar Configuration
+progress_bar:
+  length: 20
+  filled_char: "█"
+  empty_char: "░"
+  overall_length: 40
+
+# Output Formatting
+output:
+  separators:
+    main: "━"
+    sub: "-"
+    main_length: 60
+    sub_length: 30
+  
+  headers:
+    main: "🔍 DQIX Internet Observability Platform"
+    metadata: "📋 METADATA"
+    assessment: "Security Assessment (3-Level Hierarchy):"
+
+# Default Probe Weights
+probe_weights:
+  tls: 1.5
+  security_headers: 1.5
+  https: 1.2
+  dns: 1.2
+  accessibility: 1.0
+  performance: 1.0
+  compliance: 1.0
+
+# Test Domains (Consolidated)
+test_domains:
+  basic:
+    - "google.com"
+    - "github.com"
+    - "stackoverflow.com"
+  
+  comprehensive:
+    - "google.com"
+    - "github.com"
+    - "stackoverflow.com"
+    - "cloudflare.com"
+    - "mozilla.org"
+    - "eff.org"
+    - "wikipedia.org"
+    - "reddit.com"
+    - "twitter.com"
+    - "youtube.com"
+  
+  security_focused:
+    - "badssl.com"
+    - "incomplete-chain.badssl.com"
+    - "wrong.host.badssl.com"
+    - "self-signed.badssl.com"
+    - "untrusted-root.badssl.com"
+
+# Engine Metadata
+engines:
+  rust:
+    version: "1.2.0"
+    capabilities: ["async", "concurrency", "wasm"]
+  go:
+    version: "1.2.0"
+    capabilities: ["concurrency", "cross-platform"]
+  python:
+    version: "2.0.0"
+    capabilities: ["async", "wasm", "pyodide"]
+  haskell:
+    version: "1.0.0"
+    capabilities: ["functional", "wasm"]
+  cpp:
+    version: "1.0.0"
+    capabilities: ["performance", "wasm", "emscripten"]
+  bash:
+    version: "1.0.0"
+    capabilities: ["system", "portability"]
