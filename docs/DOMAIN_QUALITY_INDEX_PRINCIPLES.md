@@ -180,10 +180,12 @@ Based on internationally recognized frameworks:
 
 ### **Internet Health Scoring Algorithm**
 ```
-Internet Health Score = (TLS Score × 0.35) + (DNS Score × 0.30) + (Headers Score × 0.35)
+Internet Health Score = Average of all successful probe scores
 
-Where each component score is:
-Component Score = (Achieved Points / Maximum Points) × 100
+Where each probe score is:
+Probe Score = (Achieved Points / Maximum Points) × 100
+
+Overall Score = Sum of all successful probe scores / Number of successful probes
 ```
 
 ### **Internet Observability Quality Assurance**
