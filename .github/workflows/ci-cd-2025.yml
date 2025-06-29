@@ -1,0 +1,439 @@
+name: DQIX CI/CD Pipeline - 2025 Edition
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ['v*']
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run nightly security scans at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  GO_VERSION: '1.23.4'
+  RUST_VERSION: '1.75'
+  PYTHON_VERSION: '3.12'
+  HASKELL_GHC_VERSION: '9.6.4'
+
+# Security: Define permissions
+permissions:
+  contents: read
+  security-events: write
+  packages: write
+  actions: read
+
+jobs:
+  # =================================
+  # Security and Vulnerability Scanning
+  # =================================
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-24.04
+    if: github.event_name != 'schedule' || github.repository == 'dqix-org/dqix'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+      
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+      
+      - name: Run Semgrep security scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+
+  # =================================
+  # Rust Implementation Tests
+  # =================================
+  test-rust:
+    name: Rust Tests
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          components: rustfmt, clippy
+      
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: dqix-rust
+      
+      - name: Run Rust formatter
+        run: |
+          cd dqix-rust
+          cargo fmt --check
+      
+      - name: Run Clippy
+        run: |
+          cd dqix-rust
+          cargo clippy -- -D warnings
+      
+      - name: Run Rust tests
+        run: |
+          cd dqix-rust
+          cargo test --verbose
+      
+      - name: Run Rust security audit
+        uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # =================================
+  # Go Implementation Tests
+  # =================================
+  test-go:
+    name: Go Tests
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: dqix-go/go.sum
+      
+      - name: Run Go formatter
+        run: |
+          cd dqix-go
+          gofmt -l . | tee /tmp/gofmt.log
+          test ! -s /tmp/gofmt.log
+      
+      - name: Run Go vet
+        run: |
+          cd dqix-go
+          go vet ./...
+      
+      - name: Run Go tests with race detection
+        run: |
+          cd dqix-go
+          go test -race -coverprofile=coverage.out ./...
+      
+      - name: Run staticcheck
+        uses: dominikh/staticcheck-action@v1.3.0
+        with:
+          version: "2023.1.7"
+          working-directory: dqix-go
+      
+      - name: Upload Go coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: dqix-go/coverage.out
+          flags: go
+
+  # =================================
+  # Haskell Implementation Tests
+  # =================================
+  test-haskell:
+    name: Haskell Tests
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Haskell
+        uses: haskell-actions/setup@v2
+        with:
+          ghc-version: ${{ env.HASKELL_GHC_VERSION }}
+          cabal-version: '3.10.2.1'
+      
+      - name: Cache Haskell dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            dqix-haskell/dist-newstyle
+          key: haskell-${{ runner.os }}-${{ hashFiles('dqix-haskell/dqix.cabal') }}
+      
+      - name: Configure Cabal
+        run: |
+          cd dqix-haskell
+          cabal configure --enable-tests
+      
+      - name: Build Haskell project
+        run: |
+          cd dqix-haskell
+          cabal build
+      
+      - name: Run Haskell tests
+        run: |
+          cd dqix-haskell
+          cabal test
+
+  # =================================
+  # Python Implementation Tests
+  # =================================
+  test-python:
+    name: Python Tests
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python-version: ['3.12', '3.13']
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev,test]
+      
+      - name: Run Python formatter (Black)
+        run: black --check .
+      
+      - name: Run import sorting (isort)
+        run: isort --check-only .
+      
+      - name: Run linter (flake8)
+        run: flake8 .
+      
+      - name: Run type checker (mypy)
+        run: mypy dqix-python/ --ignore-missing-imports
+      
+      - name: Run tests with pytest
+        run: |
+          pytest tests/ --cov=dqix-python --cov-report=xml --cov-report=html
+      
+      - name: Upload Python coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: coverage.xml
+          flags: python-${{ matrix.python-version }}
+
+  # =================================
+  # Cross-Language Integration Tests
+  # =================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-24.04
+    needs: [test-rust, test-go, test-haskell, test-python]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up multi-language environment
+        run: |
+          # Install Go
+          curl -fsSL https://go.dev/dl/go${{ env.GO_VERSION }}.linux-amd64.tar.gz | sudo tar -C /usr/local -xzf -
+          echo "/usr/local/go/bin" >> $GITHUB_PATH
+          
+          # Install Rust
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          
+          # Install Haskell
+          curl -sSL https://get.haskellstack.org/ | sh
+          
+          # Install Python
+          sudo apt-get update
+          sudo apt-get install -y python${{ env.PYTHON_VERSION }} python${{ env.PYTHON_VERSION }}-pip
+      
+      - name: Build all implementations
+        run: |
+          # Build Go
+          cd dqix-go && go build ./cmd/dqix && cd ..
+          
+          # Build Rust
+          cd dqix-rust && cargo build --release && cd ..
+          
+          # Build Haskell
+          cd dqix-haskell && cabal build && cd ..
+          
+          # Install Python
+          pip install -e .
+      
+      - name: Run cross-language validation tests
+        run: |
+          chmod +x tests/cross_language_validation.py
+          python tests/cross_language_validation.py
+      
+      - name: Run comprehensive integration tests
+        run: |
+          chmod +x tests/quick_test.sh
+          ./tests/quick_test.sh
+
+  # =================================
+  # Performance Benchmarking
+  # =================================
+  benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [integration-tests]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up benchmarking environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y hyperfine
+      
+      - name: Run performance benchmarks
+        run: |
+          chmod +x benchmarks/comprehensive_benchmark.py
+          python benchmarks/comprehensive_benchmark.py
+      
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: benchmarks/results/
+
+  # =================================
+  # Container Build and Scan
+  # =================================
+  build-container:
+    name: Build and Scan Container
+    runs-on: ubuntu-24.04
+    needs: [security-scan, integration-tests]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Log in to Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+      
+      - name: Build container image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            BUILD_COMMIT=${{ github.sha }}
+      
+      - name: Scan container image for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: 'sarif'
+          output: 'container-scan.sarif'
+      
+      - name: Upload container scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'container-scan.sarif'
+
+  # =================================
+  # Release Management
+  # =================================
+  release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [build-container, benchmark]
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          git log --pretty=format:"- %s (%an)" $(git describe --tags --abbrev=0 HEAD~1)..HEAD > changelog.md
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: changelog.md
+          files: |
+            dqix-go/dqix
+            dqix-rust/target/release/dqix
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =================================
+  # Security Monitoring
+  # =================================
+  security-monitoring:
+    name: Security Monitoring
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run dependency vulnerability scan
+        run: |
+          # Rust security audit
+          cd dqix-rust && cargo audit
+          
+          # Go security scan
+          cd dqix-go && go list -json -deps ./... | docker run --rm -i sonatypecommunity/nancy:latest sleuth
+          
+          # Python security scan
+          pip install safety
+          safety check --json --output safety-report.json || true
+      
+      - name: Notify security team
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#security-alerts'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}

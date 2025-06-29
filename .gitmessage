@@ -1,0 +1,44 @@
+# DQIX Commit Message Template
+# Please follow the conventional commits format:
+# <type>(<scope>): <subject>
+#
+# Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build
+# Scopes: rust, go, python, haskell, cpp, bash, cli, wasm, config, docs
+#
+# Example:
+# feat(rust): add async probe execution with timeout handling
+# fix(go): resolve concurrent map access in assessor
+# docs(readme): update installation instructions for multi-language setup
+# refactor(config): consolidate shared configuration schema
+# test(python): add comprehensive domain validation test suite
+# chore(deps): update dependencies across all language implementations
+
+# Subject line (50 chars max) - what you did
+
+# Body (wrap at 72 chars) - why you did it and any important details
+
+
+# Footer - reference issues, breaking changes, etc.
+# Closes #123
+# Breaking change: API endpoint /assess now requires authentication
+# Co-authored-by: Name <email@example.com>
+
+# Feature Implementation Checklist:
+# [ ] Domain validation implemented and tested
+# [ ] All probes (TLS, DNS, HTTPS, Headers) functional
+# [ ] Scoring algorithm matches specification
+# [ ] JSON output format consistent with shared-config.yaml
+# [ ] Error handling for network failures
+# [ ] CLI commands working with unified interface
+# [ ] Tests passing for this implementation
+# [ ] Cross-language compatibility validated
+# [ ] Documentation updated if needed
+# [ ] Build artifacts cleaned (run scripts/clean-dev.sh)
+
+# Remember:
+# - Use imperative mood in subject ("add" not "added" or "adds")
+# - Don't end subject with period
+# - Separate subject from body with blank line
+# - Explain what and why, not how
+# - Reference issues and pull requests when relevant
+# - Run scripts/pre-commit-clean.sh before committing

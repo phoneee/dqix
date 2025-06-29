@@ -6,7 +6,6 @@ import unittest
 from unittest.mock import Mock
 
 import pytest
-
 from dqix.application.use_cases import ComprehensiveAssessmentUseCase
 from dqix.domain.entities import (
     ADVANCED,

@@ -5,7 +5,16 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
-use crate::dsl::ProbeConfig;
+// Import our externalized configuration module
+use crate::config::ConfigManager;
+
+// ProbeConfig type for creating probes
+#[derive(Debug, Clone)]
+pub struct ProbeConfig {
+    pub probe_type: String,
+    pub enabled: bool,
+    pub timeout: Option<u64>,
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ProbeResult {
@@ -52,7 +61,7 @@ impl TlsProbe {
         Self {
             name: "TLS Security".to_string(),
             category: "security".to_string(),
-            weight: 0.25,
+            weight: 0.0, // Will be loaded from external configuration
             timeout: Duration::from_secs(10),
         }
     }
@@ -69,7 +78,8 @@ impl Probe for TlsProbe {
     }
 
     fn weight(&self) -> f64 {
-        self.weight
+        // EXTERNALIZED WEIGHT CONFIGURATION - Load from shared-config.yaml!
+        ConfigManager::get_probe_weight("tls")
     }
 
     fn timeout(&self) -> Duration {
@@ -141,7 +151,7 @@ impl DnsProbe {
         Self {
             name: "DNS Security".to_string(),
             category: "security".to_string(),
-            weight: 0.25,
+            weight: 0.0, // Will be loaded from external configuration
             timeout: Duration::from_secs(10),
         }
     }
@@ -158,7 +168,8 @@ impl Probe for DnsProbe {
     }
 
     fn weight(&self) -> f64 {
-        self.weight
+        // EXTERNALIZED WEIGHT CONFIGURATION - Single source of truth!
+        ConfigManager::get_probe_weight("dns")
     }
 
     fn timeout(&self) -> Duration {
@@ -250,8 +261,8 @@ impl HttpsProbe {
     pub fn new() -> Self {
         Self {
             name: "HTTPS Access".to_string(),
-            category: "performance".to_string(),
-            weight: 0.25,
+            category: "security".to_string(),
+            weight: 0.0, // Will be loaded from external configuration
             timeout: Duration::from_secs(10),
         }
     }
@@ -268,7 +279,8 @@ impl Probe for HttpsProbe {
     }
 
     fn weight(&self) -> f64 {
-        self.weight
+        // EXTERNALIZED WEIGHT CONFIGURATION - Runtime loading from shared-config.yaml!
+        ConfigManager::get_probe_weight("https")
     }
 
     fn timeout(&self) -> Duration {
@@ -343,7 +355,7 @@ impl SecurityHeadersProbe {
         Self {
             name: "Security Headers".to_string(),
             category: "security".to_string(),
-            weight: 0.25,
+            weight: 0.0, // Will be loaded from external configuration
             timeout: Duration::from_secs(10),
         }
     }
@@ -360,7 +372,8 @@ impl Probe for SecurityHeadersProbe {
     }
 
     fn weight(&self) -> f64 {
-        self.weight
+        // EXTERNALIZED WEIGHT CONFIGURATION - True single source of truth!
+        ConfigManager::get_probe_weight("security_headers")
     }
 
     fn timeout(&self) -> Duration {

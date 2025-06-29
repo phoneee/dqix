@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from dqix.core.scoring import ProbeResult
 from dqix.probes.email.bimi import BIMIProbe
 from dqix.probes.email.dkim import DKIMProbe

@@ -4,8 +4,7 @@ from unittest.mock import patch
 
 import pytest
 from click.testing import CliRunner
-
-from ..cli import cli
+from dqix.interfaces.cli import app as cli
 
 
 @pytest.fixture
@@ -35,7 +34,7 @@ def test_check_help(runner) -> None:
     assert "Options" in result.output
     assert "Probes" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_domain(mock_runner, runner) -> None:
     """Test checking a single domain."""
     mock_runner.return_value.run.return_value = {
@@ -49,7 +48,7 @@ def test_check_domain(mock_runner, runner) -> None:
     assert "TLS: 0.9" in result.output
     assert "Headers: 0.7" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_multiple_domains(mock_runner, runner) -> None:
     """Test checking multiple domains."""
     mock_runner.return_value.run.side_effect = [
@@ -64,7 +63,7 @@ def test_check_multiple_domains(mock_runner, runner) -> None:
     assert "Score: 0.8" in result.output
     assert "Score: 0.7" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_specific_probes(mock_runner, runner) -> None:
     """Test checking specific probes."""
     mock_runner.return_value.run.return_value = {
@@ -78,7 +77,7 @@ def test_check_specific_probes(mock_runner, runner) -> None:
     args = mock_runner.return_value.run.call_args[1]
     assert set(args["probes"]) == {"tls", "headers"}
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_output_formats(mock_runner, runner) -> None:
     """Test different output formats."""
     mock_runner.return_value.run.return_value = {
@@ -98,7 +97,7 @@ def test_check_output_formats(mock_runner, runner) -> None:
     assert "score: 0.8" in result.output
     assert "tls: 0.9" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_timeout(mock_runner, runner) -> None:
     """Test timeout setting."""
     mock_runner.return_value.run.return_value = {
@@ -112,7 +111,7 @@ def test_check_timeout(mock_runner, runner) -> None:
     args = mock_runner.return_value.run.call_args[1]
     assert args["timeout"] == 30
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_max_retries(mock_runner, runner) -> None:
     """Test max retries setting."""
     mock_runner.return_value.run.return_value = {
@@ -126,7 +125,7 @@ def test_check_max_retries(mock_runner, runner) -> None:
     args = mock_runner.return_value.run.call_args[1]
     assert args["max_retries"] == 3
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_verbose(mock_runner, runner) -> None:
     """Test verbose output."""
     mock_runner.return_value.run.return_value = {
@@ -139,7 +138,7 @@ def test_check_verbose(mock_runner, runner) -> None:
     assert "Running probe" in result.output
     assert "Completed probe" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_plugins(mock_runner, runner) -> None:
     """Test plugin loading."""
     mock_runner.return_value.run.return_value = {
@@ -153,7 +152,7 @@ def test_check_plugins(mock_runner, runner) -> None:
     args = mock_runner.return_value.run.call_args[1]
     assert set(args["plugins"]) == {"whois", "sri"}
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_output_file(mock_runner, runner, tmp_path) -> None:
     """Test output to file."""
     mock_runner.return_value.run.return_value = {
@@ -169,7 +168,7 @@ def test_check_output_file(mock_runner, runner, tmp_path) -> None:
     assert '"score": 0.8' in content
     assert '"tls": 0.9' in content
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_error_handling(mock_runner, runner) -> None:
     """Test error handling."""
     mock_runner.return_value.run.side_effect = Exception("Test error")
@@ -179,7 +178,7 @@ def test_check_error_handling(mock_runner, runner) -> None:
     assert "Error" in result.output
     assert "Test error" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_invalid_domain(mock_runner, runner) -> None:
     """Test invalid domain handling."""
     mock_runner.return_value.run.return_value = {
@@ -192,7 +191,7 @@ def test_check_invalid_domain(mock_runner, runner) -> None:
     assert "Score: 0.0" in result.output
     assert "Invalid domain" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_timeout_error(mock_runner, runner) -> None:
     """Test timeout error handling."""
     mock_runner.return_value.run.side_effect = TimeoutError("Connection timed out")
@@ -202,7 +201,7 @@ def test_check_timeout_error(mock_runner, runner) -> None:
     assert "Error" in result.output
     assert "Connection timed out" in result.output
 
-@patch("dqix.cli.Runner")
+@patch("dqix.interfaces.cli.Runner")
 def test_check_network_error(mock_runner, runner) -> None:
     """Test network error handling."""
     mock_runner.return_value.run.side_effect = ConnectionError("Network error")

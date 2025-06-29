@@ -1,43 +1,101 @@
 #!/bin/bash
 # DQIX - Domain Quality Index Setup Script
-# Internet Observability Platform
+# Internet Observability Platform - 2025 Modern Bash Edition
 
-set -e
+# Modern Bash 2025 features
+set -euo pipefail
+shopt -s globasciiranges nullglob failglob
+set +H  # Disable history expansion
+
+# Performance optimizations
+ULIMIT_OPTIMIZED=true
+if [[ "$ULIMIT_OPTIMIZED" == "true" ]]; then
+    ulimit -n 4096 2>/dev/null || true
+fi
 
 echo "🔍 DQIX - Internet Observability Platform Setup"
 echo "=============================================="
 echo ""
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+# Modern color definitions with enhanced ANSI support
+declare -rA COLORS=(
+    [RED]='\033[0;31m'
+    [GREEN]='\033[0;32m'
+    [YELLOW]='\033[1;33m'
+    [BLUE]='\033[0;34m'
+    [CYAN]='\033[0;36m'
+    [MAGENTA]='\033[0;35m'
+    [BOLD]='\033[1m'
+    [DIM]='\033[2m'
+    [RESET]='\033[0m'
+)
 
-# Function to print colored output
+# Modern time tracking using EPOCHSECONDS and EPOCHREALTIME
+START_TIME="$EPOCHREALTIME"
+START_SECONDS="$EPOCHSECONDS"
+
+# Modern function definitions with enhanced logging
 print_status() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+    local timestamp="$(date '+%H:%M:%S')"
+    printf '%s[%s]%s %s[INFO]%s %s\n' \
+        "${COLORS[DIM]}" "$timestamp" "${COLORS[RESET]}" \
+        "${COLORS[BLUE]}" "${COLORS[RESET]}" "$1"
 }
 
 print_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+    local timestamp="$(date '+%H:%M:%S')"
+    printf '%s[%s]%s %s[SUCCESS]%s %s\n' \
+        "${COLORS[DIM]}" "$timestamp" "${COLORS[RESET]}" \
+        "${COLORS[GREEN]}" "${COLORS[RESET]}" "$1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+    local timestamp="$(date '+%H:%M:%S')"
+    printf '%s[%s]%s %s[WARNING]%s %s\n' \
+        "${COLORS[DIM]}" "$timestamp" "${COLORS[RESET]}" \
+        "${COLORS[YELLOW]}" "${COLORS[RESET]}" "$1" >&2
 }
 
 print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    local timestamp="$(date '+%H:%M:%S')"
+    printf '%s[%s]%s %s[ERROR]%s %s\n' \
+        "${COLORS[DIM]}" "$timestamp" "${COLORS[RESET]}" \
+        "${COLORS[RED]}" "${COLORS[RESET]}" "$1" >&2
 }
 
-# Check if we're in the right directory
-if [[ ! -f "dqix-cli/dqix-multi" ]]; then
-    print_error "dqix-multi not found. Please run this script from the DQIX project root."
-    exit 1
-fi
+# Modern performance timing function
+get_elapsed_time() {
+    local current_time="$EPOCHREALTIME"
+    local elapsed=$(awk "BEGIN {printf \"%.3f\", $current_time - $START_TIME}")
+    echo "${elapsed}s"
+}
+
+# Modern directory validation with enhanced error reporting
+validate_project_structure() {
+    local -a required_files=(
+        "dqix-cli/dqix-multi"
+        "dqix-go/go.mod"
+        "dqix-rust/Cargo.toml"
+        "dqix-haskell/dqix.cabal"
+        "dqix-cpp/CMakeLists.txt"
+    )
+    
+    local missing_files=()
+    for file in "${required_files[@]}"; do
+        [[ -f "$file" ]] || missing_files+=("$file")
+    done
+    
+    if (( ${#missing_files[@]} > 0 )); then
+        print_error "Project structure validation failed"
+        print_error "Missing files: ${missing_files[*]}"
+        print_error "Please run this script from the DQIX project root"
+        return 1
+    fi
+    
+    return 0
+}
+
+validate_project_structure || exit 1
 
 print_status "Setting up DQIX Internet Observability Platform..."
 
@@ -84,55 +142,74 @@ if [[ -n "$SHELL_CONFIG" ]]; then
     fi
 fi
 
-# Try to install Python dependencies (optional)
-print_status "Checking Python implementation..."
-if command -v python3 &> /dev/null && [[ -f "pyproject.toml" ]]; then
+# Modern dependency management with enhanced error handling
+install_python_implementation() {
+    print_status "Checking Python implementation..."
+    
+    if ! command -v python3 &>/dev/null; then
+        print_warning "Python 3 not available"
+        return 1
+    fi
+    
+    if [[ ! -f "pyproject.toml" ]]; then
+        print_warning "pyproject.toml missing"
+        return 1
+    fi
+    
     print_status "Attempting to install Python dependencies..."
-    if pip install -e . &> /dev/null; then
-        print_success "Python implementation installed"
-        PYTHON_INSTALLED=true
+    
+    # Modern process substitution for better error handling
+    if python3 -m pip install -e . > >(grep -v "^WARNING") 2>&1; then
+        print_success "Python implementation (dqix-python) installed"
+        return 0
     else
         print_warning "Python implementation failed to install (dependencies missing)"
-        PYTHON_INSTALLED=false
+        return 1
     fi
+}
+
+if install_python_implementation; then
+    PYTHON_INSTALLED=true
 else
-    print_warning "Python not available or pyproject.toml missing"
     PYTHON_INSTALLED=false
 fi
 
-# Check other language implementations
-print_status "Checking other language implementations..."
+# Modern associative array approach for language implementations
+print_status "Checking polyglot language implementations..."
 
-# Go implementation
-if command -v go &> /dev/null && [[ -f "dqix-go/go.mod" ]]; then
-    print_success "Go implementation available"
-    GO_AVAILABLE=true
-else
-    print_warning "Go implementation not available (Go not installed)"
-    GO_AVAILABLE=false
-fi
+declare -A LANGUAGES=(
+    [go]="go:dqix-go/go.mod:Go 1.23+"
+    [rust]="cargo:dqix-rust/Cargo.toml:Rust 1.75+"
+    [haskell]="cabal:dqix-haskell/dqix.cabal:GHC 9.6+"
+    [cpp]="cmake:dqix-cpp/CMakeLists.txt:C++20"
+)
 
-# Rust implementation  
-if command -v cargo &> /dev/null && [[ -f "dqix-rust/Cargo.toml" ]]; then
-    print_success "Rust implementation available"
-    RUST_AVAILABLE=true
-else
-    print_warning "Rust implementation not available (Rust not installed)"
-    RUST_AVAILABLE=false
-fi
+declare -A LANG_STATUS=()
 
-# Haskell implementation
-if command -v cabal &> /dev/null && [[ -f "dqix-haskell/dqix.cabal" ]]; then
-    print_success "Haskell implementation available"
-    HASKELL_AVAILABLE=true
-else
-    print_warning "Haskell implementation not available (Cabal not installed)"
-    HASKELL_AVAILABLE=false
-fi
+for lang in "${!LANGUAGES[@]}"; do
+    IFS=':' read -r cmd file desc <<< "${LANGUAGES[$lang]}"
+    
+    if command -v "$cmd" &>/dev/null && [[ -f "$file" ]]; then
+        print_success "$desc implementation available"
+        LANG_STATUS["$lang"]=true
+    else
+        print_warning "$desc implementation not available"
+        LANG_STATUS["$lang"]=false
+    fi
+done
 
+# Legacy variable assignments for compatibility
+GO_AVAILABLE="${LANG_STATUS[go]}"
+RUST_AVAILABLE="${LANG_STATUS[rust]}"
+HASKELL_AVAILABLE="${LANG_STATUS[haskell]}"
+CPP_AVAILABLE="${LANG_STATUS[cpp]}"
+
+# Modern completion summary with timing
 echo ""
-echo "🎯 DQIX Setup Complete!"
-echo "======================"
+echo "🎯 DQIX Setup Complete! $(get_elapsed_time)"
+echo "=============================================="
+echo "Setup completed at: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "Total elapsed time: $(get_elapsed_time)"
 
 # Show usage instructions
 echo ""
@@ -155,9 +232,9 @@ echo ""
 echo -e "${CYAN}🚀 Language Implementations:${NC}"
 echo "  ✅ Bash      - Ready to use (6/6 tests passed)"
 if [[ "$PYTHON_INSTALLED" == "true" ]]; then
-    echo "  ✅ Python    - Installed and ready"
+    echo "  ✅ Python    - dqix-python installed and ready"
 else
-    echo "  ⚠️  Python    - Installation failed (use Bash instead)"
+    echo "  ⚠️  Python    - dqix-python installation failed (use Bash instead)"
 fi
 
 if [[ "$GO_AVAILABLE" == "true" ]]; then
@@ -178,6 +255,12 @@ else
     echo "  ❌ Haskell   - Not available (install GHC/Cabal to use)"
 fi
 
+if [[ "$CPP_AVAILABLE" == "true" ]]; then
+    echo "  ✅ C++       - Available (cd dqix-cpp && mkdir -p build && cd build && cmake .. && make && ./bin/dqix-cpp scan github.com)"
+else
+    echo "  ❌ C++       - Not available (install CMake, OpenSSL, libcurl, c-ares to use)"
+fi
+
 echo ""
 echo -e "${CYAN}🔍 Quick Test:${NC}"
 if [[ "$GLOBAL_INSTALLED" == "true" ]]; then
@@ -186,8 +269,13 @@ else
     echo "  ./dqix-cli/dqix-multi scan github.com"
 fi
 
-echo ""
-echo -e "${GREEN}✅ DQIX is ready to measure the health of the Internet!${NC}"
-echo -e "${BLUE}📖 Documentation: README.md${NC}"
-echo -e "${BLUE}🌐 Project: Internet Observability Platform${NC}"
-echo "" 
+# Modern completion message with enhanced formatting
+printf '\n%s✅ DQIX is ready to measure the health of the Internet!%s\n' \
+    "${COLORS[GREEN]}" "${COLORS[RESET]}"
+printf '%s📖 Documentation: README.md%s\n' \
+    "${COLORS[BLUE]}" "${COLORS[RESET]}"
+printf '%s🌐 Project: Internet Observability Platform - 2025 Edition%s\n' \
+    "${COLORS[BLUE]}" "${COLORS[RESET]}"
+printf '%s⏱️  Setup completed in: %s%s\n' \
+    "${COLORS[CYAN]}" "$(get_elapsed_time)" "${COLORS[RESET]}"
+printf '\n' 

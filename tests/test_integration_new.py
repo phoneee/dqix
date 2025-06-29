@@ -2,7 +2,6 @@
 
 
 import pytest
-
 from dqix.core.academic_references import (
     DomainQualityGovernance,
     GovernanceFramework,

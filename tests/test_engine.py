@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock
 
 import pytest
-
 from dqix.core.engine import CheckEngine
 from dqix.core.probes import Probe
 from dqix.core.scoring import ProbeResult

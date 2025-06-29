@@ -1,5 +1,5 @@
 [package]
-name = "dqix"
+name = "dqix-rust"
 version = "2.0.0"
 edition = "2021"
 rust-version = "1.75"
@@ -73,6 +73,10 @@ serial_test = "3.1"
 [[bin]]
 name = "dqix"
 path = "src/main.rs"
+
+[[bin]]
+name = "demo_external_config"
+path = "src/bin/demo_external_config.rs"
 
 [profile.release]
 lto = "fat"

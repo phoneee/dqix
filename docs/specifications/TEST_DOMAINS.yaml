@@ -1,0 +1,98 @@
+# Consolidated Test Domains for DQIX Cross-Language Testing
+# Eliminates duplication across benchmarks/ and examples/
+# Version: 2.0.0
+
+basic_set:
+  description: "Quick validation set for development"
+  domains:
+    - "google.com"
+    - "github.com"
+    - "stackoverflow.com"
+
+standard_set:
+  description: "Standard testing set for regular validation"
+  domains:
+    - "google.com"
+    - "github.com"
+    - "stackoverflow.com" 
+    - "cloudflare.com"
+    - "mozilla.org"
+    - "eff.org"
+
+comprehensive_set:
+  description: "Full test suite for complete validation"
+  domains:
+    - "google.com"
+    - "github.com"
+    - "stackoverflow.com"
+    - "cloudflare.com"
+    - "mozilla.org"
+    - "eff.org"
+    - "wikipedia.org"
+    - "reddit.com"
+    - "twitter.com"
+    - "youtube.com"
+    - "amazon.com"
+    - "microsoft.com"
+    - "apple.com"
+    - "facebook.com"
+    - "linkedin.com"
+
+security_focused_set:
+  description: "Security-specific test cases including intentionally vulnerable domains"
+  domains:
+    - "badssl.com"
+    - "incomplete-chain.badssl.com"
+    - "wrong.host.badssl.com"
+    - "self-signed.badssl.com"
+    - "untrusted-root.badssl.com"
+    - "expired.badssl.com"
+    - "mixed-script.badssl.com"
+    - "mixed-favicon.badssl.com"
+
+# Sector-specific test sets  
+thai_financial:
+  description: "Thai financial sector domains"
+  domains:
+    - "scb.co.th"
+    - "kasikornbank.com"
+    - "bangkokbank.com"
+    - "krungsri.com"
+    - "ktb.co.th"
+
+educational_set:
+  description: "Educational domains for learning and demonstration"
+  domains:
+    - "example.com"
+    - "httpbin.org"
+    - "httpstat.us"
+    - "postman-echo.com"
+    - "jsonplaceholder.typicode.com"
+
+performance_test_set:
+  description: "Performance and load testing domains"
+  domains:
+    - "httpstat.us/200?sleep=1000"
+    - "httpstat.us/200?sleep=2000"
+    - "httpstat.us/200?sleep=5000"
+    - "httpbin.org/delay/1"
+    - "httpbin.org/delay/3"
+    - "httpbin.org/delay/5"
+
+error_conditions_set:
+  description: "Error condition testing"
+  domains:
+    - "httpstat.us/404"
+    - "httpstat.us/500"
+    - "httpstat.us/503"
+    - "nonexistent-domain-for-testing.invalid"
+    - "1.2.3.4.invalid"
+
+# Usage examples for different test scenarios
+usage_examples:
+  quick_dev_check: "basic_set"
+  ci_cd_pipeline: "standard_set" 
+  full_regression: "comprehensive_set"
+  security_audit: "security_focused_set"
+  performance_benchmark: "performance_test_set"
+  error_handling_test: "error_conditions_set"

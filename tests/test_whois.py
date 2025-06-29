@@ -1,7 +1,6 @@
 """Test WHOIS plugin."""
 
 import pytest
-
 from dqix.plugins.whois import WHOISPlugin, WHOISProbe
 
 

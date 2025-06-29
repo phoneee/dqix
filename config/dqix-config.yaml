@@ -1,0 +1,149 @@
+# DQIX Unified Configuration
+# Single source of truth for all language implementations
+version: "3.0"
+
+# Core assessment configuration
+assessment:
+  timeout: 30s
+  concurrent_probes: 4
+  retry_attempts: 2
+  
+# Probe definitions with consistent weights and scoring
+probes:
+  tls:
+    weight: 0.35
+    timeout: 15s
+    category: "security"
+    level: "critical"
+    description: "TLS/SSL Security Assessment"
+    scoring:
+      tls_version_multiplier: 0.4    # TLS 1.3=1.0, TLS 1.2=0.8, <1.2=0.0
+      certificate_valid: 0.3         # Valid cert=0.3, invalid=0.0
+      cipher_strength: 0.2           # Strong ciphers=0.2, weak=0.0
+      perfect_forward_secrecy: 0.1   # PFS=0.1, no PFS=0.0
+    
+  dns:
+    weight: 0.25
+    timeout: 10s  
+    category: "infrastructure"
+    level: "important"
+    description: "DNS Security and Configuration"
+    scoring:
+      spf_record: 0.3      # Valid SPF=0.3
+      dmarc_policy: 0.3    # Valid DMARC=0.3
+      dnssec: 0.2          # DNSSEC enabled=0.2
+      caa_records: 0.2     # CAA records=0.2
+      
+  https:
+    weight: 0.20
+    timeout: 15s
+    category: "protocol"  
+    level: "important"
+    description: "HTTPS Configuration and Accessibility"
+    scoring:
+      accessibility: 0.5   # HTTPS accessible=0.5
+      redirect: 0.3        # HTTP->HTTPS redirect=0.3
+      hsts: 0.2           # HSTS header=0.2
+      
+  security_headers:
+    weight: 0.20
+    timeout: 15s
+    category: "security"
+    level: "critical" 
+    description: "Security Headers Analysis"
+    scoring:
+      csp: 0.25                    # Content-Security-Policy
+      hsts: 0.20                   # Strict-Transport-Security  
+      x_frame_options: 0.20        # X-Frame-Options
+      x_content_type_options: 0.15 # X-Content-Type-Options
+      referrer_policy: 0.15        # Referrer-Policy
+      permissions_policy: 0.05     # Permissions-Policy (bonus)
+
+# Compliance level thresholds
+compliance_levels:
+  "A+": 0.95
+  "A":  0.85
+  "B":  0.75
+  "C":  0.65
+  "D":  0.55
+  "E":  0.45
+  "F":  0.00
+
+# Network optimization settings
+network:
+  connection_pool_size: 10
+  dns_cache_ttl: 300s         # 5 minutes
+  http_cache_ttl: 900s        # 15 minutes
+  max_redirects: 5
+  user_agent: "DQIX/3.0 (Domain Quality Assessment)"
+  
+# Performance tuning
+performance:
+  enable_caching: true
+  enable_connection_reuse: true
+  batch_size: 10              # For multi-domain processing
+  progress_update_interval: 100ms
+
+# Output formatting  
+output:
+  show_progress_bar: true
+  show_detailed_results: true
+  show_execution_time: true
+  color_output: true
+  
+  # Icons for different probe types
+  icons:
+    tls: "🔐"
+    dns: "🌍" 
+    https: "🌐"
+    security_headers: "🛡️"
+    
+  # Status indicators
+  status_indicators:
+    excellent: "✅ EXCELLENT"
+    good: "⚠️  GOOD"  
+    fair: "🔶 FAIR"
+    poor: "❌ POOR"
+
+# Educational vs performance modes
+modes:
+  default: "performance"      # performance, educational, debug
+  
+  performance:
+    verbose_logging: false
+    detailed_explanations: false
+    step_by_step_output: false
+    show_probe_internals: false
+    
+  educational:
+    verbose_logging: true
+    detailed_explanations: true  
+    step_by_step_output: true
+    show_probe_internals: true
+    explain_scoring: true
+    
+  debug:
+    verbose_logging: true
+    detailed_explanations: true
+    step_by_step_output: true  
+    show_probe_internals: true
+    explain_scoring: true
+    show_http_requests: true
+    show_dns_queries: true
+
+# Language-specific overrides (optional)
+language_overrides:
+  go:
+    concurrent_probes: 8      # Go handles concurrency well
+    
+  rust: 
+    concurrent_probes: 8      # Rust async is efficient
+    
+  python:
+    concurrent_probes: 4      # Python GIL limitations
+    
+  cpp:
+    concurrent_probes: 6      # C++ std::async
+    
+  haskell:
+    concurrent_probes: 4      # Haskell parallel strategies

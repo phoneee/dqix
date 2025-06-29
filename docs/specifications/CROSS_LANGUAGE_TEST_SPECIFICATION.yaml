@@ -1,0 +1,391 @@
+# DQIX Cross-Language Test Specification
+# This file defines the shared test suite that ALL language implementations must pass
+
+version: "3.0"
+description: "Comprehensive test specification for DQIX polyglot architecture"
+
+# Test Domains for Validation
+test_domains:
+  perfect_security:
+    domain: "cloudflare.com"
+    description: "Domain with excellent security configuration"
+    expected_results:
+      overall_score: 
+        min: 90
+        max: 100
+      grade: ["A+", "A"]
+      tls_score:
+        min: 85
+      dns_score:
+        min: 80
+      https_score:
+        min: 90
+      headers_score:
+        min: 85
+    
+  good_security:
+    domain: "github.com"
+    description: "Domain with good security practices"
+    expected_results:
+      overall_score:
+        min: 70
+        max: 89
+      grade: ["A-", "B+", "B"]
+      tls_score:
+        min: 70
+      dns_score:
+        min: 60
+    
+  basic_security:
+    domain: "example.com"
+    description: "Domain with basic security configuration"
+    expected_results:
+      overall_score:
+        min: 40
+        max: 69
+      grade: ["B-", "C+", "C", "C-"]
+    
+  poor_security:
+    domain: "badssl.com"
+    description: "Domain with known security issues"
+    expected_results:
+      overall_score:
+        min: 0
+        max: 39
+      grade: ["D", "F"]
+
+# CLI Interface Tests
+cli_tests:
+  help_command:
+    description: "Help command should work and show comprehensive help"
+    commands:
+      - "dqix help"
+      - "dqix --help"
+      - "dqix -h"
+    expected:
+      exit_code: 0
+      output_contains:
+        - "scan"
+        - "validate"
+        - "help"
+        - "--json"
+        - "--full-ssl"
+  
+  version_command:
+    description: "Version command should display version information"
+    commands:
+      - "dqix version"
+      - "dqix --version"
+    expected:
+      exit_code: 0
+      output_contains:
+        - "DQIX"
+        - "version"
+  
+  basic_scan:
+    description: "Basic scan functionality"
+    command: "dqix scan github.com"
+    expected:
+      exit_code: 0
+      execution_time_max: 30
+      output_contains:
+        - "Overall Score"
+        - "TLS Security"
+        - "DNS Security"
+        - "HTTPS Config"
+        - "Security Headers"
+  
+  json_output:
+    description: "JSON output format"
+    command: "dqix scan github.com --json"
+    expected:
+      exit_code: 0
+      output_format: "json"
+      required_fields:
+        - "metadata.domain"
+        - "metadata.timestamp" 
+        - "metadata.engine"
+        - "overall.score"
+        - "overall.grade"
+        - "probes"
+  
+  full_ssl_analysis:
+    description: "Comprehensive SSL analysis"
+    command: "dqix scan github.com --full-ssl"
+    expected:
+      exit_code: 0
+      output_contains:
+        - "SSL Labs"
+        - "Protocol Support"
+        - "Certificate"
+        - "Cipher Suites"
+        - "Vulnerabilities"
+  
+  invalid_domain:
+    description: "Error handling for invalid domains"
+    command: "dqix scan invalid.invalid.invalid"
+    expected:
+      exit_code: [2, 3]  # Invalid domain or network error
+      output_contains:
+        - "error"
+
+# Output Format Validation
+output_tests:
+  json_schema:
+    description: "JSON output must conform to schema"
+    command: "dqix scan github.com --json"
+    schema:
+      type: "object"
+      required: ["metadata", "overall", "probes"]
+      properties:
+        metadata:
+          type: "object"
+          required: ["domain", "timestamp", "engine", "version"]
+          properties:
+            domain:
+              type: "string"
+            timestamp:
+              type: "string"
+              format: "date-time"
+            engine:
+              type: "string"
+            version:
+              type: "string"
+            execution_time_ms:
+              type: "number"
+              minimum: 0
+        overall:
+          type: "object"
+          required: ["score", "grade"]
+          properties:
+            score:
+              type: "number"
+              minimum: 0
+              maximum: 100
+            grade:
+              type: "string"
+              enum: ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F"]
+        probes:
+          type: "array"
+          items:
+            type: "object"
+            required: ["id", "name", "category", "score", "status", "details"]
+            properties:
+              id:
+                type: "string"
+              name:
+                type: "string"
+              category:
+                type: "string"
+                enum: ["security", "infrastructure", "performance", "compliance"]
+              score:
+                type: "number"
+                minimum: 0
+                maximum: 100
+              status:
+                type: "string"
+                enum: ["pass", "warn", "fail", "error"]
+              details:
+                type: "string"
+
+# Performance Tests
+performance_tests:
+  standard_scan_speed:
+    description: "Standard scan should complete within time limit"
+    command: "dqix scan github.com"
+    requirements:
+      max_execution_time: 30  # seconds
+      max_memory_usage: 100   # MB
+  
+  full_ssl_scan_speed:
+    description: "Full SSL scan should complete within time limit"
+    command: "dqix scan github.com --full-ssl"
+    requirements:
+      max_execution_time: 60  # seconds
+      max_memory_usage: 150   # MB
+
+# Feature Parity Tests
+feature_tests:
+  tier1_features:
+    description: "All Tier 1 features must be implemented"
+    tests:
+      - name: "TLS Basic Analysis"
+        command: "dqix scan github.com --json"
+        validation: "probe 'tls' exists in output"
+      
+      - name: "DNS Security Analysis" 
+        command: "dqix scan github.com --json"
+        validation: "probe 'dns' exists in output"
+      
+      - name: "HTTPS Configuration Analysis"
+        command: "dqix scan github.com --json"
+        validation: "probe 'https' exists in output"
+      
+      - name: "Security Headers Analysis"
+        command: "dqix scan github.com --json"
+        validation: "probe 'headers' exists in output"
+  
+  tier2_features:
+    description: "All Tier 2 features should be implemented"
+    tests:
+      - name: "SSL Labs-style Analysis"
+        command: "dqix scan github.com --full-ssl"
+        validation: "output contains 'SSL Labs' or 'comprehensive'"
+      
+      - name: "Vulnerability Scanning"
+        command: "dqix scan github.com --full-ssl"
+        validation: "output contains 'Vulnerabilities' or 'vuln'"
+
+# Cross-Language Consistency Tests
+consistency_tests:
+  same_domain_same_results:
+    description: "All implementations should produce similar results for same domain"
+    test_domain: "github.com"
+    tolerance:
+      score_variance: 10  # ±10 points acceptable
+      grade_variance: 1   # ±1 grade level acceptable
+    
+  probe_consistency:
+    description: "Individual probe scores should be consistent"
+    test_domain: "github.com"
+    tolerance:
+      probe_score_variance: 15  # ±15 points per probe
+
+# Error Handling Tests
+error_tests:
+  network_timeout:
+    description: "Handle network timeouts gracefully"
+    command: "dqix scan httpbin.org/delay/60 --timeout 5"
+    expected:
+      exit_code: 4  # Timeout error
+      output_contains:
+        - "timeout"
+  
+  dns_failure:
+    description: "Handle DNS resolution failures"
+    command: "dqix scan nonexistent.example.invalid"
+    expected:
+      exit_code: [2, 3]  # Invalid domain or network error
+  
+  invalid_arguments:
+    description: "Handle invalid command line arguments"
+    commands:
+      - "dqix scan"  # Missing domain
+      - "dqix invalid-command"
+      - "dqix scan domain.com --invalid-flag"
+    expected:
+      exit_code: 1  # General error
+      output_contains:
+        - "error"
+
+# Regression Tests
+regression_tests:
+  output_format_stability:
+    description: "Output format should remain stable across versions"
+    baseline_file: "tests/baselines/github.com.json"
+    command: "dqix scan github.com --json"
+    compare_fields:
+      - "metadata.domain"
+      - "overall.score"
+      - "probes[*].id"
+      - "probes[*].category"
+
+# Benchmark Tests
+benchmark_tests:
+  standard_domains:
+    description: "Performance benchmark on standard domains"
+    domains:
+      - "github.com"
+      - "google.com"
+      - "example.com"
+    metrics:
+      - "execution_time"
+      - "memory_usage"
+      - "cpu_usage"
+    iterations: 5
+    
+  concurrent_scans:
+    description: "Performance with concurrent domain scans"
+    domains:
+      - "github.com"
+      - "google.com"
+      - "stackoverflow.com"
+    concurrency: 3
+    metrics:
+      - "total_execution_time"
+      - "peak_memory_usage"
+
+# Configuration Tests
+config_tests:
+  default_config:
+    description: "Default configuration should work"
+    command: "dqix scan github.com"
+    expected:
+      exit_code: 0
+  
+  custom_timeout:
+    description: "Custom timeout configuration"
+    command: "dqix scan github.com --timeout 10"
+    expected:
+      exit_code: 0
+      max_execution_time: 15  # Should respect timeout
+
+# Integration Tests
+integration_tests:
+  real_world_domains:
+    description: "Test against real-world domains with various configurations"
+    domains:
+      perfect_ssl:
+        - "cloudflare.com"
+        - "github.com"
+      good_ssl:
+        - "google.com"
+        - "stackoverflow.com"
+      basic_ssl:
+        - "example.com"
+    validation:
+      - "No crashes or exceptions"
+      - "Reasonable scores within expected ranges"
+      - "All probes execute successfully"
+
+# Test Execution Configuration
+execution:
+  timeout_per_test: 120  # seconds
+  retry_attempts: 2
+  fail_fast: false
+  parallel_execution: true
+  max_parallel_tests: 4
+  
+  environments:
+    - name: "CI"
+      skip_tests:
+        - "performance_tests.full_ssl_scan_speed"  # May be slower in CI
+    - name: "local"
+      skip_tests: []
+
+# Reporting
+reporting:
+  formats:
+    - "junit"
+    - "json"
+    - "markdown"
+  
+  output_directory: "test-results"
+  
+  include_metrics:
+    - "execution_time"
+    - "memory_usage"
+    - "success_rate"
+    - "error_details"
+
+# Quality Gates
+quality_gates:
+  minimum_pass_rate: 95  # % of tests that must pass
+  maximum_execution_time: 300  # seconds for full suite
+  
+  critical_tests:
+    # These tests MUST pass for release
+    - "cli_tests.basic_scan"
+    - "cli_tests.json_output"
+    - "feature_tests.tier1_features"
+    - "output_tests.json_schema"

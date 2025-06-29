@@ -1,0 +1,572 @@
+# DQIX Configuration Schema
+# This defines the unified configuration format for all language implementations
+
+schema_version: "3.0"
+description: "DQIX unified configuration schema for polyglot architecture"
+
+# Global Application Configuration
+global:
+  description: "Application-wide settings"
+  properties:
+    timeout:
+      type: "integer"
+      default: 30
+      minimum: 5
+      maximum: 300
+      description: "Default timeout for network requests in seconds"
+    
+    max_redirects:
+      type: "integer"
+      default: 5
+      minimum: 0
+      maximum: 20
+      description: "Maximum number of HTTP redirects to follow"
+    
+    user_agent:
+      type: "string"
+      default: "DQIX Internet Observability Platform/3.0"
+      description: "User agent string for HTTP requests"
+    
+    concurrent_scans:
+      type: "integer"
+      default: 1
+      minimum: 1
+      maximum: 10
+      description: "Number of concurrent domain scans"
+    
+    retry_attempts:
+      type: "integer"
+      default: 2
+      minimum: 0
+      maximum: 5
+      description: "Number of retry attempts for failed requests"
+    
+    log_level:
+      type: "string"
+      enum: ["debug", "info", "warn", "error"]
+      default: "info"
+      description: "Logging verbosity level"
+
+# Probe Configuration
+probes:
+  description: "Configuration for individual security probes"
+  
+  tls:
+    description: "TLS/SSL security analysis configuration"
+    properties:
+      enabled:
+        type: "boolean"
+        default: true
+        description: "Enable TLS probe"
+      
+      timeout:
+        type: "integer"
+        default: 15
+        minimum: 5
+        maximum: 60
+        description: "TLS connection timeout in seconds"
+      
+      min_tls_version:
+        type: "string"
+        enum: ["1.0", "1.1", "1.2", "1.3"]
+        default: "1.2"
+        description: "Minimum acceptable TLS version"
+      
+      check_revocation:
+        type: "boolean"
+        default: true
+        description: "Check certificate revocation status"
+      
+      check_chain:
+        type: "boolean"
+        default: true
+        description: "Validate certificate chain"
+      
+      check_hostname:
+        type: "boolean"
+        default: true
+        description: "Verify hostname matches certificate"
+      
+      cipher_suites:
+        type: "object"
+        properties:
+          check_strength:
+            type: "boolean"
+            default: true
+            description: "Analyze cipher suite strength"
+          
+          min_key_size:
+            type: "integer"
+            default: 2048
+            minimum: 1024
+            description: "Minimum acceptable key size in bits"
+          
+          allowed_ciphers:
+            type: "array"
+            items:
+              type: "string"
+            default: []
+            description: "List of explicitly allowed cipher suites (empty = all strong ciphers)"
+          
+          blocked_ciphers:
+            type: "array"
+            items:
+              type: "string"
+            default: ["RC4", "DES", "3DES", "NULL"]
+            description: "List of blocked weak cipher suites"
+      
+      vulnerabilities:
+        type: "object"
+        properties:
+          check_heartbleed:
+            type: "boolean"
+            default: true
+            description: "Test for Heartbleed vulnerability"
+          
+          check_poodle:
+            type: "boolean"
+            default: true
+            description: "Test for POODLE vulnerability"
+          
+          check_crime:
+            type: "boolean"
+            default: true
+            description: "Test for CRIME vulnerability"
+          
+          check_beast:
+            type: "boolean"
+            default: true
+            description: "Test for BEAST vulnerability"
+  
+  dns:
+    description: "DNS security analysis configuration"
+    properties:
+      enabled:
+        type: "boolean"
+        default: true
+        description: "Enable DNS probe"
+      
+      timeout:
+        type: "integer"
+        default: 10
+        minimum: 5
+        maximum: 30
+        description: "DNS query timeout in seconds"
+      
+      nameservers:
+        type: "array"
+        items:
+          type: "string"
+          format: "ipv4"
+        default: ["8.8.8.8", "1.1.1.1", "9.9.9.9"]
+        description: "DNS nameservers to use for queries"
+      
+      check_dnssec:
+        type: "boolean"
+        default: true
+        description: "Verify DNSSEC validation"
+      
+      check_caa:
+        type: "boolean"
+        default: true
+        description: "Check CAA (Certificate Authority Authorization) records"
+      
+      check_spf:
+        type: "boolean"
+        default: true
+        description: "Check SPF (Sender Policy Framework) records"
+      
+      check_dmarc:
+        type: "boolean"
+        default: true
+        description: "Check DMARC (Domain-based Message Authentication) records"
+      
+      check_dkim:
+        type: "boolean"
+        default: true
+        description: "Check DKIM (DomainKeys Identified Mail) records"
+      
+      check_mx:
+        type: "boolean"
+        default: true
+        description: "Check MX (Mail Exchange) records"
+      
+      check_ipv6:
+        type: "boolean"
+        default: true
+        description: "Check IPv6 (AAAA) record support"
+  
+  https:
+    description: "HTTPS configuration analysis"
+    properties:
+      enabled:
+        type: "boolean"
+        default: true
+        description: "Enable HTTPS probe"
+      
+      timeout:
+        type: "integer"
+        default: 15
+        minimum: 5
+        maximum: 60
+        description: "HTTPS request timeout in seconds"
+      
+      check_redirect:
+        type: "boolean"
+        default: true
+        description: "Check HTTP to HTTPS redirect"
+      
+      check_hsts:
+        type: "boolean"
+        default: true
+        description: "Check HSTS (HTTP Strict Transport Security) header"
+      
+      hsts_requirements:
+        type: "object"
+        properties:
+          min_max_age:
+            type: "integer"
+            default: 31536000  # 1 year
+            description: "Minimum HSTS max-age in seconds"
+          
+          require_includesubdomains:
+            type: "boolean"
+            default: false
+            description: "Require includeSubDomains directive"
+          
+          require_preload:
+            type: "boolean"
+            default: false
+            description: "Require preload directive"
+      
+      check_upgrade_insecure:
+        type: "boolean"
+        default: true
+        description: "Check Upgrade-Insecure-Requests header"
+  
+  headers:
+    description: "HTTP security headers analysis"
+    properties:
+      enabled:
+        type: "boolean"
+        default: true
+        description: "Enable security headers probe"
+      
+      timeout:
+        type: "integer"
+        default: 15
+        minimum: 5
+        maximum: 60
+        description: "HTTP request timeout in seconds"
+      
+      required_headers:
+        type: "array"
+        items:
+          type: "string"
+        default:
+          - "strict-transport-security"
+          - "content-security-policy"
+          - "x-frame-options"
+          - "x-content-type-options"
+          - "referrer-policy"
+        description: "List of required security headers"
+      
+      optional_headers:
+        type: "array"
+        items:
+          type: "string"
+        default:
+          - "expect-ct"
+          - "feature-policy"
+          - "permissions-policy"
+        description: "List of optional but recommended headers"
+      
+      csp_requirements:
+        type: "object"
+        properties:
+          check_syntax:
+            type: "boolean"
+            default: true
+            description: "Validate CSP syntax"
+          
+          require_default_src:
+            type: "boolean"
+            default: true
+            description: "Require default-src directive"
+          
+          disallow_unsafe:
+            type: "boolean"
+            default: true
+            description: "Flag unsafe-inline and unsafe-eval as issues"
+
+# Output Configuration
+output:
+  description: "Output formatting and destination configuration"
+  properties:
+    default_format:
+      type: "string"
+      enum: ["console", "json", "csv", "html", "xml"]
+      default: "console"
+      description: "Default output format"
+    
+    include_timestamps:
+      type: "boolean"
+      default: true
+      description: "Include timestamps in output"
+    
+    color_output:
+      type: "boolean"
+      default: true
+      description: "Use colored terminal output"
+    
+    verbose_output:
+      type: "boolean"
+      default: false
+      description: "Include verbose diagnostic information"
+    
+    formats:
+      type: "object"
+      properties:
+        json:
+          type: "object"
+          properties:
+            pretty_print:
+              type: "boolean"
+              default: true
+              description: "Format JSON with indentation"
+            
+            include_raw_data:
+              type: "boolean"
+              default: false
+              description: "Include raw probe data in output"
+            
+            schema_validation:
+              type: "boolean"
+              default: true
+              description: "Validate JSON output against schema"
+        
+        html:
+          type: "object"
+          properties:
+            template:
+              type: "string"
+              default: "default"
+              description: "HTML template to use"
+            
+            include_charts:
+              type: "boolean"
+              default: true
+              description: "Include visualization charts"
+            
+            css_framework:
+              type: "string"
+              enum: ["bootstrap", "tailwind", "custom"]
+              default: "bootstrap"
+              description: "CSS framework for styling"
+        
+        csv:
+          type: "object"
+          properties:
+            include_headers:
+              type: "boolean"
+              default: true
+              description: "Include column headers"
+            
+            delimiter:
+              type: "string"
+              default: ","
+              description: "Field delimiter character"
+            
+            quote_character:
+              type: "string"
+              default: "\""
+              description: "Quote character for fields"
+
+# Reporting Configuration
+reporting:
+  description: "Advanced reporting and analysis configuration"
+  properties:
+    executive_summary:
+      type: "boolean"
+      default: true
+      description: "Include executive summary in reports"
+    
+    technical_details:
+      type: "boolean"
+      default: true
+      description: "Include detailed technical analysis"
+    
+    compliance_mapping:
+      type: "boolean"
+      default: true
+      description: "Map findings to compliance frameworks"
+    
+    risk_assessment:
+      type: "boolean"
+      default: true
+      description: "Include risk assessment and scoring"
+    
+    recommendations:
+      type: "boolean"
+      default: true
+      description: "Include remediation recommendations"
+    
+    frameworks:
+      type: "array"
+      items:
+        type: "string"
+        enum: ["nist", "owasp", "pci_dss", "iso27001", "cis"]
+      default: ["owasp", "nist"]
+      description: "Compliance frameworks to include in analysis"
+
+# Feature Flags
+features:
+  description: "Feature toggles for enabling/disabling functionality"
+  properties:
+    ssl_labs_analysis:
+      type: "boolean"
+      default: false
+      description: "Enable comprehensive SSL Labs-style analysis"
+    
+    vulnerability_scanning:
+      type: "boolean"
+      default: true
+      description: "Enable vulnerability detection probes"
+    
+    performance_testing:
+      type: "boolean"
+      default: false
+      description: "Enable performance analysis (experimental)"
+    
+    continuous_monitoring:
+      type: "boolean"
+      default: false
+      description: "Enable continuous monitoring mode"
+    
+    experimental_probes:
+      type: "boolean"
+      default: false
+      description: "Enable experimental security probes"
+    
+    machine_learning:
+      type: "boolean"
+      default: false
+      description: "Enable ML-based threat detection (experimental)"
+
+# Advanced Configuration
+advanced:
+  description: "Advanced configuration options"
+  properties:
+    cache:
+      type: "object"
+      properties:
+        enabled:
+          type: "boolean"
+          default: true
+          description: "Enable result caching"
+        
+        ttl:
+          type: "integer"
+          default: 3600
+          minimum: 60
+          description: "Cache time-to-live in seconds"
+        
+        max_size:
+          type: "integer"
+          default: 1000
+          minimum: 10
+          description: "Maximum number of cached results"
+    
+    rate_limiting:
+      type: "object"
+      properties:
+        enabled:
+          type: "boolean"
+          default: true
+          description: "Enable rate limiting to respect target servers"
+        
+        requests_per_second:
+          type: "number"
+          default: 2.0
+          minimum: 0.1
+          maximum: 10.0
+          description: "Maximum requests per second per domain"
+        
+        burst_size:
+          type: "integer"
+          default: 5
+          minimum: 1
+          description: "Maximum burst size for rate limiting"
+    
+    plugins:
+      type: "object"
+      properties:
+        directory:
+          type: "string"
+          default: "./plugins"
+          description: "Directory containing plugin modules"
+        
+        auto_discover:
+          type: "boolean"
+          default: true
+          description: "Automatically discover and load plugins"
+        
+        enabled:
+          type: "array"
+          items:
+            type: "string"
+          default: []
+          description: "List of explicitly enabled plugins"
+        
+        disabled:
+          type: "array"
+          items:
+            type: "string"
+          default: []
+          description: "List of explicitly disabled plugins"
+
+# Environment-specific Overrides
+environments:
+  description: "Environment-specific configuration overrides"
+  properties:
+    development:
+      type: "object"
+      properties:
+        global:
+          log_level: "debug"
+          timeout: 60
+        features:
+          experimental_probes: true
+          ssl_labs_analysis: true
+    
+    testing:
+      type: "object"
+      properties:
+        global:
+          timeout: 10
+          retry_attempts: 1
+        probes:
+          tls:
+            timeout: 5
+          dns:
+            timeout: 5
+    
+    production:
+      type: "object"
+      properties:
+        global:
+          log_level: "warn"
+          concurrent_scans: 5
+        features:
+          experimental_probes: false
+          performance_testing: false
+    
+    ci:
+      type: "object"
+      properties:
+        global:
+          timeout: 15
+          retry_attempts: 3
+        output:
+          color_output: false
+          default_format: "json"

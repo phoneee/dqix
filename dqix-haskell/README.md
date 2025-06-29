@@ -1,314 +1,207 @@
-# DQIX Internet Observability Platform - Haskell Implementation
+# DQIX Haskell Implementation
 
-🔍 **Pure Functional Programming with Test-Driven Development**
+**Functional Domain Quality Index Assessment** - A modern, type-safe implementation aligned with the polyglot DQIX architecture.
 
-## Overview
+## 🎯 Features
 
-This is the Haskell implementation of DQIX (Domain Quality Index), an Internet Observability Platform that provides comprehensive analysis of domain security, performance, and compliance using pure functional programming principles.
+- **Real Network Assessment**: Performs actual TLS, DNS, HTTPS, and security header testing
+- **Functional Programming**: Leverages Haskell's type safety and immutability
+- **Concurrent Execution**: Uses `async` for parallel probe execution
+- **JSON Output**: Machine-readable output for integration
+- **Cross-Platform**: Works on macOS, Linux, and Windows
+- **Shared Configuration**: Aligned with `shared-config.yaml` standards
 
-## Features
+## 🚀 Quick Start
 
-### ✨ Functional Programming Excellence
-- **Pure Functions** - All core logic implemented without side effects
-- **Algebraic Data Types** - Type-safe domain modeling
-- **Monadic Error Handling** - Using `Either` for robust error handling
-- **Higher-Order Functions** - Function composition throughout
-- **Immutable Data Structures** - No in-place modifications
+### Build
 
-### 🧪 Test-Driven Development
-- **Unit Tests** with HUnit
-- **Property-Based Testing** with QuickCheck
-- **Comprehensive Test Coverage** for all pure functions
-- **Mock Data Generation** for testing
-- **Functional Test Suite** execution
-
-### 🔍 Internet Observability Probes
-- **TLS/SSL Security Analysis** - Protocol versions, cipher strength, certificates
-- **DNS Infrastructure Assessment** - DNSSEC, IPv6, SPF/DMARC records
-- **HTTPS Implementation Review** - Accessibility, redirects, HSTS
-- **Security Headers Validation** - CSP, frame options, content type
-
-### 📊 Scoring & Compliance
-- **Weighted Scoring Algorithm** - TLS (35%), DNS (25%), HTTPS (20%), Headers (20%)
-- **Compliance Levels** - Excellent, Advanced, Standard, Basic, Poor
-- **Security Grades** - A+ to F rating system
-- **Detailed Assessment Reports** - Technical insights and recommendations
-
-## Installation
-
-### Prerequisites
-- GHC 8.10+ or Stack
-- Cabal 3.0+
-
-### Build from Source
 ```bash
-# Clone the repository
-git clone https://github.com/dqix/dqix.git
-cd dqix/dqix-haskell
-
-# Install dependencies
-cabal update
-cabal install --only-dependencies
-
-# Build the project
+# Install dependencies and build
 cabal build
 
-# Install executable
-cabal install
+# Or use the optimized version
+cabal build dqix-optimized
 ```
 
-### Using Stack (Alternative)
-```bash
-# Build with Stack
-stack build
-
-# Install
-stack install
-```
-
-## Usage
-
-### Basic Commands
+### Usage
 
 ```bash
-# Comprehensive domain analysis
-dqix scan github.com
+# Standard assessment
+./dist-newstyle/build/.../dqix scan example.com
 
-# Security validation checklist
-dqix validate github.com
+# JSON output for integration
+./dist-newstyle/build/.../dqix scan example.com --json
 
-# Test with known good domains
-dqix test
+# Run tests
+./dist-newstyle/build/.../dqix test
 
-# Interactive demonstration
-dqix demo github.com
-
-# Run functional tests
-dqix run-tests
-
-# Show version information
-dqix version
+# Demo mode
+./dist-newstyle/build/.../dqix demo
 ```
 
-### Example Output
+## 📊 Sample Output
 
 ```
 🔍 DQIX Internet Observability Platform
-Analyzing: github.com
+Analyzing: example.com
 
-🌐 github.com
-Internet Health Score: 92.1%
-Grade: A | Compliance: Advanced
+Overall Score: 83% B
+[█████████████████████████████████░░░░░░░]
 
-🔐 TLS/SSL Security: ✅ 95.2%
-🌐 HTTPS Implementation: ✅ 92.8%
-🌍 DNS Infrastructure: ✅ 89.1%
-🛡️ Security Headers: ⚠️ 87.5%
+Security Assessment (3-Level Hierarchy):
+
+🚨 CRITICAL SECURITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🛡️ Security Headers      60% [████████████░░░░░░░░] ⚠️  GOOD
+  🔐 TLS/SSL Security      80% [████████████████░░░░] ✅ EXCELLENT
+
+⚠️  IMPORTANT CONFIGURATION  
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🌍 DNS Security         100% [████████████████████] ✅ EXCELLENT
+  🌐 HTTPS Configuration  100% [████████████████████] ✅ EXCELLENT
 ```
 
-## Architecture
+## 🏗️ Architecture
 
-### Pure Functional Design
+### Core Types
 
 ```haskell
--- Domain modeling with algebraic data types
-data Domain = Domain String deriving (Show, Eq)
-
 data ProbeResult = ProbeResult
-    { probeId :: String
-    , probeDomain :: Domain
-    , probeStatus :: ProbeStatus
-    , probeScore :: Double
-    , probeMessage :: String
-    , probeDetails :: [(String, String)]
-    } deriving (Show, Eq)
+    { probeId :: Text
+    , name :: Text  
+    , score :: Double
+    , weight :: Double
+    , category :: Text
+    , status :: Text
+    , message :: Text
+    , details :: ProbeDetails
+    , timestamp :: UTCTime
+    }
 
--- Functional error handling
-type DqixResult a = Either String a
-
--- Pure scoring functions
-calculateTlsScore :: [(String, String)] -> DqixResult Double
-calculateDnsScore :: [(String, String)] -> DqixResult Double
-calculateHttpsScore :: [(String, String)] -> DqixResult Double
+data AssessmentResult = AssessmentResult
+    { domain :: Text
+    , overallScore :: Double
+    , grade :: Text
+    , complianceLevel :: Text
+    , probeResults :: [ProbeResult]
+    , assessmentTimestamp :: UTCTime
+    , assessmentExecutionTime :: Double
+    , metadata :: Metadata
+    }
 ```
 
-### Higher-Order Functions
+### Probe Implementation
+
+Each probe is implemented as a pure function that performs real network testing:
+
+- **TLS Probe**: Tests HTTPS connectivity and certificate validity
+- **DNS Probe**: Checks SPF, DMARC, and DNS resolution 
+- **HTTPS Probe**: Validates HTTPS configuration and redirects
+- **Security Headers Probe**: Analyzes HTTP security headers
+
+### Scoring System
+
+Aligned with `shared-config.yaml`:
 
 ```haskell
--- Function composition
-pipe :: [a -> a] -> a -> a
-pipe = foldr (.) id
-
-compose :: (b -> c) -> (a -> b) -> a -> c
-compose = (.)
-
--- List processing
-mapResults :: (a -> b) -> [a] -> [b]
-filterResults :: (a -> Bool) -> [a] -> [a]
-foldResults :: (b -> a -> b) -> b -> [a] -> b
+tlsWeight = 1.5        -- Critical Security
+headersWeight = 1.5    -- Critical Security  
+httpsWeight = 1.2      -- Important Configuration
+dnsWeight = 1.2        -- Important Configuration
+totalWeight = 5.4
 ```
 
-### Monadic Assessment Composition
+## 🧪 Testing
+
+The implementation includes comprehensive tests:
+
+```bash
+# Run all tests
+./dist-newstyle/build/.../dqix test
+
+# Tests cover:
+# - Domain validation
+# - Probe level classification  
+# - Grade calculation
+# - Weighted scoring configuration
+```
+
+## 📦 Dependencies
+
+**Core Dependencies:**
+- `aeson` - JSON serialization
+- `async` - Concurrent execution
+- `dns` - DNS resolution
+- `http-simple` - HTTP client
+- `text` - Efficient text handling
+- `time` - Timestamp handling
+
+**Build Tools:**
+- GHC 9.6+ 
+- Cabal 3.0+
+
+## 🔄 Integration with Polyglot Architecture
+
+This Haskell implementation maintains feature parity with:
+
+- **Go Implementation**: Same probe logic and scoring
+- **Rust Implementation**: Equivalent safety guarantees
+- **Python Implementation**: Compatible JSON output
+- **Bash Implementation**: Identical CLI interface
+
+### Cross-Language Validation
+
+```bash
+# All implementations should produce similar scores (±5% variance)
+./dqix-go/dqix scan example.com --json > go-result.json
+./dqix-haskell/dist-newstyle/.../dqix scan example.com --json > haskell-result.json
+./dqix-rust/target/release/dqix scan example.com --json > rust-result.json
+
+# Compare overall scores across implementations
+```
+
+## 🎛️ Configuration
+
+Weights and thresholds are hardcoded to match `shared-config.yaml`:
 
 ```haskell
-composeAssessment :: Domain -> [ProbeResult] -> Double -> DqixResult AssessmentResult
-composeAssessment domain probeResults timestamp = do
-    overallScore <- calculateOverallScore probeResults
-    complianceLevel <- determineComplianceLevel overallScore
-    return $ AssessmentResult domain probeResults overallScore complianceLevel timestamp
+-- Probe weights (from shared-config.yaml)
+tlsWeight, dnsWeight, httpsWeight, headersWeight :: Double
+tlsWeight = 1.5
+dnsWeight = 1.2  
+httpsWeight = 1.2
+headersWeight = 1.5
+totalWeight = 5.4
 ```
 
-## Testing
+## 🐛 Troubleshooting
 
-### Run All Tests
-```bash
-# Full test suite
-cabal test
+### Common Issues
 
-# Quick property tests
-make test-quick
+1. **Build Errors**: Ensure GHC 9.6+ and required dependencies
+2. **Network Timeouts**: Default timeout is 30s per probe
+3. **DNS Resolution**: Requires working DNS resolver
 
-# Individual function tests
-make test-functions
-```
-
-### Test Coverage
-- ✅ Domain validation (empty, invalid, valid domains)
-- ✅ TLS scoring (protocol versions, certificates, ciphers)
-- ✅ DNS scoring (IPv4/IPv6, DNSSEC, email security)
-- ✅ HTTPS scoring (accessibility, redirects, HSTS)
-- ✅ Security headers scoring (CSP, frame options)
-- ✅ Overall score calculation with weights
-- ✅ Compliance level determination
-- ✅ Assessment composition
-- ✅ Higher-order function behavior
-- ✅ Pure function determinism
-
-### Property-Based Testing
-
-```haskell
--- Domain validation round-trip property
-prop_ValidDomainRoundTrip :: String -> Property
-prop_ValidDomainRoundTrip domainName = 
-    not (null domainName) && ('.' `elem` domainName) && length domainName <= 253 ==>
-    case validateDomain domainName of
-        Right (Domain result) -> result == domainName
-        Left _ -> False
-
--- Score range validation
-prop_ScoreInRange :: Double -> Property
-prop_ScoreInRange score = 
-    score >= 0.0 && score <= 1.0 ==>
-    case determineComplianceLevel score of
-        Right level -> level `elem` [Excellent, Advanced, Standard, Basic, Poor]
-        Left _ -> False
-```
-
-## Development
-
-### Setup Development Environment
-```bash
-make setup    # Install dependencies and dev tools
-make repl     # Start GHCi REPL
-make format   # Format code with stylish-haskell
-make lint     # Lint code with hlint
-make docs     # Generate documentation
-```
-
-### Continuous Integration
-```bash
-make ci       # Run full CI pipeline
-```
-
-### Performance Profiling
-```bash
-make profile  # Profile performance with GHC profiler
-```
-
-## Functional Programming Principles
-
-### 1. Pure Functions
-All core business logic is implemented as pure functions:
-- No side effects
-- Deterministic behavior
-- Referential transparency
-- Easy to test and reason about
-
-### 2. Immutable Data
-All data structures are immutable:
-- No in-place modifications
-- Thread-safe by design
-- Predictable behavior
-- Easier debugging
-
-### 3. Type Safety
-Strong static typing with algebraic data types:
-- Compile-time error detection
-- Self-documenting code
-- Impossible states made impossible
-- Refactoring safety
-
-### 4. Monadic Error Handling
-Using `Either` monad for error handling:
-- Explicit error types
-- Composable error handling
-- No exceptions in pure code
-- Railway-oriented programming
-
-### 5. Higher-Order Functions
-Functions as first-class citizens:
-- Function composition
-- Code reusability
-- Declarative style
-- Powerful abstractions
-
-## Benchmarks
+### Debug Mode
 
 ```bash
-make benchmark  # Run performance benchmarks
+# Verbose output for debugging
+cabal run dqix -- scan example.com --verbose
 ```
 
-Expected performance characteristics:
-- Domain validation: ~1μs
-- Probe scoring: ~10μs per probe
-- Overall assessment: ~100μs
-- Mock data generation: ~50μs
+## 🤝 Contributing
 
-## Contributing
+This implementation follows the DQIX polyglot architecture:
 
-1. Fork the repository
-2. Create a feature branch
-3. Write tests first (TDD approach)
-4. Implement functionality
-5. Ensure all tests pass
-6. Format and lint code
-7. Submit pull request
+1. **Maintain Feature Parity**: All probes must exist in all languages
+2. **Consistent Scoring**: Use shared-config.yaml weights
+3. **Type Safety**: Leverage Haskell's type system for correctness
+4. **Functional Style**: Pure functions where possible
 
-### Code Style
-- Follow standard Haskell conventions
-- Use `stylish-haskell` for formatting
-- Address all `hlint` warnings
-- Write comprehensive tests
-- Document public functions
+## 📄 License
 
-## License
-
-MIT License - see LICENSE file for details
-
-## Related Implementations
-
-- [Python Implementation](../dqix/) - Object-oriented with dataclasses
-- [Go Implementation](../dqix-go/) - Concurrent with goroutines
-- [Rust Implementation](../dqix-rust/) - Systems programming with ownership
-- [Bash Implementation](../dqix-cli/) - Shell scripting with functions
-
-## References
-
-- [Haskell Functional Programming](https://nithinbekal.com/posts/haskell-quicksort/)
-- [QuickSort in Functional Style](https://www.netidee.at/automated-software-verification-first-order-theorem-provers/functional-version-quicksort)
-- [Property-Based Testing with QuickCheck](https://hackage.haskell.org/package/QuickCheck)
-- [Domain-Driven Design in Haskell](https://leanpub.com/domain-modeling-made-functional)
+MIT License - Same as parent DQIX project
 
 ---
 
-**"Measuring the health of the Internet, together, in the open."** 🌐 
+**Part of the DQIX Internet Observability Platform** - A polyglot domain security assessment toolkit.

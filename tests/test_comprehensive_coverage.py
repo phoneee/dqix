@@ -7,7 +7,6 @@ import asyncio
 from unittest.mock import Mock, patch
 
 import pytest
-
 from dqix import get_charts, has_visualization
 
 # Import DQIX modules

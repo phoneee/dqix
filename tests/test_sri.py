@@ -1,7 +1,6 @@
 """Test SRI plugin."""
 
 import pytest
-
 from dqix.plugins.sri import SRIPlugin, SRIProbe
 
 

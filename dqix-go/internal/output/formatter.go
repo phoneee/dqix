@@ -70,6 +70,123 @@ func (f *CSVFormatter) Output(result *core.AssessmentResult) error {
 	return nil
 }
 
+// ProbeLevel represents the security level of a probe
+type ProbeLevel int
+
+const (
+	LevelCritical ProbeLevel = iota
+	LevelImportant
+	LevelInformational
+)
+
+// getProbeLevel returns the security level for a probe
+func getProbeLevel(probeName string) ProbeLevel {
+	switch strings.ToLower(probeName) {
+	case "tls security", "security headers":
+		return LevelCritical
+	case "https access", "dns security":
+		return LevelImportant
+	default:
+		return LevelInformational
+	}
+}
+
+// displayProbesByLevel displays probes grouped by security level
+func displayProbesByLevel(probeResults map[string]*core.ProbeResult) {
+	// Group probes by level
+	critical := make(map[string]*core.ProbeResult)
+	important := make(map[string]*core.ProbeResult)
+	informational := make(map[string]*core.ProbeResult)
+	
+	for name, result := range probeResults {
+		level := getProbeLevel(name)
+		switch level {
+		case LevelCritical:
+			critical[name] = result
+		case LevelImportant:
+			important[name] = result
+		case LevelInformational:
+			informational[name] = result
+		}
+	}
+	
+	// Display Critical Security
+	if len(critical) > 0 {
+		color.Red("🚨 CRITICAL SECURITY")
+		fmt.Println(strings.Repeat("━", 60))
+		displayProbeGroup(critical)
+		fmt.Println()
+	}
+	
+	// Display Important Configuration
+	if len(important) > 0 {
+		color.Yellow("⚠️  IMPORTANT CONFIGURATION")
+		fmt.Println(strings.Repeat("━", 60))
+		displayProbeGroup(important)
+		fmt.Println()
+	}
+	
+	// Display Best Practices
+	if len(informational) > 0 {
+		color.Blue("ℹ️  BEST PRACTICES")
+		fmt.Println(strings.Repeat("━", 60))
+		displayProbeGroup(informational)
+		fmt.Println()
+	}
+}
+
+// displayProbeGroup displays a group of probes
+func displayProbeGroup(probes map[string]*core.ProbeResult) {
+	for name, probeResult := range probes {
+		// Icon based on probe type
+		icon := "🔍"
+		switch strings.ToLower(name) {
+		case "tls security":
+			icon = "🔐"
+		case "dns security":
+			icon = "🌍"
+		case "https access":
+			icon = "🌐"
+		case "security headers":
+			icon = "🛡️"
+		}
+		
+		// Status indicator
+		status := "✅"
+		statusColor := color.GreenString
+		if probeResult.Score < 0.4 {
+			status = "❌"
+			statusColor = color.RedString
+		} else if probeResult.Score < 0.8 {
+			status = "⚠️"
+			statusColor = color.YellowString
+		}
+		
+		// Display probe result
+		fmt.Printf("  %s %-20s %s %s (%.0f%%)\n", 
+			icon, 
+			name,
+			status,
+			statusColor(fmt.Sprintf("%.2f", probeResult.Score)),
+			probeResult.Score*100)
+		
+		// Show key details
+		if probeResult.Error != "" {
+			color.Red("     Error: %s", probeResult.Error)
+		} else if len(probeResult.Details) > 0 {
+			// Show first 3 details
+			count := 0
+			for key, value := range probeResult.Details {
+				if count >= 3 {
+					break
+				}
+				fmt.Printf("     • %s: %v\n", key, value)
+				count++
+			}
+		}
+	}
+}
+
 func (f *ReportFormatter) Output(result *core.AssessmentResult) error {
 	// Header
 	color.Cyan("🔍 DQIX Assessment Report (Go Implementation)")
@@ -87,31 +204,8 @@ func (f *ReportFormatter) Output(result *core.AssessmentResult) error {
 	fmt.Printf("  Version: %s\n", result.Metadata["version"])
 	fmt.Println()
 
-	// Probe details
-	color.Yellow("🔧 Probe Results:")
-	for name, probeResult := range result.ProbeResults {
-		status := "✅"
-		if probeResult.Status != "success" {
-			status = "❌"
-		}
-		
-		color.White("  %s %s:", status, name)
-		fmt.Printf("    Score: %.4f/1.0000\n", probeResult.Score)
-		fmt.Printf("    Status: %s\n", probeResult.Status)
-		fmt.Printf("    Duration: %s\n", probeResult.Duration)
-		
-		if probeResult.Error != "" {
-			color.Red("    Error: %s", probeResult.Error)
-		}
-		
-		if len(probeResult.Details) > 0 {
-			fmt.Printf("    Details:\n")
-			for key, value := range probeResult.Details {
-				fmt.Printf("      %s: %v\n", key, value)
-			}
-		}
-		fmt.Println()
-	}
+	// Probe details with 3-level hierarchy
+	displayProbesByLevel(result.ProbeResults)
 
 	// Level explanation
 	color.Magenta("📈 Quality Level Guide:")

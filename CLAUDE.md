@@ -183,11 +183,57 @@ The `dqix-wasm/` directory contains a **multi-engine WebAssembly frontend**:
 
 ## Development Workflow
 
+### Standard Development (Single Language)
 1. **Make changes** in the appropriate language directory
 2. **Run quality checks**: `make quality`
 3. **Test changes**: `make test` or language-specific tests
 4. **Cross-language validation**: Run validation scripts if core logic changed
 5. **Benchmark**: Use `make benchmark` if performance-related changes
+
+### Polyglot Feature Development (Affects All Languages)
+
+**Critical**: When developing features that affect all language implementations, follow this strict sequence:
+
+#### Phase 1: Specification & Configuration
+1. **Update `shared-config.yaml`** - Add new parameters, weights, thresholds
+2. **Update `CROSS_LANGUAGE_TEST_SPECIFICATION.yaml`** - Define expected behavior
+3. **Update `TEST_DOMAINS.yaml`** - Add test cases if needed
+4. **Document the feature** - Clear specification of logic and scoring
+
+#### Phase 2: Reference Implementation
+5. **Implement in Python first** (`dqix-python/`) - This is the reference implementation
+6. **Validate logic thoroughly** - Ensure correct behavior and scoring
+7. **Create comprehensive tests** - Unit and integration tests
+8. **Update language-neutral tests** - Add to `tests/specs/universal-test-spec.yaml`
+
+#### Phase 3: Cross-Language Propagation
+9. **Implement in Go** (`dqix-go/`) - High-performance implementation
+10. **Implement in Rust** (`dqix-rust/`) - Memory-safe implementation  
+11. **Implement in Bash** (`dqix-cli/`) - CLI implementation
+12. **Implement in Haskell** (`dqix-haskell/`) - Functional implementation
+13. **Implement in C++** (`dqix-cpp/`) - Performance-critical implementation
+
+#### Phase 4: Validation & Integration
+14. **Run cross-language validation**: `python tests/runners/run-cross-language-validation.py`
+15. **Check consistency**: Ensure ±5% score variance across implementations
+16. **Update WASM frontend** - If needed for `dqix-wasm/`
+17. **Run full benchmark suite**: `make benchmark`
+18. **Update documentation** - All affected READMEs and guides
+
+#### Phase 5: Quality Assurance
+19. **Test edge cases** - Invalid domains, network failures, timeouts
+20. **Security review** - Ensure no vulnerabilities introduced
+21. **Performance validation** - No significant regressions
+22. **Final cross-language test** - All implementations must pass
+
+### ⚠️ Critical Rules for Polyglot Development
+
+- **Never implement in only one language** - Feature parity is mandatory
+- **Always start with shared configuration** - Avoid hardcoded values
+- **Use the same scoring logic** - No implementation-specific algorithms
+- **Validate consistency religiously** - Cross-language validation is required
+- **Document breaking changes** - Update version numbers appropriately
+- **Test real network scenarios** - Not just unit tests
 
 ## Special Considerations
 
@@ -208,3 +254,73 @@ The `dqix-wasm/` directory contains a **multi-engine WebAssembly frontend**:
 - Performance profiling across multiple runtime environments
 
 This codebase uniquely maintains the same assessment logic across 6+ different programming languages while providing modern tooling and WebAssembly frontend capabilities.
+
+## Universal Testing Principles
+
+### Test-Driven Polyglot Development
+
+The DQIX project follows **Universal Test Specification** principles to ensure consistency across all language implementations:
+
+#### Core Testing Philosophy
+1. **Language Neutrality**: Tests must work equally across all implementations without language-specific bias
+2. **Pivot/Control Testing**: Each implementation must pass identical functional tests to ensure feature parity
+3. **Behavioral Consistency**: All implementations should produce equivalent results for the same inputs (±5% variance allowed)
+4. **Interface Standardization**: Common command patterns across all languages (`scan`, `--help`, `--json`)
+
+#### Universal Test Requirements
+
+Every language implementation MUST support:
+
+```bash
+# Core Required Tests (Must Pass ≥80%)
+./implementation --help              # Help command
+./implementation scan example.com    # Basic domain scan
+
+# Optional Tests (Recommended)
+./implementation demo                # Demo/test mode
+./implementation scan domain --json  # JSON output format
+```
+
+#### Quality Gates
+
+**Before Release:**
+- All language implementations pass Universal Test Specification
+- Cross-language score variance ≤5% for same domain
+- Performance benchmarks within acceptable ranges
+- External configuration consistency via `shared-config.yaml`
+
+**Continuous Integration:**
+- Automated testing across all 6 languages (Python, Go, Rust, Haskell, C++, Bash)
+- Regression detection for behavioral changes
+- Performance monitoring and alerting
+
+#### Reference Implementation
+
+**Bash CLI** (`dqix-cli/dqix`) serves as the **reference implementation** because:
+- Most universally available (bash is everywhere)
+- Simplest to debug and understand
+- Clearest logic flow for validation
+- Easiest to trace execution steps
+
+#### Test Execution Standards
+
+```bash
+# Universal test runner
+./test_all_implementations_simple.sh                    # Test all languages
+./test_all_implementations_simple.sh --languages go rust # Test specific languages
+
+# Individual language validation
+./dqix-cli/dqix scan example.com                        # Reference implementation
+./dqix-go/dqix scan example.com                         # Go implementation
+./dqix-rust/target/release/dqix scan example.com        # Rust implementation
+```
+
+#### Module Issue Resolution Process
+
+1. **Identify**: Use Universal Test Specification to detect issues
+2. **Prioritize**: Fix core required tests first, optional tests second
+3. **Standardize**: Ensure all implementations use `shared-config.yaml`
+4. **Validate**: Run cross-language validation before considering fixed
+5. **Document**: Update implementation-specific notes in this file
+
+This systematic approach ensures that despite having 6+ different programming languages, the DQIX platform provides consistent, reliable domain assessment capabilities regardless of which implementation users choose.

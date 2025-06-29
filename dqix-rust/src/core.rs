@@ -4,8 +4,9 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
-use crate::dsl::DslConfig;
+use crate::dsl::DslParser;
 use crate::probes::{Probe, ProbeResult};
+use colored::*;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AssessmentResult {
@@ -48,15 +49,23 @@ impl Assessor {
         }
     }
 
-    pub async fn load_config(&mut self, path: &str) -> Result<()> {
+    pub async fn load_config(&mut self, _path: &str) -> Result<()> {
         // Load DSL configuration
-        let dsl_config = DslConfig::load(&self.config.dsl_path).await?;
+        let mut dsl_parser = DslParser::new();
+        dsl_parser.load_from_file(&self.config.dsl_path)?;
         
         // Initialize probes from DSL
         self.probes.clear();
-        for probe_config in dsl_config.probes {
-            let probe = crate::probes::create_probe(&probe_config)?;
-            self.probes.push(probe);
+        if let Some(definition) = dsl_parser.definition() {
+            for (probe_name, _) in &definition.probes {
+                let probe_config = crate::probes::ProbeConfig {
+                    probe_type: probe_name.clone(),
+                    enabled: true,
+                    timeout: Some(30),
+                };
+                let probe = crate::probes::create_probe(&probe_config)?;
+                self.probes.push(probe);
+            }
         }
         
         Ok(())
@@ -66,7 +75,7 @@ impl Assessor {
         let start_time = Instant::now();
         let timestamp = Utc::now();
         
-        println!("{}", colored::Colorize::blue(&format!("📊 Assessing domain: {}", domain)));
+        println!("{}", format!("📊 Assessing domain: {}", domain).blue());
         
         // Initialize default probes if not loaded from config
         if self.probes.is_empty() {
@@ -80,29 +89,14 @@ impl Assessor {
         )?);
         pb.set_message("Running probes...");
 
-        // Run probes concurrently
+        // Run probes sequentially for now (to avoid lifetime issues)
         let mut probe_results = HashMap::new();
-        
-        // Create semaphore for concurrency control
-        let semaphore = std::sync::Arc::new(tokio::sync::Semaphore::new(self.config.concurrent));
         let domain = domain.to_string();
         
-        let tasks: Vec<_> = self.probes.iter().map(|probe| {
-            let domain = domain.clone();
-            let semaphore = semaphore.clone();
+        for probe in &self.probes {
             let probe_name = probe.name();
             
-            tokio::spawn(async move {
-                let _permit = semaphore.acquire().await.unwrap();
-                let result = probe.execute(&domain).await;
-                (probe_name, result)
-            })
-        }).collect();
-
-        // Collect results
-        for task in tasks {
-            let (probe_name, result) = task.await?;
-            match result {
+            match probe.execute(&domain).await {
                 Ok(result) => {
                     probe_results.insert(probe_name.clone(), result);
                 }

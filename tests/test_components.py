@@ -2,7 +2,6 @@
 
 
 import pytest
-
 from dqix.core.mixins import ProbeUtils
 from dqix.core.probes import PROBES, Probe, ProbeConfig, register
 from dqix.core.scoring import CategoryScorer, ProbeResult, WeightedScorer

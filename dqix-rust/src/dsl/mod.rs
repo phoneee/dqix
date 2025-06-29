@@ -154,11 +154,11 @@ impl DslParser {
             return "unknown".to_string();
         };
 
-        if score >= definition.compliance_levels.get("advanced").unwrap_or(&0.85) {
+        if score >= *definition.compliance_levels.get("advanced").unwrap_or(&0.85) {
             "advanced".to_string()
-        } else if score >= definition.compliance_levels.get("standard").unwrap_or(&0.70) {
+        } else if score >= *definition.compliance_levels.get("standard").unwrap_or(&0.70) {
             "standard".to_string()
-        } else if score >= definition.compliance_levels.get("basic").unwrap_or(&0.50) {
+        } else if score >= *definition.compliance_levels.get("basic").unwrap_or(&0.50) {
             "basic".to_string()
         } else {
             "needs_improvement".to_string()

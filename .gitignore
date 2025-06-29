@@ -171,3 +171,62 @@ kubernetes/secrets/
 scratch/
 notes.md
 todo.md
+
+# Project cleanup additions
+archive/
+unified_results/
+*.log
+*.tmp
+temp/
+.DS_Store
+
+# Enhanced build artifact patterns
+**/dist-newstyle/
+**/target/
+**/build/
+**/__pycache__/
+**/*.hi
+**/*.o
+
+# Enhanced report patterns
+dqix-reports/*.csv
+dqix-reports/*.json
+cross-language-validation-report.json
+
+# Development and experimental files
+**/cmd/dqix-optimized/
+**/cmd/dqix-weighted/
+**/*optimized*
+**/*Optimized*
+**/demo-external-config.*
+**/DemoExternalConfig.*
+Cargo_optimized.toml
+main_optimized.*
+*_optimized.*
+probe_levels.md
+
+# Additional language-specific artifacts
+**/src/bin/
+**/src/config.*
+**/src/lib.rs
+**/src/async_probes.rs
+**/src/probes_optimized.rs
+**/internal/config/
+
+# Generated specification files
+UNIVERSAL_TEST_SPECIFICATION.yaml
+
+# Project management files
+dqix_project_cleanup.sh
+dqix_unified_tools.sh
+
+# Enhanced benchmark patterns
+benchmarks/QUICK_REFERENCE.md
+benchmarks/dqix*
+benchmarks/migrate_to_simple.py
+benchmarks/results/
+
+# Development implementations
+dqix-cpp/
+dqix-python/
+dqix-wasm/

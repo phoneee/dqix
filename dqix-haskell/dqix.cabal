@@ -1,24 +1,149 @@
-cabal-version: 2.4
+cabal-version: 3.0
 name: dqix
-version: 1.0.0
+version: 2.0.0
 synopsis: Domain Quality Index - Internet Observability Platform
+description: Modern polyglot DQIX implementation with 2025 best practices
+author: DQIX Contributors
+maintainer: team@dqix.dev
+license: MIT
+category: Network, Security
+
+common shared-properties
+    default-language: GHC2021
+    default-extensions:
+        OverloadedRecordDot
+        DuplicateRecordFields
+        StrictData
+        DerivingStrategies
+        DeriveGeneric
+        DeriveAnyClass
+        OverloadedStrings
+        RecordWildCards
+        TypeApplications
+        DataKinds
+        FlexibleContexts
+        GADTs
+    ghc-options: 
+        -Wall
+        -Wcompat
+        -Widentities
+        -Wincomplete-record-updates
+        -Wincomplete-uni-patterns
+        -Wmissing-export-lists
+        -Wmissing-home-modules
+        -Wpartial-fields
+        -Wredundant-constraints
+        -O2
+        -threaded
+        -rtsopts
+        -with-rtsopts=-N
 
 executable dqix
-    default-language: Haskell2010
+    import: shared-properties
     main-is: Main.hs
+    other-modules: Config.SharedConfig
+    hs-source-dirs: ., src
     build-depends:
-        base >=4.14 && <5,
-        text >=1.2 && <2.1,
-        containers >=0.6 && <0.7,
-        time >=1.9 && <1.13
+        base >=4.16 && <5,
+        text >=2.0 && <3,
+        containers >=0.6 && <0.8,
+        time >=1.12 && <1.15,
+        http-conduit >=2.3 && <2.5,
+        http-types >=0.12 && <0.13,
+        tls >=1.6 && <2.0,
+        x509 >=1.7 && <1.9,
+        x509-store >=1.6 && <1.8,
+        x509-system >=1.6 && <1.8,
+        x509-validation >=1.6 && <1.8,
+        network >=3.1 && <3.3,
+        connection >=0.3 && <0.4,
+        bytestring >=0.11 && <0.13,
+        aeson >=2.1 && <2.3,
+        aeson-pretty >=0.8 && <0.9,
+        http-client >=0.7 && <0.8,
+        http-client-tls >=0.3 && <0.4,
+        case-insensitive >=1.2 && <1.3,
+        dns >=4.1 && <4.3,
+        async >=2.2 && <2.3,
+        stm >=2.5 && <2.6,
+        parallel >=3.2 && <3.4,
+        deepseq >=1.4 && <1.6,
+        yaml >=0.11 && <0.12,
+        directory >=1.3 && <1.4,
+        filepath >=1.4 && <1.5
+
+executable demo-external-config
+    import: shared-properties
+    main-is: DemoExternalConfig.hs
+    other-modules: Config.SharedConfig
+    hs-source-dirs: ., src
+    build-depends:
+        base >=4.16 && <5,
+        text >=2.0 && <3,
+        containers >=0.6 && <0.8,
+        yaml >=0.11 && <0.12,
+        directory >=1.3 && <1.4,
+        filepath >=1.4 && <1.5
+
+executable dqix-optimized
+    import: shared-properties
+    main-is: MainOptimized.hs
+    other-modules: Config.SharedConfig
+    hs-source-dirs: ., src
+    ghc-options: 
+        -O2
+        -threaded
+        -rtsopts
+        -with-rtsopts=-N4
+        -funbox-strict-fields
+        -fspecialise-aggressively
+        -fexpose-all-unfoldings
+        -flate-specialise
+    build-depends:
+        base >=4.16 && <5,
+        text >=2.0 && <3,
+        containers >=0.6 && <0.8,
+        time >=1.12 && <1.15,
+        http-conduit >=2.3 && <2.5,
+        http-types >=0.12 && <0.13,
+        tls >=1.6 && <2.0,
+        x509 >=1.7 && <1.9,
+        x509-store >=1.6 && <1.8,
+        x509-validation >=1.6 && <1.8,
+        network >=3.1 && <3.3,
+        bytestring >=0.11 && <0.13,
+        aeson >=2.1 && <2.3,
+        http-client >=0.7 && <0.8,
+        http-client-tls >=0.3 && <0.4,
+        case-insensitive >=1.2 && <1.3,
+        dns >=4.1 && <4.3,
+        async >=2.2 && <2.3,
+        stm >=2.5 && <2.6,
+        parallel >=3.2 && <3.4,
+        deepseq >=1.4 && <1.6,
+        monad-par >=0.3 && <0.4,
+        aeson-pretty >=0.8 && <0.9,
+        connection >=0.3 && <0.4,
+        x509-system >=1.6 && <1.8
 
 test-suite dqix-test
-    default-language: Haskell2010
+    import: shared-properties
     type: exitcode-stdio-1.0
     main-is: Test.hs
+    hs-source-dirs: test
+    other-modules:
+        Test.Domain
+        Test.Probes
+        Test.Security
     build-depends:
-        base >=4.14 && <5,
-        text >=1.2 && <2.1,
-        containers >=0.6 && <0.7,
-        HUnit >=1.6 && <1.7,
-        QuickCheck >=2.14 && <2.15 
+        base,
+        dqix,
+        text,
+        containers,
+        hspec >=2.10 && <2.12,
+        QuickCheck >=2.14 && <2.16,
+        hedgehog >=1.2 && <1.4,
+        tasty >=1.4 && <1.6,
+        tasty-hspec >=1.2 && <1.3,
+        tasty-quickcheck >=0.10 && <0.11,
+        tasty-hedgehog >=1.4 && <1.5

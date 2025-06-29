@@ -19,7 +19,7 @@ type TLSProbe struct {
 
 func NewTLSProbe() *TLSProbe {
 	return &TLSProbe{
-		BaseProbe: NewBaseProbe("TLS Security", "security", 0.25, 10*time.Second),
+		BaseProbe: NewBaseProbe("TLS Security", "security", 1.5, 10*time.Second),  // Critical Security - aligned with shared-config.yaml
 	}
 }
 
@@ -88,7 +88,7 @@ type DNSProbe struct {
 
 func NewDNSProbe() *DNSProbe {
 	return &DNSProbe{
-		BaseProbe: NewBaseProbe("DNS Security", "security", 0.25, 10*time.Second),
+		BaseProbe: NewBaseProbe("DNS Security", "security", 1.2, 10*time.Second),  // Important Configuration - aligned with shared-config.yaml
 	}
 }
 
@@ -171,7 +171,7 @@ type HTTPSProbe struct {
 
 func NewHTTPSProbe() *HTTPSProbe {
 	return &HTTPSProbe{
-		BaseProbe: NewBaseProbe("HTTPS Access", "performance", 0.25, 10*time.Second),
+		BaseProbe: NewBaseProbe("HTTPS Access", "security", 1.2, 10*time.Second),  // Important Configuration - aligned with shared-config.yaml
 	}
 }
 
@@ -232,7 +232,7 @@ type SecurityHeadersProbe struct {
 
 func NewSecurityHeadersProbe() *SecurityHeadersProbe {
 	return &SecurityHeadersProbe{
-		BaseProbe: NewBaseProbe("Security Headers", "security", 0.25, 10*time.Second),
+		BaseProbe: NewBaseProbe("Security Headers", "security", 1.5, 10*time.Second),  // Critical Security - aligned with shared-config.yaml
 	}
 }
 

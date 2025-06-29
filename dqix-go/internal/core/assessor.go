@@ -223,10 +223,17 @@ func (a *Assessor) calculateOverallScore(results map[string]*probes.Result) floa
 	totalScore := 0.0
 	totalWeight := 0.0
 	
-	for _, result := range results {
-		weight := 1.0 // Default weight, should come from DSL
-		totalScore += result.Score * weight
-		totalWeight += weight
+	// Use probe weights from implementations
+	for _, probe := range a.probes {
+		if result, ok := results[probe.Name()]; ok {
+			weight := probe.Weight()
+			totalScore += result.Score * weight
+			totalWeight += weight
+		}
+	}
+	
+	if totalWeight == 0 {
+		return 0.0
 	}
 	
 	return totalScore / totalWeight

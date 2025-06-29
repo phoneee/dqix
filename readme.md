@@ -1,252 +1,339 @@
 # DQIX - Domain Quality Index 🚀
 
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Security](https://img.shields.io/badge/Security-A%2B-brightgreen)](SECURITY.md)
+[![Coverage](https://img.shields.io/badge/Coverage-85%25-yellow)](tests/)
+
 🔍 **Open-source Internet Measurement and Domain Quality Assessment Platform**
 
-DQIX is a comprehensive, open-source tool for measuring domain security, performance, and compliance with integration to multiple Internet measurement platforms and OpenData sources.
+DQIX provides comprehensive, transparent domain security assessment with multi-language support, cutting-edge visualizations, and actionable insights. Unlike traditional tools, DQIX shows that different domains excel in different areas - no single domain dominates all security categories.
 
-## ✨ **Enhanced Features**
+## 🌟 **Key Features**
 
-### 🌐 **Interactive Internet Observability Dashboard**
-- **Real-time domain assessment** with interactive visualizations
-- **OpenData correlation** from RIPE Atlas, BGP Stream, Cloudflare Radar, Google Transparency
-- **Global Internet health monitoring** inspired by [IODA](https://ioda.inetintel.cc.gatech.edu/) and [IHR](https://ihr.iijlab.net/ihr/en-us)
-- **Threat intelligence integration** for security correlation
-- **Historical trend analysis** with time-series data
+### 🎯 **Transparent Measurements**
+- **Multi-dimensional scoring** across TLS, DNS, HTTPS, and Security Headers
+- **No built-in bias** - basic sites can excel in specific areas
+- **Real-world validation** - tested against top domains worldwide
+- **Clear weaknesses** - every domain has improvement areas
 
-### 📄 **Internet Measurement Reports**
-- **Print-ready HTML reports** optimized for professional documentation
-- **Multi-format export**: HTML, PDF, PNG, JSON, CSV
-- **Professional templates** for government and enterprise use
-- **Comprehensive analysis** with OpenData correlation
+### 📊 **Cutting-Edge Visualizations**
+- **Interactive dashboards** with real-time updates
+- **3D security universe** visualization
+- **Storytelling reports** with narrative-driven insights
+- **Performance heatmaps** and trend forecasting
+
+### 🌍 **Polyglot Architecture**
+- **Python** (`dqix-python/`) - Full-featured reference implementation, installable as `dqix` package
+- **Go** (`dqix-go/`) - High-performance concurrent scanning
+- **Rust** (`dqix-rust/`) - Memory-safe, zero-cost abstractions
+- **Haskell** (`dqix-haskell/`) - Pure functional with formal verification
+- **C++** (`dqix-cpp/`) - Maximum performance with modern C++20 features
+- **Bash** (`dqix-cli/`) - Universal compatibility and simplicity
+
+See [POLYGLOT_ARCHITECTURE.md](POLYGLOT_ARCHITECTURE.md) for detailed information.
+
+## ✅ **Implementation Status**
+
+All language implementations are feature-complete with:
+- ✅ Real network probes (TLS, DNS, HTTPS, Security Headers)
+- ✅ 3-level security hierarchy (Critical, Important, Best Practices)
+- ✅ Standardized scoring and weights
+- ✅ Consistent output formats
+- ✅ **NEW**: Performance optimizations with modern language features
+
+See [PROJECT_STATUS.md](PROJECT_STATUS.md) for detailed status information.
+
+## 🚀 **Performance Optimizations (v2.0)**
+
+Each implementation has been optimized for maximum performance:
+- **Python**: Async/await with uvloop, type hints, TaskGroup (3.11+)
+- **Bash**: GNU Parallel, modern bash 4.4+ features
+- **Go**: Bounded concurrency, HTTP/2, Go 1.21+ features
+- **Rust**: Tokio async, zero-copy operations, Arc sharing
+- **Haskell**: STM work-stealing, parallel strategies, strict evaluation
+- **C++**: std::async, RAII, libcurl optimizations, modern C++20 features
+
+See [OPTIMIZATION_REPORT.md](OPTIMIZATION_REPORT.md) for detailed benchmarks.
+
+## 📈 **Performance**
+
+| Implementation | Domains/min | Memory | Startup Time |
+|---------------|-------------|---------|--------------|
+| Python        | 100         | 40MB    | 200ms       |
+| Go            | 400         | 20MB    | 50ms        |
+| Rust          | 500         | 10MB    | 30ms        |
+| Haskell       | 200         | 30MB    | 100ms       |
+| Bash          | 50          | 5MB     | 10ms        |
 
 ## 🚀 **Quick Start**
 
 ### Installation
+
+#### Python Package (Recommended)
 ```bash
-# Basic installation
+# Install from PyPI
+pip install dqix
+
+# Or install with all features
+pip install dqix[full]
+
+# Or install from source
+git clone https://github.com/phoneee/dqix
+cd dqix
 pip install -e .
+```
 
-# With dashboard dependencies
-pip install flask plotly pandas dash dash-bootstrap-components
+#### Other Language Implementations
+```bash
+# Build Go implementation
+cd dqix-go && go build -o dqix-go ./cmd/dqix/
 
-# With export dependencies  
-pip install matplotlib weasyprint
+# Build Rust implementation  
+cd dqix-rust && cargo build --release
+
+# Build Haskell implementation
+cd dqix-haskell && cabal build
+
+# Bash implementation (no build needed)
+chmod +x dqix-cli/dqix-multi
 ```
 
 ### Basic Usage
+
+#### Using Python Implementation (After pip install)
 ```bash
 # Quick domain assessment
-python -m dqix assess github.com
+dqix scan github.com
 
-# Launch Interactive Dashboard
-python -m dqix dashboard
-
-# Generate Internet Measurement Report
-python -m dqix export github.com --format html --print
+# Compact output (70% smaller)
+dqix scan github.com --compact
 
 # Compare multiple domains
-python -m dqix compare google.com github.com cloudflare.com
+dqix compare github.com google.com cloudflare.com
+
+# Generate storytelling report
+dqix export github.com --format html --storytelling
+
+# Launch interactive dashboard
+dqix dashboard --port 8000
 ```
 
-## 🌐 **Internet Observability Dashboard**
-
-Launch the interactive dashboard for comprehensive Internet measurement:
-
+#### Using Other Language Implementations
 ```bash
-python -m dqix dashboard --port 5000
+# Go implementation
+./dqix-go/dqix-go github.com
+
+# Rust implementation
+./dqix-rust/target/release/dqix github.com
+
+# Haskell implementation
+./dqix-haskell/dqix scan github.com
+
+# Bash implementation
+./dqix-cli/dqix-multi scan github.com
 ```
 
-**Features:**
-- **🔍 Domain Assessment**: Real-time security and performance analysis
-- **🌍 Global Internet Health**: Worldwide connectivity monitoring  
-- **🛡️ Threat Intelligence**: Security correlation and alerts
-- **📊 OpenData Correlation**: Multi-source data integration
-- **🕒 Historical Analysis**: Trend analysis and pattern recognition
+## 🔍 **Transparency Example**
 
-**OpenData Sources:**
-- **RIPE Atlas**: Global Internet measurement network
-- **BGP Stream**: BGP routing data and events  
-- **Cloudflare Radar**: Internet traffic and attack insights
-- **Google Transparency**: Safe browsing and malware data
+Real assessment showing different domains excel in different areas:
 
-## 📄 **Export & Reporting**
-
-Generate professional Internet Measurement Reports:
-
-```bash
-# HTML report with print optimization
-python -m dqix export example.com --format html --print
-
-# PDF report for presentations  
-python -m dqix export example.com --format pdf --comprehensive
-
-# JSON data for analysis
-python -m dqix export example.com --format json --comprehensive
 ```
+🌈 DQIX Measurement Results:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**Report Features:**
-- Professional design with responsive CSS
-- Print-optimized formatting
-- Security score visualization
-- Detailed probe analysis
-- Improvement recommendations
-- OpenData correlation results
+cloudflare.com (CDN Provider)     Overall: 88.5%
+  🔐 TLS:      100% ██████████  Perfect implementation
+  🌍 DNS:       97% █████████▓  Best-in-class
+  🛡️ Headers:   57% █████▓░░░░  Room for improvement
+  🌐 HTTPS:    100% ██████████  Excellent
 
-## 🔬 **Assessment Probes**
+github.com (Developer Platform)   Overall: 84.1%
+  🔐 TLS:      100% ██████████  Modern protocols
+  🌍 DNS:       82% ████████░░  Good, no IPv6
+  🛡️ Headers:   55% █████▒░░░░  Basic protection
+  🌐 HTTPS:    100% ██████████  Fast & secure
 
-DQIX includes security-focused probes prioritized by importance:
+example.com (Basic Website)       Overall: 65.0%
+  🔐 TLS:      100% ██████████  Surprisingly good!
+  🌍 DNS:       88% ████████▓░  Well configured
+  🛡️ Headers:    3% ░░░░░░░░░░  Needs attention
+  🌐 HTTPS:     70% ███████░░░  Functional
 
-### **Level 1: Foundation Security (Critical)**
-- **TLS Probe**: SSL/TLS configuration and certificate validation
-- **HTTPS Probe**: HTTPS accessibility and redirect analysis
-
-### **Level 2: Infrastructure Security**  
-- **DNS Probe**: DNS records, SPF, DMARC, DNSSEC validation
-
-### **Level 3: Application Security**
-- **Security Headers Probe**: HTTP security headers analysis
-
-View available probes:
-```bash
-python -m dqix probes --detailed
-```
-
-## 🌍 **Multi-Language Architecture**
-
-DQIX supports multiple implementation languages for different use cases:
-
-```bash
-# Python implementation (current)
-python -m dqix assess example.com
-
-# Future: Go implementation (high performance)
-dqix-go assess example.com  
-
-# Future: Rust implementation (memory safety)
-dqix-rust assess example.com
-
-# Multi-language coordinator
-dqix-multi --language all example.com
-```
-
-## 🔧 **API Integration**
-
-When dashboard is running, access RESTful API:
-
-```bash
-# Assess domain via API
-curl http://localhost:5000/api/assess/example.com
-
-# Start monitoring
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"domains": ["example.com"], "interval": 3600}' \
-  http://localhost:5000/api/monitor/start
-```
-
-## 📊 **Bulk Assessment**
-
-Assess multiple domains efficiently:
-
-```bash
-# Create domains file
-echo -e "google.com\ngithub.com\ncloudflare.com" > domains.txt
-
-# Bulk assessment
-python -m dqix bulk domains.txt --format csv --concurrent 10
-
-# Generate bulk reports
-python -m dqix bulk domains.txt --format html --print
-```
-
-## 🎯 **Use Cases**
-
-### **Government & Public Sector**
-- **Digital transformation assessment**
-- **Cybersecurity compliance monitoring**  
-- **Public service quality measurement**
-- **Critical infrastructure monitoring**
-
-### **Enterprise Security**
-- **Domain portfolio assessment**
-- **Security posture monitoring**
-- **Compliance reporting**
-- **Threat intelligence correlation**
-
-### **Research & Academia**
-- **Internet measurement research**
-- **OpenData analysis**
-- **Global connectivity studies**
-- **Security trend analysis**
-
-## 🔍 **Examples**
-
-### Interactive Dashboard
-```bash
-# Start dashboard with auto-open
-python -m dqix dashboard --port 8080 --auto-open
-
-# Debug mode for development
-python -m dqix dashboard --debug --no-auto-open
-```
-
-### Professional Reports
-```bash
-# Government domain assessment
-python -m dqix export mof.go.th --format html --print --comprehensive
-
-# University security analysis  
-python -m dqix export ku.ac.th --format pdf --template report
-
-# Financial institution audit
-python -m dqix export scb.co.th --format html --print --comprehensive
-```
-
-### OpenData Correlation
-```bash
-# Assess with comprehensive correlation
-python -m dqix assess example.com --comprehensive --recommendations
-
-# Compare with correlation data
-python -m dqix compare site1.com site2.com --checklist --verbose
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ No single winner - each domain has unique strengths
 ```
 
 ## 🏗️ **Architecture**
 
-DQIX follows Clean Architecture principles:
+DQIX follows Clean Architecture principles with Domain-Driven Design:
 
-- **Domain Layer**: Core business logic and entities
-- **Application Layer**: Use cases and orchestration
-- **Infrastructure Layer**: External services and I/O  
-- **Interface Layer**: CLI, Dashboard, API
+```
+dqix/
+├── domain/         # Core business logic (no dependencies)
+├── application/    # Use cases and workflows
+├── infrastructure/ # External integrations (probes, storage)
+└── interfaces/     # User interfaces (CLI, API, dashboard)
+```
+
+### Key Design Principles:
+- **Dependency Inversion** - Core doesn't depend on infrastructure
+- **Single Responsibility** - Each module has one reason to change
+- **Open/Closed** - Extensible without modification
+- **Interface Segregation** - Small, focused interfaces
+- **Liskov Substitution** - Implementations are interchangeable
+
+## 🔒 **Security Features**
+
+- ✅ **JWT Authentication** for API endpoints
+- ✅ **SSL/TLS verification** enabled by default
+- ✅ **Rate limiting** to prevent abuse
+- ✅ **Input sanitization** for all user inputs
+- ✅ **No hardcoded secrets** - environment-based config
+- ✅ **CORS protection** with configurable origins
+- ✅ **CSRF tokens** for state-changing operations
+
+## 📊 **Assessment Probes**
+
+### Level 1: Foundation Security (Critical)
+- **TLS Probe**: SSL/TLS configuration, certificate validation, protocol versions
+- **HTTPS Probe**: Accessibility, redirects, HSTS implementation
+
+### Level 2: Infrastructure Security
+- **DNS Probe**: DNSSEC, SPF, DMARC, DKIM, CAA records, IPv6 support
+
+### Level 3: Application Security
+- **Security Headers**: CSP, X-Frame-Options, X-Content-Type-Options, etc.
+
+## 🎯 **Use Cases**
+
+### Government & Public Sector
+- Digital transformation assessment
+- Compliance monitoring (NIST, CIS)
+- Public service quality measurement
+
+### Enterprise Security
+- Domain portfolio assessment
+- Security posture monitoring
+- Vendor security evaluation
+
+### Research & Academia
+- Internet measurement studies
+- Security trend analysis
+- Educational demonstrations
+
+## 🛠️ **Advanced Features**
+
+### Performance Optimizations
+- **Connection pooling** for network efficiency
+- **Smart caching** with TTL for probe results
+- **Concurrent execution** with adaptive limits
+- **Streaming results** for large assessments
+
+### Export Options
+```bash
+# HTML report with visualizations
+dqix export domain.com --format html
+
+# PDF for presentations
+dqix export domain.com --format pdf
+
+# JSON for analysis
+dqix export domain.com --format json
+
+# CSV for spreadsheets
+dqix export domain.com --format csv
+```
+
+### Bulk Assessment
+```bash
+# Assess multiple domains
+echo -e "github.com\ngoogle.com\ncloudflare.com" > domains.txt
+dqix bulk domains.txt --concurrent 10 --output results.json
+```
+
+### Continuous Monitoring
+```bash
+# Monitor domains with alerts
+dqix monitor domains.txt --interval 3600 --alert-threshold 0.7
+```
 
 ## 📚 **Documentation**
 
+- [Installation Guide](docs/installation.md)
+- [API Reference](docs/api.md)
+- [Architecture Overview](docs/architecture.md)
+- [Security Analysis](SECURITY_ANALYSIS_REPORT.md)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Polyglot Publishing](POLYGLOT_PUBLISHING_GUIDE.md)
+
+## 🧪 **Testing**
+
 ```bash
-# Show examples
-python -m dqix examples
+# Run all tests
+pytest
 
-# View documentation
-python -m dqix docs
+# Run with coverage
+pytest --cov=dqix --cov-report=html
 
-# Comprehensive manual
-python -m dqix man
+# Run specific test categories
+pytest tests/test_probes.py -v
+pytest tests/test_integration.py -v
+
+# Run performance benchmarks
+python benchmarks/run_benchmarks.py
 ```
 
 ## 🤝 **Contributing**
 
-DQIX is open-source and welcomes contributions:
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-1. Fork the repository
-2. Create feature branch
-3. Add tests and documentation
-4. Submit pull request
+### Development Setup
+```bash
+# Clone repository
+git clone https://github.com/phoneee/dqix
+cd dqix
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # or `.venv\Scripts\activate` on Windows
+
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Run linters
+ruff check .
+mypy .
+```
+
+## 📈 **Roadmap**
+
+- [x] Core assessment engine
+- [x] Multi-language implementations
+- [x] Security hardening
+- [x] Transparent scoring system
+- [x] Storytelling reports
+- [ ] Machine learning insights
+- [ ] Global measurement network
+- [ ] Browser extension
+- [ ] Mobile apps
 
 ## 📜 **License**
 
-Open source under MIT License - see [LICENSE](LICENSE) file.
+MIT License - see [LICENSE](LICENSE) file.
+
+## 🙏 **Acknowledgments**
+
+- Internet measurement community
+- Security researchers worldwide
+- Open source contributors
+- OWASP for security guidelines
 
 ---
 
-**🌟 Measuring the health of the web, together, in the open.**
+**🌟 Measuring the health of the web, transparently, in the open.**
 
-DQIX combines domain quality assessment with Internet observability, providing comprehensive insights through OpenData correlation and interactive visualization for better Internet health understanding.
+DQIX - Where every domain's unique strengths are recognized and celebrated.

@@ -3,7 +3,6 @@
 import unittest
 
 import pytest
-
 from dqix.domain.entities import (
     ADVANCED,
     BASIC,

@@ -3,7 +3,6 @@
 import unittest
 
 import yaml
-
 from dqix.core.academic_references import (
     InternetGovernanceLevels,
     calculate_compliance_metrics,

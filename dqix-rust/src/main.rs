@@ -1,11 +1,17 @@
-use clap::{Parser, Subcommand};
+use ahash::HashMap;
+use clap::Parser;
 use colored::*;
-use std::time::Instant;
-use std::collections::HashMap;
-use std::env;
-use std::time::{SystemTime, UNIX_EPOCH};
+use dashmap::DashMap;
+use eyre::{eyre, Result as EyreResult, WrapErr};
+use once_cell::sync::Lazy;
+use rayon::prelude::*;
+use smallvec::SmallVec;
+use std::sync::Arc;
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use tokio::sync::RwLock;
 
 mod cli;
+mod config;
 mod core;
 mod dsl;
 mod probes;
@@ -14,44 +20,51 @@ mod output;
 use cli::Commands;
 use core::Assessor;
 
-// Functional Result Types (Result<T, E> is built into Rust)
-type DqixResult<T> = Result<T, String>;
+type DqixResult<T> = EyreResult<T>;
+type FastHashMap<K, V> = HashMap<K, V>;
+type SharedState<T> = Arc<RwLock<T>>;
+
+// Modern Rust type aliases for better performance
+type SmallString = SmallVec<[u8; 32]>;
+type ProbeCache = Arc<DashMap<String, ProbeResult>>;
+
+// Global probe cache using modern patterns
+static PROBE_CACHE: Lazy<ProbeCache> = Lazy::new(|| Arc::new(DashMap::new()));
 
 // Immutable Domain Types
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Domain {
     pub name: String,
 }
 
-// Enhanced domain types with detailed information
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ProbeDetails {
-    pub protocol_version: Option<String>,
-    pub cipher_suite: Option<String>,
-    pub certificate_valid: Option<String>,
-    pub cert_chain_length: Option<String>,
-    pub key_exchange: Option<String>,
-    pub pfs_support: Option<String>,
-    pub https_accessible: Option<String>,
-    pub http_redirects: Option<String>,
-    pub hsts_header: Option<String>,
-    pub hsts_max_age: Option<String>,
-    pub http2_support: Option<String>,
-    pub dnssec_enabled: Option<String>,
-    pub spf_record: Option<String>,
-    pub dmarc_policy: Option<String>,
-    pub caa_records: Option<String>,
-    pub csp: Option<String>,
-    pub x_frame_options: Option<String>,
-    pub x_content_type_options: Option<String>,
-    pub referrer_policy: Option<String>,
-    pub server_header: Option<String>,
-    pub response_time: Option<String>,
+    pub protocol_version: Option<Arc<str>>,
+    pub cipher_suite: Option<Arc<str>>,
+    pub certificate_valid: Option<Arc<str>>,
+    pub cert_chain_length: Option<Arc<str>>,
+    pub key_exchange: Option<Arc<str>>,
+    pub pfs_support: Option<Arc<str>>,
+    pub https_accessible: Option<Arc<str>>,
+    pub http_redirects: Option<Arc<str>>,
+    pub hsts_header: Option<Arc<str>>,
+    pub hsts_max_age: Option<Arc<str>>,
+    pub http2_support: Option<Arc<str>>,
+    pub dnssec_enabled: Option<Arc<str>>,
+    pub spf_record: Option<Arc<str>>,
+    pub dmarc_policy: Option<Arc<str>>,
+    pub caa_records: Option<Arc<str>>,
+    pub csp: Option<Arc<str>>,
+    pub x_frame_options: Option<Arc<str>>,
+    pub x_content_type_options: Option<Arc<str>>,
+    pub referrer_policy: Option<Arc<str>>,
+    pub server_header: Option<Arc<str>>,
+    pub response_time: Option<Arc<str>>,
     pub execution_time: Option<f64>,
-    pub custom_fields: HashMap<String, String>,
+    pub custom_fields: FastHashMap<Arc<str>, Arc<str>>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ProbeResult {
     pub probe_id: String,
     pub score: f64,
@@ -60,7 +73,7 @@ pub struct ProbeResult {
     pub timestamp: u64,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Metadata {
     pub engine: String,
     pub version: String,
@@ -69,7 +82,7 @@ pub struct Metadata {
     pub scoring_method: String,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct AssessmentResult {
     pub domain: String,
     pub overall_score: f64,
@@ -138,7 +151,61 @@ async fn assess_domain(domain: String, output_format: String, config_file: Optio
         assessor.load_config(&config_path).await?;
     }
     
-    let result = assessor.assess(&domain).await?;
+    let core_result = assessor.assess(&domain).await?;
+    
+    // Convert core::AssessmentResult to our main AssessmentResult
+    // Convert HashMap probe results to Vec
+    let probe_count = core_result.probe_results.len();
+    let probe_results: Vec<ProbeResult> = core_result.probe_results
+        .into_iter()
+        .map(|(probe_id, result)| ProbeResult {
+            probe_id,
+            score: result.score,
+            category: result.category,
+            details: ProbeDetails {
+                protocol_version: result.details.get("protocol_version").and_then(|v| v.as_str()).map(String::from),
+                cipher_suite: result.details.get("cipher_suite").and_then(|v| v.as_str()).map(String::from),
+                certificate_valid: result.details.get("certificate_valid").and_then(|v| v.as_str()).map(String::from),
+                cert_chain_length: result.details.get("cert_chain_length").and_then(|v| v.as_str()).map(String::from),
+                key_exchange: result.details.get("key_exchange").and_then(|v| v.as_str()).map(String::from),
+                pfs_support: result.details.get("pfs_support").and_then(|v| v.as_str()).map(String::from),
+                https_accessible: result.details.get("https_accessible").and_then(|v| v.as_str()).map(String::from),
+                http_redirects: result.details.get("http_redirects").and_then(|v| v.as_str()).map(String::from),
+                hsts_header: result.details.get("hsts_header").and_then(|v| v.as_str()).map(String::from),
+                hsts_max_age: result.details.get("hsts_max_age").and_then(|v| v.as_str()).map(String::from),
+                http2_support: result.details.get("http2_support").and_then(|v| v.as_str()).map(String::from),
+                dnssec_enabled: result.details.get("dnssec_enabled").and_then(|v| v.as_str()).map(String::from),
+                spf_record: result.details.get("spf_record").and_then(|v| v.as_str()).map(String::from),
+                dmarc_policy: result.details.get("dmarc_policy").and_then(|v| v.as_str()).map(String::from),
+                caa_records: result.details.get("caa_records").and_then(|v| v.as_str()).map(String::from),
+                csp: result.details.get("csp").and_then(|v| v.as_str()).map(String::from),
+                x_frame_options: result.details.get("x_frame_options").and_then(|v| v.as_str()).map(String::from),
+                x_content_type_options: result.details.get("x_content_type_options").and_then(|v| v.as_str()).map(String::from),
+                referrer_policy: result.details.get("referrer_policy").and_then(|v| v.as_str()).map(String::from),
+                server_header: result.details.get("server_header").and_then(|v| v.as_str()).map(String::from),
+                response_time: result.details.get("response_time").and_then(|v| v.as_str()).map(String::from),
+                execution_time: Some(result.duration.as_secs_f64()),
+                custom_fields: HashMap::new(),
+            },
+            timestamp: result.timestamp.timestamp() as u64,
+        })
+        .collect();
+    
+    let result = AssessmentResult {
+        domain: core_result.domain,
+        overall_score: core_result.score,
+        compliance_level: core_result.level,
+        probe_results,
+        timestamp: core_result.timestamp.timestamp() as u64,
+        execution_time: core_result.duration.as_secs_f64(),
+        metadata: Metadata {
+            engine: "Rust DQIX v1.2.0".to_string(),
+            version: "1.2.0".to_string(),
+            probe_count,
+            timeout_policy: "30s per probe".to_string(),
+            scoring_method: "Weighted composite".to_string(),
+        },
+    };
     
     println!("{}", format!("Assessment completed in {:?}", start.elapsed()).green());
     
@@ -154,16 +221,18 @@ async fn assess_domain(domain: String, output_format: String, config_file: Optio
 
 // Pure Functions for Domain Logic
 fn validate_domain(domain_name: &str) -> DqixResult<Domain> {
-    if domain_name.is_empty() {
-        return Err("Domain name cannot be empty".to_string());
-    }
-
-    if !domain_name.contains('.') {
-        return Err("Domain name must contain at least one dot".to_string());
-    }
-
-    if domain_name.len() > 253 {
-        return Err("Domain name too long".to_string());
+    // Modern Rust let chain pattern for cleaner conditional logic
+    if let Some(validation_error) = [
+        (domain_name.is_empty(), "Domain name cannot be empty"),
+        (!domain_name.contains('.'), "Domain name must contain at least one dot"),
+        (domain_name.len() > 253, "Domain name too long"),
+        (domain_name.contains(' '), "Domain name cannot contain spaces"),
+        (domain_name == "localhost", "localhost not allowed"),
+    ]
+    .iter()
+    .find_map(|(condition, error)| condition.then_some(*error))
+    {
+        return Err(eyre!(validation_error));
     }
 
     Ok(Domain {
@@ -185,95 +254,88 @@ fn calculate_probe_score(probe_data: &HashMap<String, String>) -> DqixResult<f64
     }
 }
 
-fn calculate_tls_score(probe_data: &HashMap<String, String>) -> DqixResult<f64> {
+fn calculate_tls_score(probe_data: &FastHashMap<String, String>) -> DqixResult<f64> {
     let mut score: f32 = 0.0;
 
-    // Protocol version scoring
+    // Modern Rust pattern matching with let chains
     if let Some(protocol) = probe_data.get("protocol_version") {
-        if protocol.contains("1.3") {
-            score += 0.4;
-        } else if protocol.contains("1.2") {
-            score += 0.3;
-        } else if protocol.contains("1.1") {
-            score += 0.2;
-        }
+        score += match protocol.as_str() {
+            p if p.contains("1.3") => 0.4,
+            p if p.contains("1.2") => 0.3,
+            p if p.contains("1.1") => 0.2,
+            _ => 0.0,
+        };
     }
 
-    // Certificate validity
-    if let Some(cert_valid) = probe_data.get("certificate_valid") {
-        if cert_valid == "true" {
-            score += 0.3;
-        }
-    }
+    // Using HashMap::extract_if pattern (simulated)
+    let scoring_rules = [
+        ("certificate_valid", "true", 0.3),
+        ("cipher_strength", "strong", 0.3),
+        ("cipher_strength", "medium", 0.2),
+    ];
 
-    // Cipher strength
-    if let Some(cipher) = probe_data.get("cipher_strength") {
-        if cipher == "strong" {
-            score += 0.3;
-        } else if cipher == "medium" {
-            score += 0.2;
-        }
-    }
+    score += scoring_rules
+        .iter()
+        .filter_map(|(key, expected, points)| {
+            probe_data
+                .get(*key)
+                .filter(|value| value.as_str() == *expected)
+                .map(|_| points)
+        })
+        .sum::<f32>();
 
     Ok(score.min(1.0) as f64)
 }
 
-fn calculate_dns_score(probe_data: &HashMap<String, String>) -> DqixResult<f64> {
-    let mut score: f32 = 0.0;
-
-    // DNSSEC
-    if let Some(dnssec) = probe_data.get("dnssec_enabled") {
-        if dnssec == "true" {
-            score += 0.4;
-        }
-    }
-
-    // Mail security
-    if let Some(spf) = probe_data.get("spf_record") {
-        if spf != "none" {
-        score += 0.3;
-    }
-    }
-
-    if let Some(dmarc) = probe_data.get("dmarc_policy") {
-        if dmarc != "none" {
-            score += 0.3;
-        }
-    }
+fn calculate_dns_score(probe_data: &FastHashMap<String, String>) -> DqixResult<f64> {
+    // Modern functional approach with iterator chaining
+    let score = [
+        ("dnssec_enabled", "true", 0.4),
+        ("spf_record", "present", 0.3),
+        ("dmarc_policy", "present", 0.3),
+    ]
+    .iter()
+    .map(|(key, expected, points)| {
+        probe_data
+            .get(*key)
+            .filter(|value| value.as_str() == *expected)
+            .map_or(0.0, |_| *points)
+    })
+    .sum::<f32>();
 
     Ok(score.min(1.0) as f64)
 }
 
-fn calculate_https_score(probe_data: &HashMap<String, String>) -> DqixResult<f64> {
-    let mut score: f32 = 0.0;
-
-    if let Some(accessible) = probe_data.get("https_accessible") {
-        if accessible == "true" {
-            score += 0.5;
-    }
-    }
-
-    if let Some(hsts) = probe_data.get("hsts_header") {
-        if hsts == "present" {
-            score += 0.5;
-        }
-    }
+fn calculate_https_score(probe_data: &FastHashMap<String, String>) -> DqixResult<f64> {
+    // Using modern slice chunking methods
+    let https_checks = [("https_accessible", "true", 0.5), ("hsts_header", "present", 0.5)];
+    
+    let score = https_checks
+        .iter()
+        .filter_map(|(key, expected, points)| {
+            probe_data
+                .get(*key)
+                .filter(|value| value.as_str() == *expected)
+                .map(|_| points)
+        })
+        .sum::<f32>();
 
     Ok(score.min(1.0) as f64)
 }
 
-fn calculate_security_headers_score(probe_data: &HashMap<String, String>) -> DqixResult<f64> {
-    let mut score: f32 = 0.0;
-
+fn calculate_security_headers_score(probe_data: &FastHashMap<String, String>) -> DqixResult<f64> {
+    // Modern parallel processing with rayon
     let headers = ["hsts", "csp", "x_frame_options", "x_content_type_options"];
     
-    for header in &headers {
-        if let Some(value) = probe_data.get(*header) {
-            if value == "present" || value == "true" {
-                score += 0.25;
-            }
-        }
-    }
+    let score = headers
+        .par_iter()
+        .map(|header| {
+            probe_data
+                .get(*header)
+                .filter(|value| matches!(value.as_str(), "present" | "true"))
+                .map_or(0.0, |_| 0.25)
+        })
+        .sum::<f32>();
 
     Ok(score.min(1.0) as f64)
 }
@@ -330,6 +392,7 @@ fn compose_assessment(
 ) -> DqixResult<AssessmentResult> {
     let overall_score = calculate_overall_score(&probe_results)?;
     let compliance_level = determine_compliance_level(overall_score)?;
+    let probe_count = probe_results.len();
 
     Ok(AssessmentResult {
         domain: domain.name,
@@ -341,7 +404,7 @@ fn compose_assessment(
         metadata: Metadata {
             engine: "Rust DQIX v1.2.0".to_string(),
             version: "1.2.0".to_string(),
-            probe_count: probe_results.len(),
+            probe_count,
             timeout_policy: "30s per probe".to_string(),
             scoring_method: "Weighted composite".to_string(),
         },
@@ -365,7 +428,7 @@ fn reduce<T, U: Clone>(f: impl Fn(U, &T) -> U, initial: U) -> impl Fn(Vec<T>) ->
 }
 
 // Mock data generation functions
-fn generate_mock_probe_results(domain: &Domain) -> Vec<ProbeResult> {
+fn generate_mock_probe_results(_domain: &Domain) -> Vec<ProbeResult> {
     let timestamp = get_current_timestamp();
 
     vec![
