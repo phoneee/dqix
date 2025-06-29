@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+# DQIX Unified CLI - Single Interface Replacing All CLI Variants
+# Replaces: dqix, dqix-multi, dqix-educational, dqix-parallel, dqix-performance, dqix-complete.sh
+# Version: 4.0.0-unified
+
+set -euo pipefail
+
+# Script Configuration
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly VERSION="4.0.0-unified"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Load Libraries
+source "$SCRIPT_DIR/lib/core.sh"
+source "$SCRIPT_DIR/lib/output.sh"
+
+# Global Configuration
+OUTPUT_FORMAT="pretty"
+ENABLE_JSON="false"
+VERBOSITY="normal"
+
+# Usage Information
+show_usage() {
+    cat <<EOF
+${BOLD}${BLUE}DQIX Unified CLI${NC} - Domain Quality Index Assessment Tool
+Version: $VERSION
+
+${BOLD}USAGE:${NC}
+    $SCRIPT_NAME <command> [options] <domain>
+
+${BOLD}COMMANDS:${NC}
+    scan <domain>           Assess domain security and quality
+    help                    Show this help message
+    version                 Show version information
+
+${BOLD}ASSESSMENT MODES:${NC}
+    --standard              Standard assessment (default)
+    --educational           Educational mode with explanations
+    --performance          Performance-optimized quick scan
+    --parallel             Parallel processing mode
+    --comprehensive        Comprehensive SSL Labs-style analysis
+
+${BOLD}OUTPUT OPTIONS:${NC}
+    --json                 Output results in JSON format
+    --quiet                Minimal output
+    --verbose              Detailed output with debug information
+
+${BOLD}EXAMPLES:${NC}
+    $SCRIPT_NAME scan example.com
+    $SCRIPT_NAME scan example.com --educational
+    $SCRIPT_NAME scan example.com --comprehensive --json
+    $SCRIPT_NAME scan example.com --performance --quiet
+
+${BOLD}FEATURES:${NC}
+    ✅ TLS/SSL Security Assessment
+    ✅ DNS Security Evaluation  
+    ✅ HTTPS Configuration Analysis
+    ✅ Security Headers Validation
+    ✅ Cross-language Compatibility
+    ✅ Multiple Output Formats
+
+This unified CLI replaces 6 separate scripts while maintaining all functionality.
+EOF
+}
+
+# Argument Parsing
+parse_arguments() {
+    local args=("$@")
+    
+    # Check for help/version first
+    if [[ ${#args[@]} -eq 0 ]] || [[ "${args[0]}" == "help" ]] || [[ "${args[0]}" == "--help" ]] || [[ "${args[0]}" == "-h" ]]; then
+        show_usage
+        exit 0
+    fi
+    
+    if [[ "${args[0]}" == "version" ]] || [[ "${args[0]}" == "--version" ]]; then
+        echo "DQIX Unified CLI $VERSION"
+        exit 0
+    fi
+    
+    # Validate command
+    if [[ "${args[0]}" != "scan" ]]; then
+        echo "❌ Error: Unknown command '${args[0]}'. Use 'help' for usage information." >&2
+        exit 1
+    fi
+    
+    # Parse options and domain
+    local domain=""
+    local mode="standard"
+    
+    for arg in "${args[@]:1}"; do
+        case "$arg" in
+            --educational)
+                mode="educational"
+                ;;
+            --performance)
+                mode="performance"
+                ;;
+            --parallel)
+                mode="parallel"
+                ;;
+            --comprehensive)
+                mode="comprehensive"
+                ;;
+            --json)
+                ENABLE_JSON="true"
+                ;;
+            --quiet)
+                VERBOSITY="quiet"
+                ;;
+            --verbose)
+                VERBOSITY="verbose"
+                ;;
+            --*)
+                echo "❌ Error: Unknown option '$arg'" >&2
+                exit 1
+                ;;
+            *)
+                if [[ -z "$domain" ]]; then
+                    domain="$arg"
+                else
+                    echo "❌ Error: Multiple domains not supported in unified mode" >&2
+                    exit 1
+                fi
+                ;;
+        esac
+    done
+    
+    # Validate domain
+    if [[ -z "$domain" ]]; then
+        echo "❌ Error: Domain required for scan command" >&2
+        echo "Usage: $SCRIPT_NAME scan <domain> [options]" >&2
+        exit 1
+    fi
+    
+    # Export parsed values
+    export CURRENT_DOMAIN="$domain"
+    export CURRENT_MODE="$mode"
+}
+
+# Main Assessment Function
+run_assessment() {
+    local domain="$CURRENT_DOMAIN"
+    local mode="$CURRENT_MODE"
+    
+    # Validate domain format
+    validate_domain "$domain"
+    
+    # Show progress (unless quiet)
+    if [[ "$VERBOSITY" != "quiet" ]]; then
+        echo "🚀 Starting DQIX assessment for $domain in $mode mode..."
+        if [[ "$VERBOSITY" == "verbose" ]]; then
+            echo "🔧 Configuration: JSON=$ENABLE_JSON, Verbosity=$VERBOSITY"
+        fi
+    fi
+    
+    # Perform assessment
+    perform_domain_assessment "$domain" "$mode"
+    
+    # Show completion message (unless quiet)
+    if [[ "$VERBOSITY" != "quiet" ]]; then
+        echo ""
+        echo "✅ Assessment completed successfully!"
+    fi
+}
+
+# Main Function
+main() {
+    # Parse arguments
+    parse_arguments "$@"
+    
+    # Run assessment
+    run_assessment
+    
+    exit 0
+}
+
+# Error Handling
+trap 'handle_error $? "Unexpected error occurred"' ERR
+
+# Execute main function
+main "$@"
