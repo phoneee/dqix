@@ -85,6 +85,39 @@ repos:
         files: ^(pyproject\.toml|pdm\.lock)$
         pass_filenames: false
 
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        files: dqix-cli/.*\.(sh|bash)$
+        args: ['-x']
+
+  # Custom hooks for feature parity
+  - repo: local
+    hooks:
+      - id: feature-parity-tests
+        name: Feature Parity Tests
+        entry: python -m pytest tests/test_feature_parity.py::TestDomainValidation::test_python_domain_validation -v -x
+        language: system
+        pass_filenames: false
+        stages: [commit]
+        verbose: true
+
+      - id: bash-executable-check
+        name: Bash Script Executable Check
+        entry: bash -c 'test -x dqix-cli/dqix-multi || (echo "dqix-cli/dqix-multi is not executable" && exit 1)'
+        language: system
+        pass_filenames: false
+        files: dqix-cli/dqix-multi
+
+      - id: python-import-check
+        name: Python Import Check
+        entry: python -c "import dqix; print('Python package imports successfully')"
+        language: system
+        pass_filenames: false
+        stages: [commit]
+
 ci:
   autofix_commit_msg: |
     [pre-commit.ci] auto fixes from pre-commit.com hooks
