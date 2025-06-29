@@ -1,0 +1,594 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internet Observability Platform (DQIX) - Principles &amp; Measurement Framework &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Internet Observability Platform (DQIX) - Principles &amp; Measurement Framework</a><ul>
+<li><a class="reference internal" href="#vision-statement">Vision Statement</a></li>
+<li><a class="reference internal" href="#core-internet-observability-principles">Core Internet Observability Principles</a><ul>
+<li><a class="reference internal" href="#open-internet-standards-compliance">1. <strong>Open Internet Standards Compliance</strong></a></li>
+<li><a class="reference internal" href="#transparent-measurement-methodology">2. <strong>Transparent Measurement Methodology</strong></a></li>
+<li><a class="reference internal" href="#evidence-based-internet-assessment">3. <strong>Evidence-Based Internet Assessment</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#internet-health-measurement-categories">Internet Health Measurement Categories</a></li>
+<li><a class="reference internal" href="#tls-ssl-security-assessment-35-weight">🔐 <strong>TLS/SSL Security Assessment (35% Weight)</strong></a><ul>
+<li><a class="reference internal" href="#protocol-security-checklist-10-points"><strong>Protocol Security Checklist (10 points)</strong></a></li>
+<li><a class="reference internal" href="#cipher-suite-security-checklist-8-points"><strong>Cipher Suite Security Checklist (8 points)</strong></a></li>
+<li><a class="reference internal" href="#certificate-validation-checklist-12-points"><strong>Certificate Validation Checklist (12 points)</strong></a></li>
+<li><a class="reference internal" href="#advanced-security-features-checklist-5-points"><strong>Advanced Security Features Checklist (5 points)</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dns-infrastructure-security-30-weight">🌐 <strong>DNS Infrastructure Security (30% Weight)</strong></a><ul>
+<li><a class="reference internal" href="#basic-dns-health-checklist-8-points"><strong>Basic DNS Health Checklist (8 points)</strong></a></li>
+<li><a class="reference internal" href="#email-security-infrastructure-checklist-12-points"><strong>Email Security Infrastructure Checklist (12 points)</strong></a></li>
+<li><a class="reference internal" href="#advanced-dns-security-checklist-10-points"><strong>Advanced DNS Security Checklist (10 points)</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#http-security-headers-35-weight">🔒 <strong>HTTP Security Headers (35% Weight)</strong></a><ul>
+<li><a class="reference internal" href="#critical-security-headers-checklist-20-points"><strong>Critical Security Headers Checklist (20 points)</strong></a></li>
+<li><a class="reference internal" href="#important-security-headers-checklist-10-points"><strong>Important Security Headers Checklist (10 points)</strong></a></li>
+<li><a class="reference internal" href="#information-disclosure-detection-5-points"><strong>Information Disclosure Detection (-5 points)</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#internet-health-compliance-levels">Internet Health Compliance Levels</a><ul>
+<li><a class="reference internal" href="#excellent-90-100-points"><strong>Excellent (90-100 points)</strong></a></li>
+<li><a class="reference internal" href="#advanced-80-89-points"><strong>Advanced (80-89 points)</strong></a></li>
+<li><a class="reference internal" href="#standard-60-79-points"><strong>Standard (60-79 points)</strong></a></li>
+<li><a class="reference internal" href="#basic-40-59-points"><strong>Basic (40-59 points)</strong></a></li>
+<li><a class="reference internal" href="#poor-0-39-points"><strong>Poor (0-39 points)</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#internet-observability-methodology">Internet Observability Methodology</a><ul>
+<li><a class="reference internal" href="#real-time-data-collection"><strong>Real-Time Data Collection</strong></a></li>
+<li><a class="reference internal" href="#internet-health-scoring-algorithm"><strong>Internet Health Scoring Algorithm</strong></a></li>
+<li><a class="reference internal" href="#internet-observability-quality-assurance"><strong>Internet Observability Quality Assurance</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#academic-references-internet-standards">Academic References &amp; Internet Standards</a><ul>
+<li><a class="reference internal" href="#internet-security-frameworks"><strong>Internet Security Frameworks</strong></a></li>
+<li><a class="reference internal" href="#internet-protocol-standards"><strong>Internet Protocol Standards</strong></a></li>
+<li><a class="reference internal" href="#internet-measurement-research"><strong>Internet Measurement Research</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#detailed-security-checklists-for-internet-observability">Detailed Security Checklists for Internet Observability</a><ul>
+<li><a class="reference internal" href="#tls-ssl-implementation-checklist"><strong>TLS/SSL Implementation Checklist</strong></a><ul>
+<li><a class="reference internal" href="#protocol-configuration">Protocol Configuration</a></li>
+<li><a class="reference internal" href="#certificate-management">Certificate Management</a></li>
+<li><a class="reference internal" href="#advanced-tls-features">Advanced TLS Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dns-security-implementation-checklist"><strong>DNS Security Implementation Checklist</strong></a><ul>
+<li><a class="reference internal" href="#basic-dns-configuration">Basic DNS Configuration</a></li>
+<li><a class="reference internal" href="#email-authentication">Email Authentication</a></li>
+<li><a class="reference internal" href="#advanced-dns-security">Advanced DNS Security</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#http-security-headers-implementation-checklist"><strong>HTTP Security Headers Implementation Checklist</strong></a><ul>
+<li><a class="reference internal" href="#transport-security">Transport Security</a></li>
+<li><a class="reference internal" href="#content-security">Content Security</a></li>
+<li><a class="reference internal" href="#privacy-and-information-control">Privacy and Information Control</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Internet Observability Platform (DQIX) - Principles &amp; Measurement Framework</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/DOMAIN_QUALITY_INDEX_PRINCIPLES.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="internet-observability-platform-dqix-principles-measurement-framework">
+<h1>Internet Observability Platform (DQIX) - Principles &amp; Measurement Framework<a class="headerlink" href="#internet-observability-platform-dqix-principles-measurement-framework" title="Link to this heading"></a></h1>
+<section id="vision-statement">
+<h2>Vision Statement<a class="headerlink" href="#vision-statement" title="Link to this heading"></a></h2>
+<p><em>“Measuring the health of the Internet, together, in the open.”</em></p>
+<p>The <strong>Internet Observability Platform (DQIX)</strong> provides comprehensive, transparent, and reproducible measurement of Internet infrastructure security, accessibility, and governance compliance using exclusively open data and academic standards.</p>
+</section>
+<hr class="docutils" />
+<section id="core-internet-observability-principles">
+<h2>Core Internet Observability Principles<a class="headerlink" href="#core-internet-observability-principles" title="Link to this heading"></a></h2>
+<section id="open-internet-standards-compliance">
+<h3>1. <strong>Open Internet Standards Compliance</strong><a class="headerlink" href="#open-internet-standards-compliance" title="Link to this heading"></a></h3>
+<p>Based on internationally recognized frameworks:</p>
+<ul class="simple">
+<li><p><strong>NIST Cybersecurity Framework</strong> - Risk management and security controls</p></li>
+<li><p><strong>OWASP Top 10</strong> - Web application security risks</p></li>
+<li><p><strong>RFC Standards</strong> - Internet engineering protocols (TLS, DNS, HTTP, SMTP)</p></li>
+<li><p><strong>W3C Web Standards</strong> - Accessibility and web best practices</p></li>
+<li><p><strong>ISO 27001</strong> - Information security management principles</p></li>
+</ul>
+</section>
+<section id="transparent-measurement-methodology">
+<h3>2. <strong>Transparent Measurement Methodology</strong><a class="headerlink" href="#transparent-measurement-methodology" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All measurement algorithms are public and auditable</p></li>
+<li><p>Scoring criteria based on published security research</p></li>
+<li><p>No proprietary or black-box scoring methods</p></li>
+<li><p>Reproducible results using open data sources</p></li>
+<li><p>Real-time Internet health monitoring</p></li>
+</ul>
+</section>
+<section id="evidence-based-internet-assessment">
+<h3>3. <strong>Evidence-Based Internet Assessment</strong><a class="headerlink" href="#evidence-based-internet-assessment" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Measurements derived from actual technical implementation</p></li>
+<li><p>Quantifiable security and compliance indicators</p></li>
+<li><p>Peer-reviewed security research foundations</p></li>
+<li><p>Real-world attack vector considerations</p></li>
+<li><p>Continuous Internet infrastructure monitoring</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="internet-health-measurement-categories">
+<h2>Internet Health Measurement Categories<a class="headerlink" href="#internet-health-measurement-categories" title="Link to this heading"></a></h2>
+</section>
+<section id="tls-ssl-security-assessment-35-weight">
+<h2>🔐 <strong>TLS/SSL Security Assessment (35% Weight)</strong><a class="headerlink" href="#tls-ssl-security-assessment-35-weight" title="Link to this heading"></a></h2>
+<section id="protocol-security-checklist-10-points">
+<h3><strong>Protocol Security Checklist (10 points)</strong><a class="headerlink" href="#protocol-security-checklist-10-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>TLS 1.3</strong>: 10 points - Modern, quantum-resistant protocol</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>TLS 1.2</strong>: 8 points - Acceptable with proper configuration</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>TLS 1.1/1.0</strong>: 0 points - Deprecated, vulnerable protocols</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>No TLS</strong>: 0 points - Unencrypted communication</p></li>
+</ul>
+</section>
+<section id="cipher-suite-security-checklist-8-points">
+<h3><strong>Cipher Suite Security Checklist (8 points)</strong><a class="headerlink" href="#cipher-suite-security-checklist-8-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Perfect Forward Secrecy</strong>: +3 points - ECDHE/DHE key exchange</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Modern Encryption</strong>: +3 points - AES-GCM, ChaCha20-Poly1305</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Strong Hash</strong>: +2 points - SHA-256 or better</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Weak Ciphers Detection</strong>: -5 points - RC4, 3DES, NULL ciphers</p></li>
+</ul>
+</section>
+<section id="certificate-validation-checklist-12-points">
+<h3><strong>Certificate Validation Checklist (12 points)</strong><a class="headerlink" href="#certificate-validation-checklist-12-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Trusted CA</strong>: 4 points - Valid certificate authority</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Domain Match</strong>: 3 points - Certificate matches domain</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Validity Period</strong>: 2 points - Not expired, reasonable lifetime</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Key Strength</strong>: 3 points - RSA ≥2048 bits or ECC ≥256 bits</p></li>
+</ul>
+</section>
+<section id="advanced-security-features-checklist-5-points">
+<h3><strong>Advanced Security Features Checklist (5 points)</strong><a class="headerlink" href="#advanced-security-features-checklist-5-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>OCSP Stapling</strong>: +1 point - Certificate revocation checking</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Certificate Transparency</strong>: +1 point - CT log inclusion</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>HPKP/Expect-CT</strong>: +1 point - Certificate pinning (when present)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Multiple Validation</strong>: +2 points - Extended/Organization validation</p></li>
+</ul>
+<p><strong>Standards References</strong>: <a class="reference external" href="https://tools.ietf.org/html/rfc8446">RFC 8446 (TLS 1.3)</a>, <a class="reference external" href="https://wiki.mozilla.org/Security/Server_Side_TLS">Mozilla SSL Configuration</a></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="dns-infrastructure-security-30-weight">
+<h2>🌐 <strong>DNS Infrastructure Security (30% Weight)</strong><a class="headerlink" href="#dns-infrastructure-security-30-weight" title="Link to this heading"></a></h2>
+<section id="basic-dns-health-checklist-8-points">
+<h3><strong>Basic DNS Health Checklist (8 points)</strong><a class="headerlink" href="#basic-dns-health-checklist-8-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>IPv4 Availability</strong>: 2 points - A records present</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>IPv6 Support</strong>: 2 points - AAAA records present</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Redundant Nameservers</strong>: 2 points - ≥2 authoritative nameservers</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Response Performance</strong>: 2 points - Sub-second DNS resolution</p></li>
+</ul>
+</section>
+<section id="email-security-infrastructure-checklist-12-points">
+<h3><strong>Email Security Infrastructure Checklist (12 points)</strong><a class="headerlink" href="#email-security-infrastructure-checklist-12-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>SPF Record</strong>: 4 points - Sender Policy Framework configured</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">-all</span></code> (strict): 4 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">~all</span></code> (soft): 2 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> No SPF: 0 points</p></li>
+</ul>
+</li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>DMARC Policy</strong>: 4 points - Domain-based Message Authentication</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">p=reject</span></code>: 4 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">p=quarantine</span></code>: 2 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">p=none</span></code> or missing: 0 points</p></li>
+</ul>
+</li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>DKIM Support</strong>: 4 points - DomainKeys Identified Mail</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Active selectors: 4 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Configured but inactive: 2 points</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="advanced-dns-security-checklist-10-points">
+<h3><strong>Advanced DNS Security Checklist (10 points)</strong><a class="headerlink" href="#advanced-dns-security-checklist-10-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>DNSSEC</strong>: 6 points - DNS Security Extensions</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Fully validated chain: 6 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Partially configured: 3 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Not configured: 0 points</p></li>
+</ul>
+</li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>CAA Records</strong>: 4 points - Certificate Authority Authorization</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Restrictive policy: 4 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Permissive policy: 2 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> No CAA: 0 points</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Standards References</strong>: <a class="reference external" href="https://tools.ietf.org/html/rfc7208">RFC 7208 (SPF)</a>, <a class="reference external" href="https://tools.ietf.org/html/rfc7489">RFC 7489 (DMARC)</a>, <a class="reference external" href="https://tools.ietf.org/html/rfc4033">RFC 4033 (DNSSEC)</a></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="http-security-headers-35-weight">
+<h2>🔒 <strong>HTTP Security Headers (35% Weight)</strong><a class="headerlink" href="#http-security-headers-35-weight" title="Link to this heading"></a></h2>
+<section id="critical-security-headers-checklist-20-points">
+<h3><strong>Critical Security Headers Checklist (20 points)</strong><a class="headerlink" href="#critical-security-headers-checklist-20-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>HSTS (HTTP Strict Transport Security)</strong>: 8 points</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">max-age≥31536000</span></code> + <code class="docutils literal notranslate"><span class="pre">includeSubDomains</span></code> + <code class="docutils literal notranslate"><span class="pre">preload</span></code>: 8 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">max-age≥31536000</span></code> + <code class="docutils literal notranslate"><span class="pre">includeSubDomains</span></code>: 6 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">max-age≥2592000</span></code>: 4 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Shorter or missing: 0 points</p></li>
+</ul>
+</li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Content Security Policy (CSP)</strong>: 8 points</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Restrictive policy without unsafe directives: 8 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Moderate policy with minimal unsafe: 5 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Basic policy or report-only: 3 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Missing: 0 points</p></li>
+</ul>
+</li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>X-Frame-Options</strong>: 4 points</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">DENY</span></code>: 4 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">SAMEORIGIN</span></code>: 3 points</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <code class="docutils literal notranslate"><span class="pre">ALLOW-FROM</span></code> (deprecated): 1 point</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Missing: 0 points</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="important-security-headers-checklist-10-points">
+<h3><strong>Important Security Headers Checklist (10 points)</strong><a class="headerlink" href="#important-security-headers-checklist-10-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>X-Content-Type-Options</strong>: 3 points - <code class="docutils literal notranslate"><span class="pre">nosniff</span></code> prevents MIME sniffing</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Referrer-Policy</strong>: 3 points - Controls referrer information leakage</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Permissions-Policy</strong>: 2 points - Controls browser feature access</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>X-XSS-Protection</strong>: 2 points - Legacy XSS protection (modern browsers use CSP)</p></li>
+</ul>
+</section>
+<section id="information-disclosure-detection-5-points">
+<h3><strong>Information Disclosure Detection (-5 points)</strong><a class="headerlink" href="#information-disclosure-detection-5-points" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>Server Header</strong>: -2 points - Reveals server technology</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>X-Powered-By</strong>: -2 points - Reveals framework/language</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> <strong>X-AspNet-Version</strong>: -1 point - Reveals specific versions</p></li>
+</ul>
+<p><strong>Standards References</strong>: <a class="reference external" href="https://owasp.org/www-project-secure-headers/">OWASP Secure Headers</a>, <a class="reference external" href="https://infosec.mozilla.org/guidelines/web_security">Mozilla Web Security Guidelines</a></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="internet-health-compliance-levels">
+<h2>Internet Health Compliance Levels<a class="headerlink" href="#internet-health-compliance-levels" title="Link to this heading"></a></h2>
+<section id="excellent-90-100-points">
+<h3><strong>Excellent (90-100 points)</strong><a class="headerlink" href="#excellent-90-100-points" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Industry-leading Internet infrastructure implementation</p></li>
+<li><p>Suitable for critical Internet services</p></li>
+<li><p>Meets or exceeds all major security frameworks</p></li>
+<li><p><strong>Green Badge</strong> - Exemplary Internet citizenship</p></li>
+</ul>
+</section>
+<section id="advanced-80-89-points">
+<h3><strong>Advanced (80-89 points)</strong><a class="headerlink" href="#advanced-80-89-points" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Strong Internet security posture with minor gaps</p></li>
+<li><p>Suitable for most enterprise Internet services</p></li>
+<li><p>Compliant with major Internet security standards</p></li>
+<li><p><strong>Blue Badge</strong> - Strong Internet infrastructure</p></li>
+</ul>
+</section>
+<section id="standard-60-79-points">
+<h3><strong>Standard (60-79 points)</strong><a class="headerlink" href="#standard-60-79-points" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Basic Internet security measures implemented</p></li>
+<li><p>Some infrastructure gaps requiring attention</p></li>
+<li><p>Meets minimum Internet security requirements</p></li>
+<li><p><strong>Yellow Badge</strong> - Adequate Internet presence</p></li>
+</ul>
+</section>
+<section id="basic-40-59-points">
+<h3><strong>Basic (40-59 points)</strong><a class="headerlink" href="#basic-40-59-points" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Significant Internet infrastructure improvements needed</p></li>
+<li><p>High risk of Internet security incidents</p></li>
+<li><p>Below recommended Internet security baselines</p></li>
+<li><p><strong>Orange Badge</strong> - Internet infrastructure at risk</p></li>
+</ul>
+</section>
+<section id="poor-0-39-points">
+<h3><strong>Poor (0-39 points)</strong><a class="headerlink" href="#poor-0-39-points" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Critical Internet security vulnerabilities present</p></li>
+<li><p>Immediate infrastructure remediation required</p></li>
+<li><p>High risk of Internet compromise</p></li>
+<li><p><strong>Red Badge</strong> - Critical Internet infrastructure issues</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="internet-observability-methodology">
+<h2>Internet Observability Methodology<a class="headerlink" href="#internet-observability-methodology" title="Link to this heading"></a></h2>
+<section id="real-time-data-collection">
+<h3><strong>Real-Time Data Collection</strong><a class="headerlink" href="#real-time-data-collection" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Direct Protocol Testing</strong> - Active probing of TLS, DNS, HTTP protocols</p></li>
+<li><p><strong>Public Internet Record Analysis</strong> - DNS records, certificate transparency logs</p></li>
+<li><p><strong>Internet Standards Compliance Check</strong> - RFC and W3C guideline adherence</p></li>
+<li><p><strong>Internet Security Best Practice Validation</strong> - OWASP and NIST framework alignment</p></li>
+</ol>
+</section>
+<section id="internet-health-scoring-algorithm">
+<h3><strong>Internet Health Scoring Algorithm</strong><a class="headerlink" href="#internet-health-scoring-algorithm" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Internet Health Score = Average of all successful probe scores
+
+Where each probe score is:
+Probe Score = (Achieved Points / Maximum Points) × 100
+
+Overall Score = Sum of all successful probe scores / Number of successful probes
+</pre></div>
+</div>
+</section>
+<section id="internet-observability-quality-assurance">
+<h3><strong>Internet Observability Quality Assurance</strong><a class="headerlink" href="#internet-observability-quality-assurance" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Reproducibility</strong> - Same inputs produce identical Internet health results</p></li>
+<li><p><strong>Transparency</strong> - All Internet measurement criteria publicly documented</p></li>
+<li><p><strong>Validation</strong> - Results verified against known Internet security standards</p></li>
+<li><p><strong>Continuous Improvement</strong> - Regular updates based on Internet security research</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="academic-references-internet-standards">
+<h2>Academic References &amp; Internet Standards<a class="headerlink" href="#academic-references-internet-standards" title="Link to this heading"></a></h2>
+<section id="internet-security-frameworks">
+<h3><strong>Internet Security Frameworks</strong><a class="headerlink" href="#internet-security-frameworks" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>NIST Cybersecurity Framework v1.1 (2018) - Internet Infrastructure Security</p></li>
+<li><p>OWASP Application Security Verification Standard (ASVS) v4.0 - Internet Application Security</p></li>
+<li><p>ISO/IEC 27001:2013 Information Security Management - Internet Service Security</p></li>
+</ul>
+</section>
+<section id="internet-protocol-standards">
+<h3><strong>Internet Protocol Standards</strong><a class="headerlink" href="#internet-protocol-standards" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</p></li>
+<li><p>RFC 7208: Sender Policy Framework (SPF) for Internet Email Security</p></li>
+<li><p>RFC 7489: Domain-based Message Authentication, Reporting, and Conformance (DMARC)</p></li>
+<li><p>RFC 4033: DNS Security Introduction and Requirements (DNSSEC)</p></li>
+</ul>
+</section>
+<section id="internet-measurement-research">
+<h3><strong>Internet Measurement Research</strong><a class="headerlink" href="#internet-measurement-research" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>“Internet Health Report” - Mozilla Foundation</p></li>
+<li><p>“State of the Internet” - Akamai Technologies</p></li>
+<li><p>“Global Internet Report” - Internet Society</p></li>
+<li><p>“DNS Observatory” - Mozilla Observatory Project</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="detailed-security-checklists-for-internet-observability">
+<h2>Detailed Security Checklists for Internet Observability<a class="headerlink" href="#detailed-security-checklists-for-internet-observability" title="Link to this heading"></a></h2>
+<section id="tls-ssl-implementation-checklist">
+<h3><strong>TLS/SSL Implementation Checklist</strong><a class="headerlink" href="#tls-ssl-implementation-checklist" title="Link to this heading"></a></h3>
+<section id="protocol-configuration">
+<h4>Protocol Configuration<a class="headerlink" href="#protocol-configuration" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> TLS 1.3 enabled and preferred</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> TLS 1.2 as fallback with secure configuration</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> TLS 1.1/1.0 disabled</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> SSL 2.0/3.0 disabled</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Cipher suite order enforced by server</p></li>
+</ul>
+</section>
+<section id="certificate-management">
+<h4>Certificate Management<a class="headerlink" href="#certificate-management" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Valid certificate from trusted CA</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Certificate matches domain name</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Certificate not expired</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Certificate chain complete</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> OCSP stapling enabled</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Certificate Transparency monitoring</p></li>
+</ul>
+</section>
+<section id="advanced-tls-features">
+<h4>Advanced TLS Features<a class="headerlink" href="#advanced-tls-features" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> HTTP/2 support enabled</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Session resumption configured</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Perfect Forward Secrecy enabled</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Compression disabled (CRIME mitigation)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Renegotiation attacks prevented</p></li>
+</ul>
+</section>
+</section>
+<section id="dns-security-implementation-checklist">
+<h3><strong>DNS Security Implementation Checklist</strong><a class="headerlink" href="#dns-security-implementation-checklist" title="Link to this heading"></a></h3>
+<section id="basic-dns-configuration">
+<h4>Basic DNS Configuration<a class="headerlink" href="#basic-dns-configuration" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Primary and secondary nameservers configured</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> A records for IPv4 connectivity</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> AAAA records for IPv6 connectivity</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> MX records for email delivery</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> NS records properly configured</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> TTL values appropriately set</p></li>
+</ul>
+</section>
+<section id="email-authentication">
+<h4>Email Authentication<a class="headerlink" href="#email-authentication" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> SPF record published and properly configured</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> DMARC policy published with appropriate action</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> DKIM selectors active and rotated regularly</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Email authentication alignment configured</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> DMARC reports monitored and analyzed</p></li>
+</ul>
+</section>
+<section id="advanced-dns-security">
+<h4>Advanced DNS Security<a class="headerlink" href="#advanced-dns-security" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> DNSSEC enabled with complete chain of trust</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> DS records published in parent zone</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> DNSKEY records properly configured</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> NSEC/NSEC3 records for authenticated denial</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> CAA records restrict certificate issuance</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> DNS over HTTPS (DoH) support considered</p></li>
+</ul>
+</section>
+</section>
+<section id="http-security-headers-implementation-checklist">
+<h3><strong>HTTP Security Headers Implementation Checklist</strong><a class="headerlink" href="#http-security-headers-implementation-checklist" title="Link to this heading"></a></h3>
+<section id="transport-security">
+<h4>Transport Security<a class="headerlink" href="#transport-security" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> HSTS header with max-age ≥ 1 year</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> HSTS includeSubDomains directive</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> HSTS preload submission considered</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> HTTP to HTTPS redirects implemented</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Secure cookie flags set</p></li>
+</ul>
+</section>
+<section id="content-security">
+<h4>Content Security<a class="headerlink" href="#content-security" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Content Security Policy implemented</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> CSP nonce or hash-based for scripts</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> CSP report-only mode tested first</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> X-Frame-Options or CSP frame-ancestors</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> X-Content-Type-Options: nosniff</p></li>
+</ul>
+</section>
+<section id="privacy-and-information-control">
+<h4>Privacy and Information Control<a class="headerlink" href="#privacy-and-information-control" title="Link to this heading"></a></h4>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Referrer-Policy configured appropriately</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Permissions-Policy limits feature access</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Server header information minimized</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> X-Powered-By header removed</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Version information disclosure prevented</p></li>
+</ul>
+<hr class="docutils" />
+<p><em>Internet Observability Platform tagline</em>: <strong>“Measuring Internet health together, transparently, for a safer digital world.”</strong></p>
+<p><em>Last Updated: June 2025</em><br />
+<em>Version: 1.0</em></p>
+<p><strong>Citation Format:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Internet</span> <span class="n">Observability</span> <span class="n">Platform</span> <span class="p">(</span><span class="n">DQIX</span><span class="p">)</span> <span class="n">Principles</span> <span class="o">&amp;</span> <span class="n">Measurement</span> <span class="n">Framework</span><span class="p">,</span> <span class="n">Version</span> <span class="mf">1.0</span> <span class="p">(</span><span class="mi">2025</span><span class="p">)</span><span class="o">.</span>
+<span class="n">Available</span> <span class="n">at</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">phoneee</span><span class="o">/</span><span class="n">dqix</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

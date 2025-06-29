@@ -1,0 +1,613 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DQIX - Frequently Asked Questions (FAQ) &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">DQIX - Frequently Asked Questions (FAQ)</a><ul>
+<li><a class="reference internal" href="#general-questions">📋 General Questions</a><ul>
+<li><a class="reference internal" href="#q-what-is-domain-quality-index-dqix"><strong>Q: What is Domain Quality Index (DQIX)?</strong></a></li>
+<li><a class="reference internal" href="#q-how-does-dqix-scoring-compare-to-commercial-tools-like-ahrefs-dr-or-moz-da"><strong>Q: How does DQIX scoring compare to commercial tools like Ahrefs DR or Moz DA?</strong></a></li>
+<li><a class="reference internal" href="#q-what-data-sources-does-dqix-use"><strong>Q: What data sources does DQIX use?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation-setup">🔧 Installation &amp; Setup</a><ul>
+<li><a class="reference internal" href="#q-how-do-i-install-dqix"><strong>Q: How do I install DQIX?</strong></a></li>
+<li><a class="reference internal" href="#q-what-are-the-system-requirements"><strong>Q: What are the system requirements?</strong></a></li>
+<li><a class="reference internal" href="#q-im-getting-ssl-tls-certificate-errors-how-do-i-fix-this"><strong>Q: I’m getting SSL/TLS certificate errors. How do I fix this?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage-commands">📊 Usage &amp; Commands</a><ul>
+<li><a class="reference internal" href="#q-how-do-i-assess-a-single-domain"><strong>Q: How do I assess a single domain?</strong></a></li>
+<li><a class="reference internal" href="#q-how-do-i-compare-multiple-domains"><strong>Q: How do I compare multiple domains?</strong></a></li>
+<li><a class="reference internal" href="#q-how-do-i-assess-domains-in-bulk"><strong>Q: How do I assess domains in bulk?</strong></a></li>
+<li><a class="reference internal" href="#q-what-output-formats-are-available"><strong>Q: What output formats are available?</strong></a></li>
+<li><a class="reference internal" href="#q-how-do-i-save-results-to-files"><strong>Q: How do I save results to files?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#measurement-details">🔍 Measurement Details</a><ul>
+<li><a class="reference internal" href="#q-what-does-the-overall-score-represent"><strong>Q: What does the overall score represent?</strong></a></li>
+<li><a class="reference internal" href="#q-what-are-the-compliance-levels"><strong>Q: What are the compliance levels?</strong></a></li>
+<li><a class="reference internal" href="#q-why-did-my-domain-score-low-on-dns"><strong>Q: Why did my domain score low on DNS?</strong></a></li>
+<li><a class="reference internal" href="#q-what-are-the-most-important-security-headers"><strong>Q: What are the most important security headers?</strong></a></li>
+<li><a class="reference internal" href="#q-why-doesnt-my-high-security-site-score-well"><strong>Q: Why doesn’t my high-security site score well?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#performance-optimization">⚡ Performance &amp; Optimization</a><ul>
+<li><a class="reference internal" href="#q-how-can-i-speed-up-assessments"><strong>Q: How can I speed up assessments?</strong></a></li>
+<li><a class="reference internal" href="#q-how-many-domains-can-i-assess-simultaneously"><strong>Q: How many domains can I assess simultaneously?</strong></a></li>
+<li><a class="reference internal" href="#q-my-assessments-are-timing-out-what-should-i-do"><strong>Q: My assessments are timing out. What should I do?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#troubleshooting">🛠️ Troubleshooting</a><ul>
+<li><a class="reference internal" href="#q-i-get-modulenotfounderror-when-running-dqix"><strong>Q: I get “ModuleNotFoundError” when running DQIX.</strong></a></li>
+<li><a class="reference internal" href="#q-bulk-assessment-fails-with-some-domains"><strong>Q: Bulk assessment fails with some domains.</strong></a></li>
+<li><a class="reference internal" href="#q-dns-resolution-fails-for-local-domains"><strong>Q: DNS resolution fails for local domains.</strong></a></li>
+<li><a class="reference internal" href="#q-tls-probe-returns-local-handshake-error"><strong>Q: TLS probe returns “local_handshake” error.</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-configuration">🔧 Advanced Configuration</a><ul>
+<li><a class="reference internal" href="#q-can-i-customize-scoring-weights"><strong>Q: Can I customize scoring weights?</strong></a></li>
+<li><a class="reference internal" href="#q-how-do-i-add-custom-probes"><strong>Q: How do I add custom probes?</strong></a></li>
+<li><a class="reference internal" href="#q-can-i-run-dqix-in-docker"><strong>Q: Can I run DQIX in Docker?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#integration-apis">📈 Integration &amp; APIs</a><ul>
+<li><a class="reference internal" href="#q-can-i-use-dqix-programmatically"><strong>Q: Can I use DQIX programmatically?</strong></a></li>
+<li><a class="reference internal" href="#q-how-do-i-integrate-dqix-into-ci-cd-pipelines"><strong>Q: How do I integrate DQIX into CI/CD pipelines?</strong></a></li>
+<li><a class="reference internal" href="#q-can-i-export-results-to-databases"><strong>Q: Can I export results to databases?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#academic-research-use">📚 Academic &amp; Research Use</a><ul>
+<li><a class="reference internal" href="#q-can-i-cite-dqix-in-academic-papers"><strong>Q: Can I cite DQIX in academic papers?</strong></a></li>
+<li><a class="reference internal" href="#q-what-academic-standards-does-dqix-follow"><strong>Q: What academic standards does DQIX follow?</strong></a></li>
+<li><a class="reference internal" href="#q-how-can-i-validate-dqix-results"><strong>Q: How can I validate DQIX results?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contributing-community">🤝 Contributing &amp; Community</a><ul>
+<li><a class="reference internal" href="#q-how-can-i-contribute-to-dqix"><strong>Q: How can I contribute to DQIX?</strong></a></li>
+<li><a class="reference internal" href="#q-how-do-i-report-bugs-or-request-features"><strong>Q: How do I report bugs or request features?</strong></a></li>
+<li><a class="reference internal" href="#q-is-there-a-community-forum-or-chat"><strong>Q: Is there a community forum or chat?</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#common-error-messages">📋 Common Error Messages</a><ul>
+<li><a class="reference internal" href="#domain-not-found-or-nxdomain"><strong>“Domain not found” or “NXDOMAIN”</strong></a></li>
+<li><a class="reference internal" href="#connection-timeout"><strong>“Connection timeout”</strong></a></li>
+<li><a class="reference internal" href="#certificate-verification-failed"><strong>“Certificate verification failed”</strong></a></li>
+<li><a class="reference internal" href="#permission-denied"><strong>“Permission denied”</strong></a></li>
+<li><a class="reference internal" href="#too-many-concurrent-requests"><strong>“Too many concurrent requests”</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DQIX - Frequently Asked Questions (FAQ)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/FAQ.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="dqix-frequently-asked-questions-faq">
+<h1>DQIX - Frequently Asked Questions (FAQ)<a class="headerlink" href="#dqix-frequently-asked-questions-faq" title="Link to this heading"></a></h1>
+<section id="general-questions">
+<h2>📋 General Questions<a class="headerlink" href="#general-questions" title="Link to this heading"></a></h2>
+<section id="q-what-is-domain-quality-index-dqix">
+<h3><strong>Q: What is Domain Quality Index (DQIX)?</strong><a class="headerlink" href="#q-what-is-domain-quality-index-dqix" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> DQIX is an open-source library that measures domain security, accessibility, and governance compliance using academic standards and transparent methodologies. It provides a vendor-neutral alternative to commercial domain scoring tools.</p>
+</section>
+<section id="q-how-does-dqix-scoring-compare-to-commercial-tools-like-ahrefs-dr-or-moz-da">
+<h3><strong>Q: How does DQIX scoring compare to commercial tools like Ahrefs DR or Moz DA?</strong><a class="headerlink" href="#q-how-does-dqix-scoring-compare-to-commercial-tools-like-ahrefs-dr-or-moz-da" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> DQIX focuses on security and compliance rather than SEO metrics. Our scoring is based on measurable technical criteria (TLS security, DNS configuration, HTTP headers) rather than backlink analysis. Results are reproducible and transparent.</p>
+</section>
+<section id="q-what-data-sources-does-dqix-use">
+<h3><strong>Q: What data sources does DQIX use?</strong><a class="headerlink" href="#q-what-data-sources-does-dqix-use" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> DQIX uses only open data:</p>
+<ul class="simple">
+<li><p>Direct protocol testing (TLS, DNS, HTTP)</p></li>
+<li><p>Public DNS records</p></li>
+<li><p>Certificate transparency logs</p></li>
+<li><p>Open web standards compliance</p></li>
+<li><p>No proprietary databases or paid APIs</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="installation-setup">
+<h2>🔧 Installation &amp; Setup<a class="headerlink" href="#installation-setup" title="Link to this heading"></a></h2>
+<section id="q-how-do-i-install-dqix">
+<h3><strong>Q: How do I install DQIX?</strong><a class="headerlink" href="#q-how-do-i-install-dqix" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Install using pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>dqix
+</pre></div>
+</div>
+<p>For development:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/phoneee/dqix
+<span class="nb">cd</span><span class="w"> </span>dqix
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="q-what-are-the-system-requirements">
+<h3><strong>Q: What are the system requirements?</strong><a class="headerlink" href="#q-what-are-the-system-requirements" title="Link to this heading"></a></h3>
+<p><strong>A:</strong></p>
+<ul class="simple">
+<li><p>Python 3.9 or higher</p></li>
+<li><p>2GB RAM minimum (4GB recommended for bulk processing)</p></li>
+<li><p>Internet connectivity for domain testing</p></li>
+<li><p>Optional: Docker for containerized deployment</p></li>
+</ul>
+</section>
+<section id="q-im-getting-ssl-tls-certificate-errors-how-do-i-fix-this">
+<h3><strong>Q: I’m getting SSL/TLS certificate errors. How do I fix this?</strong><a class="headerlink" href="#q-im-getting-ssl-tls-certificate-errors-how-do-i-fix-this" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Common solutions:</p>
+<ol class="arabic simple">
+<li><p>Check your system’s certificate store: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">certifi</span></code></p></li>
+<li><p>Update certificates: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">certifi</span></code></p></li>
+<li><p>Check corporate firewall/proxy settings</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--timeout</span></code> option for slow networks</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="usage-commands">
+<h2>📊 Usage &amp; Commands<a class="headerlink" href="#usage-commands" title="Link to this heading"></a></h2>
+<section id="q-how-do-i-assess-a-single-domain">
+<h3><strong>Q: How do I assess a single domain?</strong><a class="headerlink" href="#q-how-do-i-assess-a-single-domain" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Basic assessment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com
+</pre></div>
+</div>
+<p>Detailed analysis with checklists:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--checklist<span class="w"> </span>--verbose<span class="w"> </span>--recommendations
+</pre></div>
+</div>
+</section>
+<section id="q-how-do-i-compare-multiple-domains">
+<h3><strong>Q: How do I compare multiple domains?</strong><a class="headerlink" href="#q-how-do-i-compare-multiple-domains" title="Link to this heading"></a></h3>
+<p><strong>A:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>compare<span class="w"> </span>google.com<span class="w"> </span>cloudflare.com<span class="w"> </span>github.com<span class="w"> </span>--checklist
+</pre></div>
+</div>
+</section>
+<section id="q-how-do-i-assess-domains-in-bulk">
+<h3><strong>Q: How do I assess domains in bulk?</strong><a class="headerlink" href="#q-how-do-i-assess-domains-in-bulk" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Create a file with domains (one per line) and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>bulk<span class="w"> </span>domains.txt<span class="w"> </span>--format<span class="w"> </span>csv<span class="w"> </span>--concurrent<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p>Supported file formats: TXT, CSV, JSON</p>
+</section>
+<section id="q-what-output-formats-are-available">
+<h3><strong>Q: What output formats are available?</strong><a class="headerlink" href="#q-what-output-formats-are-available" title="Link to this heading"></a></h3>
+<p><strong>A:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rich</span></code> (default) - Beautiful terminal output with colors</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> - Machine-readable structured data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table</span></code> - Simple table format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">csv</span></code> - Comma-separated values for spreadsheets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stdout</span></code> - Tab-separated for Unix pipes</p></li>
+</ul>
+</section>
+<section id="q-how-do-i-save-results-to-files">
+<h3><strong>Q: How do I save results to files?</strong><a class="headerlink" href="#q-how-do-i-save-results-to-files" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Use the <code class="docutils literal notranslate"><span class="pre">--save</span></code> flag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--save<span class="w"> </span>--save-dir<span class="w"> </span>./results
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="measurement-details">
+<h2>🔍 Measurement Details<a class="headerlink" href="#measurement-details" title="Link to this heading"></a></h2>
+<section id="q-what-does-the-overall-score-represent">
+<h3><strong>Q: What does the overall score represent?</strong><a class="headerlink" href="#q-what-does-the-overall-score-represent" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> The overall score (0.0-1.0) is a weighted average:</p>
+<ul class="simple">
+<li><p>TLS Security: 35%</p></li>
+<li><p>DNS Infrastructure: 30%</p></li>
+<li><p>HTTP Security Headers: 35%</p></li>
+</ul>
+<p>Each component is scored against academic standards and best practices.</p>
+</section>
+<section id="q-what-are-the-compliance-levels">
+<h3><strong>Q: What are the compliance levels?</strong><a class="headerlink" href="#q-what-are-the-compliance-levels" title="Link to this heading"></a></h3>
+<p><strong>A:</strong></p>
+<ul class="simple">
+<li><p><strong>Excellent (90-100)</strong>: Industry-leading security</p></li>
+<li><p><strong>Advanced (80-89)</strong>: Strong security posture</p></li>
+<li><p><strong>Standard (60-79)</strong>: Basic security measures</p></li>
+<li><p><strong>Basic (40-59)</strong>: Significant improvements needed</p></li>
+<li><p><strong>Poor (0-39)</strong>: Critical vulnerabilities</p></li>
+</ul>
+</section>
+<section id="q-why-did-my-domain-score-low-on-dns">
+<h3><strong>Q: Why did my domain score low on DNS?</strong><a class="headerlink" href="#q-why-did-my-domain-score-low-on-dns" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Common reasons:</p>
+<ul class="simple">
+<li><p>Missing SPF/DMARC email security records</p></li>
+<li><p>No DNSSEC implementation</p></li>
+<li><p>Missing CAA (Certificate Authority Authorization) records</p></li>
+<li><p>Single point of failure (only one nameserver)</p></li>
+</ul>
+</section>
+<section id="q-what-are-the-most-important-security-headers">
+<h3><strong>Q: What are the most important security headers?</strong><a class="headerlink" href="#q-what-are-the-most-important-security-headers" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Critical headers for high scores:</p>
+<ol class="arabic simple">
+<li><p><strong>HSTS</strong> - Prevents SSL stripping attacks</p></li>
+<li><p><strong>CSP</strong> - Prevents XSS and injection attacks</p></li>
+<li><p><strong>X-Frame-Options</strong> - Prevents clickjacking</p></li>
+<li><p><strong>X-Content-Type-Options</strong> - Prevents MIME sniffing</p></li>
+</ol>
+</section>
+<section id="q-why-doesnt-my-high-security-site-score-well">
+<h3><strong>Q: Why doesn’t my high-security site score well?</strong><a class="headerlink" href="#q-why-doesnt-my-high-security-site-score-well" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> DQIX measures specific technical implementations. A site might be secure but lack:</p>
+<ul class="simple">
+<li><p>Proper HTTP security headers</p></li>
+<li><p>DNSSEC validation</p></li>
+<li><p>Email authentication records</p></li>
+<li><p>Modern TLS configuration</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="performance-optimization">
+<h2>⚡ Performance &amp; Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h2>
+<section id="q-how-can-i-speed-up-assessments">
+<h3><strong>Q: How can I speed up assessments?</strong><a class="headerlink" href="#q-how-can-i-speed-up-assessments" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Use performance options:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fast mode (no progress tracking)</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--fast
+
+<span class="c1"># Bulk with high concurrency</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>domains.txt<span class="w"> </span>--concurrent<span class="w"> </span><span class="m">20</span>
+
+<span class="c1"># Reduce timeout for faster failures</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--timeout<span class="w"> </span><span class="m">5</span>
+</pre></div>
+</div>
+</section>
+<section id="q-how-many-domains-can-i-assess-simultaneously">
+<h3><strong>Q: How many domains can I assess simultaneously?</strong><a class="headerlink" href="#q-how-many-domains-can-i-assess-simultaneously" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Recommended concurrency levels:</p>
+<ul class="simple">
+<li><p>Local testing: 5-10 concurrent</p></li>
+<li><p>Server deployment: 20-50 concurrent</p></li>
+<li><p>Respect rate limits and target infrastructure</p></li>
+</ul>
+</section>
+<section id="q-my-assessments-are-timing-out-what-should-i-do">
+<h3><strong>Q: My assessments are timing out. What should I do?</strong><a class="headerlink" href="#q-my-assessments-are-timing-out-what-should-i-do" title="Link to this heading"></a></h3>
+<p><strong>A:</strong></p>
+<ol class="arabic simple">
+<li><p>Increase timeout: <code class="docutils literal notranslate"><span class="pre">--timeout</span> <span class="pre">30</span></code></p></li>
+<li><p>Check network connectivity</p></li>
+<li><p>Try different DNS servers</p></li>
+<li><p>Verify domains are accessible</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="troubleshooting">
+<h2>🛠️ Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="q-i-get-modulenotfounderror-when-running-dqix">
+<h3><strong>Q: I get “ModuleNotFoundError” when running DQIX.</strong><a class="headerlink" href="#q-i-get-modulenotfounderror-when-running-dqix" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Common solutions:</p>
+<ol class="arabic simple">
+<li><p>Ensure proper installation: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">dqix</span></code></p></li>
+<li><p>Check Python path: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">&quot;import</span> <span class="pre">dqix;</span> <span class="pre">print(dqix.__file__)&quot;</span></code></p></li>
+<li><p>Use virtual environment: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">venv</span> <span class="pre">&amp;&amp;</span> <span class="pre">source</span> <span class="pre">venv/bin/activate</span></code></p></li>
+</ol>
+</section>
+<section id="q-bulk-assessment-fails-with-some-domains">
+<h3><strong>Q: Bulk assessment fails with some domains.</strong><a class="headerlink" href="#q-bulk-assessment-fails-with-some-domains" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> This is normal. DQIX handles errors gracefully:</p>
+<ul class="simple">
+<li><p>Check the error messages in output</p></li>
+<li><p>Verify domain spelling and availability</p></li>
+<li><p>Some domains may block automated scanning</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--summary</span></code> to see success/failure statistics</p></li>
+</ul>
+</section>
+<section id="q-dns-resolution-fails-for-local-domains">
+<h3><strong>Q: DNS resolution fails for local domains.</strong><a class="headerlink" href="#q-dns-resolution-fails-for-local-domains" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> For internal/local domains:</p>
+<ol class="arabic simple">
+<li><p>Ensure DNS server can resolve the domain</p></li>
+<li><p>Check network connectivity</p></li>
+<li><p>Consider using public DNS (8.8.8.8) for testing</p></li>
+<li><p>Some corporate networks block external DNS queries</p></li>
+</ol>
+</section>
+<section id="q-tls-probe-returns-local-handshake-error">
+<h3><strong>Q: TLS probe returns “local_handshake” error.</strong><a class="headerlink" href="#q-tls-probe-returns-local-handshake-error" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> This indicates TLS negotiation failed:</p>
+<ol class="arabic simple">
+<li><p>Domain may not support HTTPS</p></li>
+<li><p>Certificate might be invalid/expired</p></li>
+<li><p>Network/firewall issues</p></li>
+<li><p>Try with <code class="docutils literal notranslate"><span class="pre">--timeout</span></code> increase</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="advanced-configuration">
+<h2>🔧 Advanced Configuration<a class="headerlink" href="#advanced-configuration" title="Link to this heading"></a></h2>
+<section id="q-can-i-customize-scoring-weights">
+<h3><strong>Q: Can I customize scoring weights?</strong><a class="headerlink" href="#q-can-i-customize-scoring-weights" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Currently, scoring weights are fixed based on academic research. Custom weights may be added in future versions. You can:</p>
+<ol class="arabic simple">
+<li><p>Fork the repository and modify scoring logic</p></li>
+<li><p>Create custom probe implementations</p></li>
+<li><p>Use JSON output for custom analysis</p></li>
+</ol>
+</section>
+<section id="q-how-do-i-add-custom-probes">
+<h3><strong>Q: How do I add custom probes?</strong><a class="headerlink" href="#q-how-do-i-add-custom-probes" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Create a new probe class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dqix.infrastructure.probes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseProbe</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomProbe</span><span class="p">(</span><span class="n">BaseProbe</span><span class="p">):</span>
+    <span class="n">probe_id</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">ProbeCategory</span><span class="o">.</span><span class="n">SECURITY</span>
+    
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="c1"># Your custom logic here</span>
+        <span class="k">return</span> <span class="n">score</span><span class="p">,</span> <span class="n">details</span>
+</pre></div>
+</div>
+</section>
+<section id="q-can-i-run-dqix-in-docker">
+<h3><strong>Q: Can I run DQIX in Docker?</strong><a class="headerlink" href="#q-can-i-run-dqix-in-docker" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Yes, example Dockerfile:</p>
+<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.11-slim</span>
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>dqix
+<span class="k">ENTRYPOINT</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;dqix&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Build and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>dqix<span class="w"> </span>.
+docker<span class="w"> </span>run<span class="w"> </span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="integration-apis">
+<h2>📈 Integration &amp; APIs<a class="headerlink" href="#integration-apis" title="Link to this heading"></a></h2>
+<section id="q-can-i-use-dqix-programmatically">
+<h3><strong>Q: Can I use DQIX programmatically?</strong><a class="headerlink" href="#q-can-i-use-dqix-programmatically" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Yes, example Python usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dqix.application.use_cases</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainAssessmentUseCase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dqix.infrastructure.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_infrastructure</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">assess_domain</span><span class="p">():</span>
+    <span class="n">infrastructure</span> <span class="o">=</span> <span class="n">create_infrastructure</span><span class="p">()</span>
+    <span class="n">use_case</span> <span class="o">=</span> <span class="n">DomainAssessmentUseCase</span><span class="p">(</span><span class="n">infrastructure</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">use_case</span><span class="o">.</span><span class="n">assess_domain</span><span class="p">(</span><span class="s2">&quot;example.com&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">assess_domain</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="q-how-do-i-integrate-dqix-into-ci-cd-pipelines">
+<h3><strong>Q: How do I integrate DQIX into CI/CD pipelines?</strong><a class="headerlink" href="#q-how-do-i-integrate-dqix-into-ci-cd-pipelines" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Example GitHub Actions:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Domain Security Assessment</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">pip install dqix</span>
+<span class="w">    </span><span class="no">dqix assess ${{ github.event.repository.name }} --format json &gt; security_report.json</span>
+</pre></div>
+</div>
+</section>
+<section id="q-can-i-export-results-to-databases">
+<h3><strong>Q: Can I export results to databases?</strong><a class="headerlink" href="#q-can-i-export-results-to-databases" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Use JSON output and custom scripts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>your-database-import-script
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="academic-research-use">
+<h2>📚 Academic &amp; Research Use<a class="headerlink" href="#academic-research-use" title="Link to this heading"></a></h2>
+<section id="q-can-i-cite-dqix-in-academic-papers">
+<h3><strong>Q: Can I cite DQIX in academic papers?</strong><a class="headerlink" href="#q-can-i-cite-dqix-in-academic-papers" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Yes, suggested citation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Domain</span> <span class="n">Quality</span> <span class="n">Index</span> <span class="p">(</span><span class="n">DQIX</span><span class="p">)</span> <span class="n">Principles</span> <span class="o">&amp;</span> <span class="n">Measurement</span> <span class="n">Criteria</span><span class="p">,</span> <span class="n">Version</span> <span class="mf">1.0</span> <span class="p">(</span><span class="mi">2025</span><span class="p">)</span><span class="o">.</span>
+<span class="n">Available</span> <span class="n">at</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">phoneee</span><span class="o">/</span><span class="n">dqix</span>
+</pre></div>
+</div>
+</section>
+<section id="q-what-academic-standards-does-dqix-follow">
+<h3><strong>Q: What academic standards does DQIX follow?</strong><a class="headerlink" href="#q-what-academic-standards-does-dqix-follow" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> DQIX is based on:</p>
+<ul class="simple">
+<li><p>NIST Cybersecurity Framework</p></li>
+<li><p>OWASP security guidelines</p></li>
+<li><p>RFC standards for internet protocols</p></li>
+<li><p>W3C web accessibility standards</p></li>
+<li><p>ISO 27001 security management principles</p></li>
+</ul>
+</section>
+<section id="q-how-can-i-validate-dqix-results">
+<h3><strong>Q: How can I validate DQIX results?</strong><a class="headerlink" href="#q-how-can-i-validate-dqix-results" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> DQIX results are reproducible:</p>
+<ol class="arabic simple">
+<li><p>All algorithms are open source</p></li>
+<li><p>Same inputs produce identical outputs</p></li>
+<li><p>Cross-verify with manual testing</p></li>
+<li><p>Compare with other security tools</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="contributing-community">
+<h2>🤝 Contributing &amp; Community<a class="headerlink" href="#contributing-community" title="Link to this heading"></a></h2>
+<section id="q-how-can-i-contribute-to-dqix">
+<h3><strong>Q: How can I contribute to DQIX?</strong><a class="headerlink" href="#q-how-can-i-contribute-to-dqix" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> See <a class="reference internal" href="#CONTRIBUTING.md"><span class="xref myst">CONTRIBUTING.md</span></a> for details:</p>
+<ol class="arabic simple">
+<li><p>Fork the repository</p></li>
+<li><p>Create feature branch</p></li>
+<li><p>Add tests for new functionality</p></li>
+<li><p>Submit pull request</p></li>
+</ol>
+</section>
+<section id="q-how-do-i-report-bugs-or-request-features">
+<h3><strong>Q: How do I report bugs or request features?</strong><a class="headerlink" href="#q-how-do-i-report-bugs-or-request-features" title="Link to this heading"></a></h3>
+<p><strong>A:</strong> Use GitHub Issues:</p>
+<ul class="simple">
+<li><p>Bug reports: Include domain, command used, error output</p></li>
+<li><p>Feature requests: Describe use case and requirements</p></li>
+<li><p>Security issues: Email maintainers privately first</p></li>
+</ul>
+</section>
+<section id="q-is-there-a-community-forum-or-chat">
+<h3><strong>Q: Is there a community forum or chat?</strong><a class="headerlink" href="#q-is-there-a-community-forum-or-chat" title="Link to this heading"></a></h3>
+<p><strong>A:</strong></p>
+<ul class="simple">
+<li><p>GitHub Discussions for general questions</p></li>
+<li><p>Issues for bug reports and features</p></li>
+<li><p>Email for security concerns</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="common-error-messages">
+<h2>📋 Common Error Messages<a class="headerlink" href="#common-error-messages" title="Link to this heading"></a></h2>
+<section id="domain-not-found-or-nxdomain">
+<h3><strong>“Domain not found” or “NXDOMAIN”</strong><a class="headerlink" href="#domain-not-found-or-nxdomain" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Domain doesn’t exist in DNS</p></li>
+<li><p>Check spelling and domain extension</p></li>
+<li><p>Verify domain registration status</p></li>
+</ul>
+</section>
+<section id="connection-timeout">
+<h3><strong>“Connection timeout”</strong><a class="headerlink" href="#connection-timeout" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Network connectivity issues</p></li>
+<li><p>Increase <code class="docutils literal notranslate"><span class="pre">--timeout</span></code> value</p></li>
+<li><p>Check firewall/proxy settings</p></li>
+</ul>
+</section>
+<section id="certificate-verification-failed">
+<h3><strong>“Certificate verification failed”</strong><a class="headerlink" href="#certificate-verification-failed" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Invalid or expired SSL certificate</p></li>
+<li><p>Self-signed certificates not trusted</p></li>
+<li><p>Clock synchronization issues</p></li>
+</ul>
+</section>
+<section id="permission-denied">
+<h3><strong>“Permission denied”</strong><a class="headerlink" href="#permission-denied" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Network restrictions</p></li>
+<li><p>Corporate firewall blocking</p></li>
+<li><p>Rate limiting by target server</p></li>
+</ul>
+</section>
+<section id="too-many-concurrent-requests">
+<h3><strong>“Too many concurrent requests”</strong><a class="headerlink" href="#too-many-concurrent-requests" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Reduce <code class="docutils literal notranslate"><span class="pre">--concurrent</span></code> value</p></li>
+<li><p>Respect target server limits</p></li>
+<li><p>Add delays between requests</p></li>
+</ul>
+<hr class="docutils" />
+<p><em>Last Updated: June 2025</em><br />
+<em>For additional support, visit: <a class="reference external" href="https://github.com/phoneee/dqix/issues">GitHub Issues</a></em></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

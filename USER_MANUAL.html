@@ -1,0 +1,923 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DQIX User Manual &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">DQIX User Manual</a><ul>
+<li><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li><a class="reference internal" href="#quick-start-guide">Quick Start Guide</a><ul>
+<li><a class="reference internal" href="#basic-usage"><strong>Basic Usage</strong></a></li>
+<li><a class="reference internal" href="#key-features"><strong>Key Features</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#standard-installation"><strong>Standard Installation</strong></a></li>
+<li><a class="reference internal" href="#development-installation"><strong>Development Installation</strong></a></li>
+<li><a class="reference internal" href="#docker-installation"><strong>Docker Installation</strong></a></li>
+<li><a class="reference internal" href="#requirements"><strong>Requirements</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#command-reference">Command Reference</a><ul>
+<li><a class="reference internal" href="#domain-assessment"><strong>1. Domain Assessment</strong></a></li>
+<li><a class="reference internal" href="#domain-comparison"><strong>2. Domain Comparison</strong></a></li>
+<li><a class="reference internal" href="#bulk-assessment"><strong>3. Bulk Assessment</strong></a></li>
+<li><a class="reference internal" href="#probe-management"><strong>4. Probe Management</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output-formats">Output Formats</a><ul>
+<li><a class="reference internal" href="#rich-format-default"><strong>1. Rich Format (Default)</strong></a></li>
+<li><a class="reference internal" href="#json-format"><strong>2. JSON Format</strong></a></li>
+<li><a class="reference internal" href="#csv-format"><strong>3. CSV Format</strong></a></li>
+<li><a class="reference internal" href="#table-format"><strong>4. Table Format</strong></a></li>
+<li><a class="reference internal" href="#stdout-format"><strong>5. Stdout Format</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#measurement-criteria">Measurement Criteria</a><ul>
+<li><a class="reference internal" href="#tls-security-35-weight"><strong>TLS Security (35% Weight)</strong></a><ul>
+<li><a class="reference internal" href="#protocol-analysis"><strong>Protocol Analysis</strong></a></li>
+<li><a class="reference internal" href="#cipher-suite-evaluation"><strong>Cipher Suite Evaluation</strong></a></li>
+<li><a class="reference internal" href="#certificate-validation"><strong>Certificate Validation</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dns-infrastructure-30-weight"><strong>DNS Infrastructure (30% Weight)</strong></a><ul>
+<li><a class="reference internal" href="#basic-dns-health"><strong>Basic DNS Health</strong></a></li>
+<li><a class="reference internal" href="#email-security"><strong>Email Security</strong></a></li>
+<li><a class="reference internal" href="#advanced-security-features"><strong>Advanced Security Features</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#http-security-headers-35-weight"><strong>HTTP Security Headers (35% Weight)</strong></a><ul>
+<li><a class="reference internal" href="#critical-headers"><strong>Critical Headers</strong></a></li>
+<li><a class="reference internal" href="#important-headers"><strong>Important Headers</strong></a></li>
+<li><a class="reference internal" href="#information-disclosure-assessment"><strong>Information Disclosure Assessment</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#performance-optimization">Performance Optimization</a><ul>
+<li><a class="reference internal" href="#high-performance-mode"><strong>High-Performance Mode</strong></a></li>
+<li><a class="reference internal" href="#concurrent-processing"><strong>Concurrent Processing</strong></a></li>
+<li><a class="reference internal" href="#timeout-optimization"><strong>Timeout Optimization</strong></a></li>
+<li><a class="reference internal" href="#memory-management"><strong>Memory Management</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#integration-guide">Integration Guide</a><ul>
+<li><a class="reference internal" href="#python-api-usage"><strong>Python API Usage</strong></a></li>
+<li><a class="reference internal" href="#ci-cd-integration"><strong>CI/CD Integration</strong></a><ul>
+<li><a class="reference internal" href="#github-actions"><strong>GitHub Actions</strong></a></li>
+<li><a class="reference internal" href="#jenkins-pipeline"><strong>Jenkins Pipeline</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#database-integration"><strong>Database Integration</strong></a></li>
+<li><a class="reference internal" href="#monitoring-integration"><strong>Monitoring Integration</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples-use-cases">Examples &amp; Use Cases</a><ul>
+<li><a class="reference internal" href="#security-auditing"><strong>1. Security Auditing</strong></a></li>
+<li><a class="reference internal" href="#compliance-monitoring"><strong>2. Compliance Monitoring</strong></a></li>
+<li><a class="reference internal" href="#migration-validation"><strong>3. Migration Validation</strong></a></li>
+<li><a class="reference internal" href="#security-research"><strong>4. Security Research</strong></a></li>
+<li><a class="reference internal" href="#devops-integration"><strong>5. DevOps Integration</strong></a></li>
+<li><a class="reference internal" href="#continuous-monitoring"><strong>6. Continuous Monitoring</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#performance-benchmarks">Performance Benchmarks</a><ul>
+<li><a class="reference internal" href="#single-domain-assessment"><strong>Single Domain Assessment</strong></a></li>
+<li><a class="reference internal" href="#bulk-assessment-performance"><strong>Bulk Assessment Performance</strong></a></li>
+<li><a class="reference internal" href="#memory-usage"><strong>Memory Usage</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li><a class="reference internal" href="#security-assessment"><strong>1. Security Assessment</strong></a></li>
+<li><a class="reference internal" href="#id1"><strong>2. Performance Optimization</strong></a></li>
+<li><a class="reference internal" href="#data-management"><strong>3. Data Management</strong></a></li>
+<li><a class="reference internal" href="#automation-integration"><strong>4. Automation Integration</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DQIX User Manual</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/USER_MANUAL.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="dqix-user-manual">
+<h1>DQIX User Manual<a class="headerlink" href="#dqix-user-manual" title="Link to this heading"></a></h1>
+<p><em>Version 1.0 - June 2025</em></p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#quick-start-guide"><span class="xref myst">Quick Start Guide</span></a></p></li>
+<li><p><a class="reference internal" href="#installation"><span class="xref myst">Installation</span></a></p></li>
+<li><p><a class="reference internal" href="#command-reference"><span class="xref myst">Command Reference</span></a></p></li>
+<li><p><a class="reference internal" href="#output-formats"><span class="xref myst">Output Formats</span></a></p></li>
+<li><p><a class="reference internal" href="#measurement-criteria"><span class="xref myst">Measurement Criteria</span></a></p></li>
+<li><p><a class="reference internal" href="#performance-optimization"><span class="xref myst">Performance Optimization</span></a></p></li>
+<li><p><a class="reference internal" href="#integration-guide"><span class="xref myst">Integration Guide</span></a></p></li>
+<li><p><a class="reference internal" href="#examples--use-cases"><span class="xref myst">Examples &amp; Use Cases</span></a></p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="quick-start-guide">
+<h2>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3><strong>Basic Usage</strong><a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install DQIX</span>
+pip<span class="w"> </span>install<span class="w"> </span>dqix
+
+<span class="c1"># Assess a single domain</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com
+
+<span class="c1"># Get detailed analysis</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--checklist<span class="w"> </span>--verbose<span class="w"> </span>--recommendations
+
+<span class="c1"># Compare domains</span>
+dqix<span class="w"> </span>compare<span class="w"> </span>google.com<span class="w"> </span>cloudflare.com<span class="w"> </span>github.com
+
+<span class="c1"># Bulk assessment</span>
+<span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;google.com\ncloudflare.com\ngithub.com&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>domains.txt
+dqix<span class="w"> </span>bulk<span class="w"> </span>domains.txt<span class="w"> </span>--format<span class="w"> </span>csv
+</pre></div>
+</div>
+</section>
+<section id="key-features">
+<h3><strong>Key Features</strong><a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>🔍 <strong>Single Domain Assessment</strong> - Comprehensive security analysis</p></li>
+<li><p>📊 <strong>Domain Comparison</strong> - Side-by-side evaluation</p></li>
+<li><p>📈 <strong>Bulk Processing</strong> - Large-scale assessment with concurrency</p></li>
+<li><p>📋 <strong>Detailed Checklists</strong> - Comprehensive measurement breakdown</p></li>
+<li><p>🎯 <strong>Multiple Output Formats</strong> - Rich, JSON, CSV, table, stdout</p></li>
+<li><p>⚡ <strong>High Performance</strong> - Fast mode and concurrent execution</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<section id="standard-installation">
+<h3><strong>Standard Installation</strong><a class="headerlink" href="#standard-installation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>dqix
+</pre></div>
+</div>
+</section>
+<section id="development-installation">
+<h3><strong>Development Installation</strong><a class="headerlink" href="#development-installation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/phoneee/dqix
+<span class="nb">cd</span><span class="w"> </span>dqix
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="docker-installation">
+<h3><strong>Docker Installation</strong><a class="headerlink" href="#docker-installation" title="Link to this heading"></a></h3>
+<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.11-slim</span>
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>dqix
+<span class="k">ENTRYPOINT</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;dqix&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="requirements">
+<h3><strong>Requirements</strong><a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Python 3.9 or higher</p></li>
+<li><p>Internet connectivity for domain testing</p></li>
+<li><p>2GB RAM minimum (4GB recommended for bulk processing)</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="command-reference">
+<h2>Command Reference<a class="headerlink" href="#command-reference" title="Link to this heading"></a></h2>
+<section id="domain-assessment">
+<h3><strong>1. Domain Assessment</strong><a class="headerlink" href="#domain-assessment" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>&lt;domain&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code> - Show detailed analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t,</span> <span class="pre">--technical</span></code> - Include technical details</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--checklist</span></code> - Show measurement checklists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-r,</span> <span class="pre">--recommendations</span></code> - Show improvement recommendations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--format</span> <span class="pre">{rich,json,table,csv,stdout}</span></code> - Output format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-s,</span> <span class="pre">--save</span></code> - Save results to file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--save-dir</span> <span class="pre">DIR</span></code> - Directory to save results</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--timeout</span> <span class="pre">SECONDS</span></code> - Request timeout (default: 10)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-c,</span> <span class="pre">--comprehensive</span></code> - Run comprehensive analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--fast</span></code> - High-performance mode</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic assessment</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com
+
+<span class="c1"># Full analysis with checklists</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--checklist<span class="w"> </span>--verbose<span class="w"> </span>--recommendations
+
+<span class="c1"># JSON output for automation</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--format<span class="w"> </span>json
+
+<span class="c1"># Fast assessment with CSV output</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--fast<span class="w"> </span>--format<span class="w"> </span>csv
+
+<span class="c1"># Save detailed results</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--save<span class="w"> </span>--save-dir<span class="w"> </span>./security-reports
+</pre></div>
+</div>
+</section>
+<section id="domain-comparison">
+<h3><strong>2. Domain Comparison</strong><a class="headerlink" href="#domain-comparison" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>compare<span class="w"> </span>&lt;domain1&gt;<span class="w"> </span>&lt;domain2&gt;<span class="w"> </span><span class="o">[</span>domain3...<span class="o">]</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code> - Show detailed comparison</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--checklist</span></code> - Show measurement checklists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--format</span> <span class="pre">{rich,json,table}</span></code> - Output format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-s,</span> <span class="pre">--save</span></code> - Save comparison results</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--timeout</span> <span class="pre">SECONDS</span></code> - Request timeout</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare security postures</span>
+dqix<span class="w"> </span>compare<span class="w"> </span>google.com<span class="w"> </span>microsoft.com<span class="w"> </span>apple.com
+
+<span class="c1"># Detailed comparison with checklists</span>
+dqix<span class="w"> </span>compare<span class="w"> </span>site1.com<span class="w"> </span>site2.com<span class="w"> </span>--checklist<span class="w"> </span>--verbose
+
+<span class="c1"># JSON output for analysis</span>
+dqix<span class="w"> </span>compare<span class="w"> </span>site1.com<span class="w"> </span>site2.com<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span>--save
+</pre></div>
+</div>
+</section>
+<section id="bulk-assessment">
+<h3><strong>3. Bulk Assessment</strong><a class="headerlink" href="#bulk-assessment" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>bulk<span class="w"> </span>&lt;file&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--format</span> <span class="pre">{rich,json,csv}</span></code> - Output format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--save-dir</span> <span class="pre">DIR</span></code> - Directory to save results</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-c,</span> <span class="pre">--concurrent</span> <span class="pre">NUM</span></code> - Concurrent assessments (default: 5)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--timeout</span> <span class="pre">SECONDS</span></code> - Request timeout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--summary/--no-summary</span></code> - Show summary statistics</p></li>
+</ul>
+<p><strong>Supported File Formats:</strong></p>
+<ul class="simple">
+<li><p><strong>TXT</strong>: One domain per line</p></li>
+<li><p><strong>CSV</strong>: Domains in first column</p></li>
+<li><p><strong>JSON</strong>: Array of domains or <code class="docutils literal notranslate"><span class="pre">{&quot;domains&quot;:</span> <span class="pre">[...]}</span></code></p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assess domains from text file</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>domains.txt
+
+<span class="c1"># High-performance bulk assessment</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>domains.txt<span class="w"> </span>--concurrent<span class="w"> </span><span class="m">20</span><span class="w"> </span>--format<span class="w"> </span>csv
+
+<span class="c1"># Bulk with summary statistics</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>domains.csv<span class="w"> </span>--summary<span class="w"> </span>--save-dir<span class="w"> </span>./bulk-results
+</pre></div>
+</div>
+</section>
+<section id="probe-management">
+<h3><strong>4. Probe Management</strong><a class="headerlink" href="#probe-management" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>probes<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-d,</span> <span class="pre">--detailed</span></code> - Show detailed probe information</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-c,</span> <span class="pre">--category</span> <span class="pre">{security,performance,compliance}</span></code> - Filter by category</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># List all available probes</span>
+dqix<span class="w"> </span>probes
+
+<span class="c1"># Detailed probe information</span>
+dqix<span class="w"> </span>probes<span class="w"> </span>--detailed
+
+<span class="c1"># Security probes only</span>
+dqix<span class="w"> </span>probes<span class="w"> </span>--category<span class="w"> </span>security
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="output-formats">
+<h2>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading"></a></h2>
+<section id="rich-format-default">
+<h3><strong>1. Rich Format (Default)</strong><a class="headerlink" href="#rich-format-default" title="Link to this heading"></a></h3>
+<p>Beautiful terminal output with colors, progress bars, and structured panels.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com
+</pre></div>
+</div>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p>Color-coded scores and status indicators</p></li>
+<li><p>Progress bars for bulk operations</p></li>
+<li><p>Structured panels for different sections</p></li>
+<li><p>ASCII charts and visualizations</p></li>
+<li><p>Comprehensive error handling</p></li>
+</ul>
+</section>
+<section id="json-format">
+<h3><strong>2. JSON Format</strong><a class="headerlink" href="#json-format" title="Link to this heading"></a></h3>
+<p>Machine-readable structured data for automation and integration.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--format<span class="w"> </span>json
+</pre></div>
+</div>
+<p><strong>Schema:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;overall_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.75</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;compliance_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;advanced&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-06-26T12:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;probe_results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;probe_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tls&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.85</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;security&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;technical_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;category_scores&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.80</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="csv-format">
+<h3><strong>3. CSV Format</strong><a class="headerlink" href="#csv-format" title="Link to this heading"></a></h3>
+<p>Comma-separated values for spreadsheet analysis.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--format<span class="w"> </span>csv
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>domain,overall_score,compliance_level,probe_id,probe_score,probe_category
+example.com,0.75,advanced,tls,0.85,security
+example.com,0.75,advanced,dns,0.70,security
+example.com,0.75,advanced,security_headers,0.65,security
+</pre></div>
+</div>
+</section>
+<section id="table-format">
+<h3><strong>4. Table Format</strong><a class="headerlink" href="#table-format" title="Link to this heading"></a></h3>
+<p>Simple table for terminal display.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--format<span class="w"> </span>table
+</pre></div>
+</div>
+</section>
+<section id="stdout-format">
+<h3><strong>5. Stdout Format</strong><a class="headerlink" href="#stdout-format" title="Link to this heading"></a></h3>
+<p>Tab-separated format for Unix pipes.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--format<span class="w"> </span>stdout
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">example</span><span class="o">.</span><span class="n">com</span>	<span class="mf">0.750</span>	<span class="n">advanced</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="measurement-criteria">
+<h2>Measurement Criteria<a class="headerlink" href="#measurement-criteria" title="Link to this heading"></a></h2>
+<section id="tls-security-35-weight">
+<h3><strong>TLS Security (35% Weight)</strong><a class="headerlink" href="#tls-security-35-weight" title="Link to this heading"></a></h3>
+<section id="protocol-analysis">
+<h4><strong>Protocol Analysis</strong><a class="headerlink" href="#protocol-analysis" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>TLS 1.3</strong>: 10/10 points - Modern, secure protocol</p></li>
+<li><p><strong>TLS 1.2</strong>: 8/10 points - Acceptable with proper configuration</p></li>
+<li><p><strong>TLS 1.1/1.0</strong>: 0/10 points - Deprecated protocols</p></li>
+<li><p><strong>No TLS</strong>: 0/10 points - Unencrypted communication</p></li>
+</ul>
+</section>
+<section id="cipher-suite-evaluation">
+<h4><strong>Cipher Suite Evaluation</strong><a class="headerlink" href="#cipher-suite-evaluation" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Perfect Forward Secrecy</strong>: ECDHE/DHE key exchange</p></li>
+<li><p><strong>Modern Encryption</strong>: AES-GCM, ChaCha20-Poly1305</p></li>
+<li><p><strong>Strong Hash Functions</strong>: SHA-256 or better</p></li>
+<li><p><strong>Weak Cipher Detection</strong>: RC4, 3DES, NULL ciphers</p></li>
+</ul>
+</section>
+<section id="certificate-validation">
+<h4><strong>Certificate Validation</strong><a class="headerlink" href="#certificate-validation" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Chain of Trust</strong>: Valid CA signature path</p></li>
+<li><p><strong>Domain Validation</strong>: Certificate matches requested domain</p></li>
+<li><p><strong>Expiration Status</strong>: Valid time period</p></li>
+<li><p><strong>Key Strength</strong>: RSA ≥2048 bits, ECC ≥256 bits</p></li>
+</ul>
+</section>
+</section>
+<section id="dns-infrastructure-30-weight">
+<h3><strong>DNS Infrastructure (30% Weight)</strong><a class="headerlink" href="#dns-infrastructure-30-weight" title="Link to this heading"></a></h3>
+<section id="basic-dns-health">
+<h4><strong>Basic DNS Health</strong><a class="headerlink" href="#basic-dns-health" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>IPv4/IPv6 Support</strong>: A and AAAA record availability</p></li>
+<li><p><strong>Nameserver Redundancy</strong>: Multiple authoritative servers</p></li>
+<li><p><strong>Response Performance</strong>: Sub-second resolution times</p></li>
+</ul>
+</section>
+<section id="email-security">
+<h4><strong>Email Security</strong><a class="headerlink" href="#email-security" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>SPF Records</strong>: Sender Policy Framework configuration</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-all</span></code> (strict): 4/4 points</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~all</span></code> (soft): 2/4 points</p></li>
+<li><p>Missing: 0/4 points</p></li>
+</ul>
+</li>
+<li><p><strong>DMARC Policy</strong>: Domain-based Message Authentication</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">p=reject</span></code>: 4/4 points</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p=quarantine</span></code>: 2/4 points</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p=none</span></code> or missing: 0/4 points</p></li>
+</ul>
+</li>
+<li><p><strong>DKIM Support</strong>: DomainKeys Identified Mail selectors</p></li>
+</ul>
+</section>
+<section id="advanced-security-features">
+<h4><strong>Advanced Security Features</strong><a class="headerlink" href="#advanced-security-features" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>DNSSEC</strong>: DNS Security Extensions validation</p></li>
+<li><p><strong>CAA Records</strong>: Certificate Authority Authorization</p></li>
+</ul>
+</section>
+</section>
+<section id="http-security-headers-35-weight">
+<h3><strong>HTTP Security Headers (35% Weight)</strong><a class="headerlink" href="#http-security-headers-35-weight" title="Link to this heading"></a></h3>
+<section id="critical-headers">
+<h4><strong>Critical Headers</strong><a class="headerlink" href="#critical-headers" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>HSTS</strong>: HTTP Strict Transport Security</p>
+<ul>
+<li><p>Long max-age + includeSubDomains + preload: 8/8 points</p></li>
+<li><p>Basic implementation: 4/8 points</p></li>
+</ul>
+</li>
+<li><p><strong>CSP</strong>: Content Security Policy</p>
+<ul>
+<li><p>Restrictive policy without unsafe directives: 8/8 points</p></li>
+<li><p>Basic policy: 3/8 points</p></li>
+</ul>
+</li>
+<li><p><strong>X-Frame-Options</strong>: Clickjacking protection</p>
+<ul>
+<li><p>DENY: 4/4 points</p></li>
+<li><p>SAMEORIGIN: 3/4 points</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="important-headers">
+<h4><strong>Important Headers</strong><a class="headerlink" href="#important-headers" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>X-Content-Type-Options</strong>: MIME sniffing prevention</p></li>
+<li><p><strong>Referrer-Policy</strong>: Referrer information control</p></li>
+<li><p><strong>Permissions-Policy</strong>: Browser feature restrictions</p></li>
+</ul>
+</section>
+<section id="information-disclosure-assessment">
+<h4><strong>Information Disclosure Assessment</strong><a class="headerlink" href="#information-disclosure-assessment" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Server Headers</strong>: Technology stack disclosure (-2 points)</p></li>
+<li><p><strong>X-Powered-By</strong>: Framework disclosure (-2 points)</p></li>
+</ul>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="performance-optimization">
+<h2>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h2>
+<section id="high-performance-mode">
+<h3><strong>High-Performance Mode</strong><a class="headerlink" href="#high-performance-mode" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--fast
+</pre></div>
+</div>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p>Removes progress tracking overhead</p></li>
+<li><p>Optimized network operations</p></li>
+<li><p>Minimal terminal output</p></li>
+<li><p>Direct result display</p></li>
+</ul>
+</section>
+<section id="concurrent-processing">
+<h3><strong>Concurrent Processing</strong><a class="headerlink" href="#concurrent-processing" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dqix<span class="w"> </span>bulk<span class="w"> </span>domains.txt<span class="w"> </span>--concurrent<span class="w"> </span><span class="m">20</span>
+</pre></div>
+</div>
+<p><strong>Guidelines:</strong></p>
+<ul class="simple">
+<li><p><strong>Local testing</strong>: 5-10 concurrent connections</p></li>
+<li><p><strong>Server deployment</strong>: 20-50 concurrent connections</p></li>
+<li><p><strong>Network considerations</strong>: Monitor bandwidth usage</p></li>
+<li><p><strong>Rate limiting</strong>: Respect target server limits</p></li>
+</ul>
+</section>
+<section id="timeout-optimization">
+<h3><strong>Timeout Optimization</strong><a class="headerlink" href="#timeout-optimization" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fast failures for quick scanning</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--timeout<span class="w"> </span><span class="m">5</span>
+
+<span class="c1"># Extended timeout for slow networks</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--timeout<span class="w"> </span><span class="m">30</span>
+</pre></div>
+</div>
+</section>
+<section id="memory-management">
+<h3><strong>Memory Management</strong><a class="headerlink" href="#memory-management" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Bulk processing</strong>: Results are streamed to avoid memory buildup</p></li>
+<li><p><strong>Large datasets</strong>: Use file outputs instead of terminal display</p></li>
+<li><p><strong>Resource cleanup</strong>: Automatic cleanup of network connections</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="integration-guide">
+<h2>Integration Guide<a class="headerlink" href="#integration-guide" title="Link to this heading"></a></h2>
+<section id="python-api-usage">
+<h3><strong>Python API Usage</strong><a class="headerlink" href="#python-api-usage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dqix.application.use_cases</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainAssessmentUseCase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dqix.infrastructure.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_infrastructure</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">assess_domain</span><span class="p">(</span><span class="n">domain_name</span><span class="p">):</span>
+    <span class="n">infrastructure</span> <span class="o">=</span> <span class="n">create_infrastructure</span><span class="p">()</span>
+    <span class="n">use_case</span> <span class="o">=</span> <span class="n">DomainAssessmentUseCase</span><span class="p">(</span><span class="n">infrastructure</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">use_case</span><span class="o">.</span><span class="n">assess_domain</span><span class="p">(</span><span class="n">domain_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="c1"># Example usage</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">assess_domain</span><span class="p">(</span><span class="s2">&quot;example.com&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;overall_score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="ci-cd-integration">
+<h3><strong>CI/CD Integration</strong><a class="headerlink" href="#ci-cd-integration" title="Link to this heading"></a></h3>
+<section id="github-actions">
+<h4><strong>GitHub Actions</strong><a class="headerlink" href="#github-actions" title="Link to this heading"></a></h4>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Domain Security Assessment</span>
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">security-assessment</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.11&#39;</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install DQIX</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install dqix</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Assess Domain Security</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">dqix assess ${{ github.event.repository.name }} \</span>
+<span class="w">            </span><span class="no">--format json \</span>
+<span class="w">            </span><span class="no">--save \</span>
+<span class="w">            </span><span class="no">--save-dir ./security-reports</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload Results</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v3</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security-assessment</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./security-reports/</span>
+</pre></div>
+</div>
+</section>
+<section id="jenkins-pipeline">
+<h4><strong>Jenkins Pipeline</strong><a class="headerlink" href="#jenkins-pipeline" title="Link to this heading"></a></h4>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">agent</span><span class="w"> </span><span class="n">any</span>
+<span class="w">    </span><span class="n">stages</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">stage</span><span class="o">(</span><span class="s1">&#39;Domain Security Assessment&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="n">steps</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="n">sh</span><span class="w"> </span><span class="s1">&#39;pip install dqix&#39;</span>
+<span class="w">                </span><span class="n">sh</span><span class="w"> </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">                    dqix bulk domains.txt \</span>
+<span class="s1">                        --format csv \</span>
+<span class="s1">                        --save-dir ./reports \</span>
+<span class="s1">                        --concurrent 10</span>
+<span class="s1">                &#39;&#39;&#39;</span>
+<span class="w">                </span><span class="n">archiveArtifacts</span><span class="w"> </span><span class="nl">artifacts:</span><span class="w"> </span><span class="s1">&#39;reports/**/*&#39;</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="database-integration">
+<h3><strong>Database Integration</strong><a class="headerlink" href="#database-integration" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export to database via JSON</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>example.com<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>jq<span class="w"> </span><span class="s1">&#39;.probe_results[] | {domain: .domain, probe: .probe_id, score: .score}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>psql<span class="w"> </span>-d<span class="w"> </span>database<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;COPY assessment_results FROM STDIN WITH CSV HEADER&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="monitoring-integration">
+<h3><strong>Monitoring Integration</strong><a class="headerlink" href="#monitoring-integration" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Custom monitoring integration</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">monitor_domain_security</span><span class="p">(</span><span class="n">domain</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;dqix&#39;</span><span class="p">,</span> <span class="s1">&#39;assess&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="s1">&#39;--format&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">],</span>
+        <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;overall_score&#39;</span><span class="p">]</span>
+    
+    <span class="c1"># Send to monitoring system</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="mf">0.7</span><span class="p">:</span>
+        <span class="n">send_alert</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Domain </span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2"> security score below threshold: </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="examples-use-cases">
+<h2>Examples &amp; Use Cases<a class="headerlink" href="#examples-use-cases" title="Link to this heading"></a></h2>
+<section id="security-auditing">
+<h3><strong>1. Security Auditing</strong><a class="headerlink" href="#security-auditing" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Comprehensive security assessment</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>company.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--checklist<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--verbose<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--recommendations<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-dir<span class="w"> </span>./audit-2025
+
+<span class="c1"># Compare with competitors</span>
+dqix<span class="w"> </span>compare<span class="w"> </span>company.com<span class="w"> </span>competitor1.com<span class="w"> </span>competitor2.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--checklist<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save
+</pre></div>
+</div>
+</section>
+<section id="compliance-monitoring">
+<h3><strong>2. Compliance Monitoring</strong><a class="headerlink" href="#compliance-monitoring" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Regular compliance checks</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>compliance-domains.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--concurrent<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-dir<span class="w"> </span>./compliance-reports
+
+<span class="c1"># Generate compliance report</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>internal-app.company.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--comprehensive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--checklist<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>json<span class="w"> </span>&gt;<span class="w"> </span>compliance-report.json
+</pre></div>
+</div>
+</section>
+<section id="migration-validation">
+<h3><strong>3. Migration Validation</strong><a class="headerlink" href="#migration-validation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before migration</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>old-domain.com<span class="w"> </span>--save<span class="w"> </span>--save-dir<span class="w"> </span>./pre-migration
+
+<span class="c1"># After migration  </span>
+dqix<span class="w"> </span>assess<span class="w"> </span>new-domain.com<span class="w"> </span>--save<span class="w"> </span>--save-dir<span class="w"> </span>./post-migration
+
+<span class="c1"># Compare results</span>
+dqix<span class="w"> </span>compare<span class="w"> </span>old-domain.com<span class="w"> </span>new-domain.com<span class="w"> </span>--verbose
+</pre></div>
+</div>
+</section>
+<section id="security-research">
+<h3><strong>4. Security Research</strong><a class="headerlink" href="#security-research" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Large-scale analysis</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>top-1000-domains.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--concurrent<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-dir<span class="w"> </span>./research-data
+
+<span class="c1"># Statistical analysis</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>government-domains.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-dir<span class="w"> </span>./gov-analysis<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--summary
+</pre></div>
+</div>
+</section>
+<section id="devops-integration">
+<h3><strong>5. DevOps Integration</strong><a class="headerlink" href="#devops-integration" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pre-deployment check</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>staging.app.com<span class="w"> </span>--fast<span class="w"> </span>--format<span class="w"> </span>stdout<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>awk<span class="w"> </span><span class="s1">&#39;{if($2 &lt; 0.8) exit 1}&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Security check failed&quot;</span>
+
+<span class="c1"># Post-deployment validation</span>
+dqix<span class="w"> </span>assess<span class="w"> </span>prod.app.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--checklist<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--recommendations<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-dir<span class="w"> </span>./deployment-validation
+</pre></div>
+</div>
+</section>
+<section id="continuous-monitoring">
+<h3><strong>6. Continuous Monitoring</strong><a class="headerlink" href="#continuous-monitoring" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># Weekly security monitoring script</span>
+
+<span class="nv">DOMAINS</span><span class="o">=</span><span class="s2">&quot;app.com api.app.com admin.app.com&quot;</span>
+<span class="nv">DATE</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>+%Y-%m-%d<span class="k">)</span>
+
+<span class="k">for</span><span class="w"> </span>domain<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$DOMAINS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Assessing </span><span class="nv">$domain</span><span class="s2">...&quot;</span>
+<span class="w">  </span>dqix<span class="w"> </span>assess<span class="w"> </span><span class="nv">$domain</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--format<span class="w"> </span>json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--save<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--save-dir<span class="w"> </span><span class="s2">&quot;./monitoring/</span><span class="nv">$DATE</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+
+<span class="c1"># Generate summary report</span>
+dqix<span class="w"> </span>bulk<span class="w"> </span>&lt;<span class="o">(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DOMAINS</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="o">)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save-dir<span class="w"> </span><span class="s2">&quot;./monitoring/</span><span class="nv">$DATE</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="performance-benchmarks">
+<h2>Performance Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Link to this heading"></a></h2>
+<section id="single-domain-assessment">
+<h3><strong>Single Domain Assessment</strong><a class="headerlink" href="#single-domain-assessment" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Standard mode</strong>: ~2-5 seconds per domain</p></li>
+<li><p><strong>Fast mode</strong>: ~1-3 seconds per domain</p></li>
+<li><p><strong>Comprehensive mode</strong>: ~5-10 seconds per domain</p></li>
+</ul>
+</section>
+<section id="bulk-assessment-performance">
+<h3><strong>Bulk Assessment Performance</strong><a class="headerlink" href="#bulk-assessment-performance" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>5 concurrent</strong>: ~100 domains/minute</p></li>
+<li><p><strong>20 concurrent</strong>: ~300 domains/minute</p></li>
+<li><p><strong>50 concurrent</strong>: ~500 domains/minute (server-grade hardware)</p></li>
+</ul>
+</section>
+<section id="memory-usage">
+<h3><strong>Memory Usage</strong><a class="headerlink" href="#memory-usage" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Single assessment</strong>: ~50MB RAM</p></li>
+<li><p><strong>Bulk assessment</strong>: ~100-200MB RAM (streaming results)</p></li>
+<li><p><strong>Large datasets (1000+ domains)</strong>: ~300-500MB RAM</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="security-assessment">
+<h3><strong>1. Security Assessment</strong><a class="headerlink" href="#security-assessment" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--checklist</span></code> for detailed security analysis</p></li>
+<li><p>Include <code class="docutils literal notranslate"><span class="pre">--recommendations</span></code> for actionable improvements</p></li>
+<li><p>Save results with <code class="docutils literal notranslate"><span class="pre">--save</span></code> for historical tracking</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--comprehensive</span></code> for critical infrastructure</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3><strong>2. Performance Optimization</strong><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Start with low concurrency (5) and increase gradually</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--fast</span></code> mode for quick checks</p></li>
+<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">--timeout</span></code> based on network conditions</p></li>
+<li><p>Monitor target server response times</p></li>
+</ul>
+</section>
+<section id="data-management">
+<h3><strong>3. Data Management</strong><a class="headerlink" href="#data-management" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use JSON format for programmatic processing</p></li>
+<li><p>Use CSV format for spreadsheet analysis</p></li>
+<li><p>Organize results by date and purpose</p></li>
+<li><p>Implement result archival for historical analysis</p></li>
+</ul>
+</section>
+<section id="automation-integration">
+<h3><strong>4. Automation Integration</strong><a class="headerlink" href="#automation-integration" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">stdout</span></code> format for Unix pipes</p></li>
+<li><p>Implement error handling for failed assessments</p></li>
+<li><p>Set up automated alerts for low scores</p></li>
+<li><p>Create dashboard integration for ongoing monitoring</p></li>
+</ul>
+<hr class="docutils" />
+<p><em>Last Updated: June 2025</em><br />
+<em>For support and updates, visit: <a class="reference external" href="https://github.com/phoneee/dqix">GitHub Repository</a></em></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

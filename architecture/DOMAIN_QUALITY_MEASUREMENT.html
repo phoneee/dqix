@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌐 DQIX Domain Quality Measurement Guide &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">🌐 DQIX Domain Quality Measurement Guide</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#measurement-principles">Measurement Principles</a><ul>
+<li><a class="reference internal" href="#transparency">1. <strong>Transparency</strong></a></li>
+<li><a class="reference internal" href="#multi-dimensional-assessment">2. <strong>Multi-dimensional Assessment</strong></a></li>
+<li><a class="reference internal" href="#fair-scoring">3. <strong>Fair Scoring</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#real-world-examples">Real-World Examples</a><ul>
+<li><a class="reference internal" href="#high-security-domain-github-com">High-Security Domain: github.com</a></li>
+<li><a class="reference internal" href="#infrastructure-provider-cloudflare-com">Infrastructure Provider: cloudflare.com</a></li>
+<li><a class="reference internal" href="#basic-website-example-com">Basic Website: example.com</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#scoring-methodology">Scoring Methodology</a><ul>
+<li><a class="reference internal" href="#tls-score-35-weight">TLS Score (35% weight)</a></li>
+<li><a class="reference internal" href="#dns-score-25-weight">DNS Score (25% weight)</a></li>
+<li><a class="reference internal" href="#https-score-20-weight">HTTPS Score (20% weight)</a></li>
+<li><a class="reference internal" href="#security-headers-score-20-weight">Security Headers Score (20% weight)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage-examples">Usage Examples</a><ul>
+<li><a class="reference internal" href="#basic-assessment">Basic Assessment</a></li>
+<li><a class="reference internal" href="#detailed-analysis">Detailed Analysis</a></li>
+<li><a class="reference internal" href="#bulk-assessment">Bulk Assessment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#interpreting-results">Interpreting Results</a><ul>
+<li><a class="reference internal" href="#score-ranges">Score Ranges</a></li>
+<li><a class="reference internal" href="#common-patterns">Common Patterns</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compliance-mapping">Compliance Mapping</a><ul>
+<li><a class="reference internal" href="#nist-cybersecurity-framework">NIST Cybersecurity Framework</a></li>
+<li><a class="reference internal" href="#industry-standards">Industry Standards</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-features">Advanced Features</a><ul>
+<li><a class="reference internal" href="#custom-scoring-weights">Custom Scoring Weights</a></li>
+<li><a class="reference internal" href="#continuous-monitoring">Continuous Monitoring</a></li>
+<li><a class="reference internal" href="#api-integration">API Integration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li><a class="reference internal" href="#for-domain-owners">For Domain Owners</a></li>
+<li><a class="reference internal" href="#for-security-teams">For Security Teams</a></li>
+<li><a class="reference internal" href="#for-developers">For Developers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#limitations-and-considerations">Limitations and Considerations</a><ul>
+<li><a class="reference internal" href="#what-dqix-measures">What DQIX Measures</a></li>
+<li><a class="reference internal" href="#what-dqix-doesnt-measure">What DQIX Doesn’t Measure</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">🌐 DQIX Domain Quality Measurement Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/architecture/DOMAIN_QUALITY_MEASUREMENT.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="dqix-domain-quality-measurement-guide">
+<h1>🌐 DQIX Domain Quality Measurement Guide<a class="headerlink" href="#dqix-domain-quality-measurement-guide" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>DQIX provides transparent, unbiased domain quality measurements across multiple dimensions. Our measurements show that <strong>no single domain excels in all areas</strong> - each has strengths and weaknesses.</p>
+</section>
+<section id="measurement-principles">
+<h2>Measurement Principles<a class="headerlink" href="#measurement-principles" title="Link to this heading"></a></h2>
+<section id="transparency">
+<h3>1. <strong>Transparency</strong><a class="headerlink" href="#transparency" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All scoring algorithms are open source</p></li>
+<li><p>Raw probe data is available for inspection</p></li>
+<li><p>No hidden weights or biases</p></li>
+</ul>
+</section>
+<section id="multi-dimensional-assessment">
+<h3>2. <strong>Multi-dimensional Assessment</strong><a class="headerlink" href="#multi-dimensional-assessment" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>TLS/SSL</strong>: Certificate validity, protocol versions, cipher strength</p></li>
+<li><p><strong>DNS</strong>: DNSSEC, SPF, DMARC, IPv6 support, response times</p></li>
+<li><p><strong>HTTPS</strong>: Accessibility, redirects, HSTS implementation</p></li>
+<li><p><strong>Security Headers</strong>: CSP, X-Frame-Options, X-Content-Type-Options</p></li>
+</ul>
+</section>
+<section id="fair-scoring">
+<h3>3. <strong>Fair Scoring</strong><a class="headerlink" href="#fair-scoring" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Each dimension scored independently (0-100%)</p></li>
+<li><p>Overall score is weighted average</p></li>
+<li><p>Basic sites can excel in specific areas</p></li>
+</ul>
+</section>
+</section>
+<section id="real-world-examples">
+<h2>Real-World Examples<a class="headerlink" href="#real-world-examples" title="Link to this heading"></a></h2>
+<section id="high-security-domain-github-com">
+<h3>High-Security Domain: github.com<a class="headerlink" href="#high-security-domain-github-com" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Overall Score: 84.1%
+🔐 TLS:      100% ██████████  Modern TLS 1.3
+🌍 DNS:       82% ████████░░  No IPv6 (-18%)
+🛡️ Headers:   55% █████▒░░░░  Basic headers only
+🌐 HTTPS:    100% ██████████  Perfect redirect
+</pre></div>
+</div>
+<p><strong>Key Insight</strong>: Even GitHub lacks IPv6 and advanced security headers.</p>
+</section>
+<section id="infrastructure-provider-cloudflare-com">
+<h3>Infrastructure Provider: cloudflare.com<a class="headerlink" href="#infrastructure-provider-cloudflare-com" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Overall Score: 88.5%
+🔐 TLS:      100% ██████████  Industry leading
+🌍 DNS:       97% █████████▓  Best-in-class DNS
+🛡️ Headers:   57% █████▓░░░░  Missing some headers
+🌐 HTTPS:    100% ██████████  Excellent
+</pre></div>
+</div>
+<p><strong>Key Insight</strong>: World’s largest CDN still has room for header improvements.</p>
+</section>
+<section id="basic-website-example-com">
+<h3>Basic Website: example.com<a class="headerlink" href="#basic-website-example-com" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Overall Score: 65.0%
+🔐 TLS:      100% ██████████  Surprisingly good!
+🌍 DNS:       88% ████████▓░  Well configured
+🛡️ Headers:    3% ░░░░░░░░░░  Needs attention
+🌐 HTTPS:     70% ███████░░░  Functional
+</pre></div>
+</div>
+<p><strong>Key Insight</strong>: Basic sites can have excellent TLS while lacking headers.</p>
+</section>
+</section>
+<section id="scoring-methodology">
+<h2>Scoring Methodology<a class="headerlink" href="#scoring-methodology" title="Link to this heading"></a></h2>
+<section id="tls-score-35-weight">
+<h3>TLS Score (35% weight)<a class="headerlink" href="#tls-score-35-weight" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">score</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="k">if</span> <span class="n">protocol</span> <span class="o">&gt;=</span> <span class="s2">&quot;TLS 1.3&quot;</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.4</span>
+<span class="k">elif</span> <span class="n">protocol</span> <span class="o">&gt;=</span> <span class="s2">&quot;TLS 1.2&quot;</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+<span class="k">if</span> <span class="n">certificate_valid</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+<span class="k">if</span> <span class="n">strong_ciphers</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+</pre></div>
+</div>
+</section>
+<section id="dns-score-25-weight">
+<h3>DNS Score (25% weight)<a class="headerlink" href="#dns-score-25-weight" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">score</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="k">if</span> <span class="n">has_dnssec</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.4</span>
+<span class="k">if</span> <span class="n">has_spf</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.2</span>
+<span class="k">if</span> <span class="n">has_dmarc</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.2</span>
+<span class="k">if</span> <span class="n">has_ipv6</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.2</span>
+</pre></div>
+</div>
+</section>
+<section id="https-score-20-weight">
+<h3>HTTPS Score (20% weight)<a class="headerlink" href="#https-score-20-weight" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">score</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="k">if</span> <span class="n">https_accessible</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.5</span>
+<span class="k">if</span> <span class="n">has_hsts</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.3</span>
+<span class="k">if</span> <span class="n">http_redirects_https</span><span class="p">:</span> <span class="n">score</span> <span class="o">+=</span> <span class="mf">0.2</span>
+</pre></div>
+</div>
+</section>
+<section id="security-headers-score-20-weight">
+<h3>Security Headers Score (20% weight)<a class="headerlink" href="#security-headers-score-20-weight" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CSP&quot;</span><span class="p">,</span> <span class="s2">&quot;X-Frame-Options&quot;</span><span class="p">,</span> <span class="s2">&quot;X-Content-Type-Options&quot;</span><span class="p">,</span> <span class="s2">&quot;Referrer-Policy&quot;</span><span class="p">]</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">count</span><span class="p">(</span><span class="n">present_headers</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
+<section id="basic-assessment">
+<h3>Basic Assessment<a class="headerlink" href="#basic-assessment" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python implementation (after pip install dqix)</span>
+dqix<span class="w"> </span>scan<span class="w"> </span>example.com
+
+<span class="c1"># Other implementations</span>
+./dqix-go/dqix-go<span class="w"> </span>example.com
+./dqix-rust/target/release/dqix<span class="w"> </span>example.com
+./dqix-haskell/dqix<span class="w"> </span>scan<span class="w"> </span>example.com
+</pre></div>
+</div>
+</section>
+<section id="detailed-analysis">
+<h3>Detailed Analysis<a class="headerlink" href="#detailed-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Full technical details</span>
+dqix<span class="w"> </span>scan<span class="w"> </span>github.com<span class="w"> </span>--detail<span class="w"> </span>technical
+
+<span class="c1"># Export comprehensive report</span>
+dqix<span class="w"> </span><span class="nb">export</span><span class="w"> </span>github.com<span class="w"> </span>--format<span class="w"> </span>html
+
+<span class="c1"># Compare multiple domains</span>
+dqix<span class="w"> </span>compare<span class="w"> </span>github.com<span class="w"> </span>cloudflare.com<span class="w"> </span>example.com
+</pre></div>
+</div>
+</section>
+<section id="bulk-assessment">
+<h3>Bulk Assessment<a class="headerlink" href="#bulk-assessment" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assess domain portfolio</span>
+<span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;github.com\ngoogle.com\ncloudflare.com&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>domains.txt
+dqix<span class="w"> </span>bulk<span class="w"> </span>domains.txt<span class="w"> </span>--output<span class="w"> </span>results.json
+</pre></div>
+</div>
+</section>
+</section>
+<section id="interpreting-results">
+<h2>Interpreting Results<a class="headerlink" href="#interpreting-results" title="Link to this heading"></a></h2>
+<section id="score-ranges">
+<h3>Score Ranges<a class="headerlink" href="#score-ranges" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>90-100%</strong>: Excellent - Industry-leading implementation</p></li>
+<li><p><strong>80-89%</strong>: Good - Strong security with minor gaps</p></li>
+<li><p><strong>70-79%</strong>: Fair - Acceptable with improvement areas</p></li>
+<li><p><strong>60-69%</strong>: Basic - Fundamental security in place</p></li>
+<li><p><strong>Below 60%</strong>: Poor - Significant security gaps</p></li>
+</ul>
+</section>
+<section id="common-patterns">
+<h3>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>High TLS, Low Headers</strong>: Modern hosting with default configs</p></li>
+<li><p><strong>High DNS, Low IPv6</strong>: Legacy infrastructure</p></li>
+<li><p><strong>Perfect HTTPS, No HSTS</strong>: Missing configuration</p></li>
+<li><p><strong>Good Overall, No DNSSEC</strong>: Common for many sites</p></li>
+</ol>
+</section>
+</section>
+<section id="compliance-mapping">
+<h2>Compliance Mapping<a class="headerlink" href="#compliance-mapping" title="Link to this heading"></a></h2>
+<section id="nist-cybersecurity-framework">
+<h3>NIST Cybersecurity Framework<a class="headerlink" href="#nist-cybersecurity-framework" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Identify</strong>: DNS configuration assessment</p></li>
+<li><p><strong>Protect</strong>: TLS/HTTPS implementation</p></li>
+<li><p><strong>Detect</strong>: Security header analysis</p></li>
+<li><p><strong>Respond</strong>: Continuous monitoring</p></li>
+<li><p><strong>Recover</strong>: Historical tracking</p></li>
+</ul>
+</section>
+<section id="industry-standards">
+<h3>Industry Standards<a class="headerlink" href="#industry-standards" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>PCI DSS</strong>: TLS 1.2+ requirement checking</p></li>
+<li><p><strong>HIPAA</strong>: Encryption in transit validation</p></li>
+<li><p><strong>GDPR</strong>: Security measure verification</p></li>
+</ul>
+</section>
+</section>
+<section id="advanced-features">
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h2>
+<section id="custom-scoring-weights">
+<h3>Custom Scoring Weights<a class="headerlink" href="#custom-scoring-weights" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adjust weights for your requirements</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;tls&quot;</span><span class="p">:</span> <span class="mf">0.40</span><span class="p">,</span>      <span class="c1"># Increase TLS importance</span>
+        <span class="s2">&quot;dns&quot;</span><span class="p">:</span> <span class="mf">0.20</span><span class="p">,</span>
+        <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+        <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="mf">0.15</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="continuous-monitoring">
+<h3>Continuous Monitoring<a class="headerlink" href="#continuous-monitoring" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor critical domains</span>
+dqix<span class="w"> </span>monitor<span class="w"> </span>critical-domains.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--interval<span class="w"> </span><span class="m">3600</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--alert-threshold<span class="w"> </span><span class="m">0</span>.8<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--notify<span class="w"> </span>webhook
+</pre></div>
+</div>
+</section>
+<section id="api-integration">
+<h3>API Integration<a class="headerlink" href="#api-integration" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dqix</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainAssessmentUseCase</span><span class="p">,</span> <span class="n">create_infrastructure</span>
+
+<span class="c1"># Programmatic assessment</span>
+<span class="n">infrastructure</span> <span class="o">=</span> <span class="n">create_infrastructure</span><span class="p">()</span>
+<span class="n">use_case</span> <span class="o">=</span> <span class="n">DomainAssessmentUseCase</span><span class="p">(</span><span class="n">infrastructure</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">use_case</span><span class="o">.</span><span class="n">assess_domain</span><span class="p">(</span><span class="s2">&quot;example.com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="for-domain-owners">
+<h3>For Domain Owners<a class="headerlink" href="#for-domain-owners" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Start with TLS</strong>: Ensure TLS 1.2+ with valid certificates</p></li>
+<li><p><strong>Configure DNS Security</strong>: Enable DNSSEC, SPF, DMARC</p></li>
+<li><p><strong>Implement HTTPS Properly</strong>: Redirect HTTP, enable HSTS</p></li>
+<li><p><strong>Add Security Headers</strong>: Start with basic headers, expand gradually</p></li>
+</ol>
+</section>
+<section id="for-security-teams">
+<h3>For Security Teams<a class="headerlink" href="#for-security-teams" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Regular Assessments</strong>: Weekly scans of critical domains</p></li>
+<li><p><strong>Track Trends</strong>: Monitor score changes over time</p></li>
+<li><p><strong>Benchmark Peers</strong>: Compare against industry standards</p></li>
+<li><p><strong>Document Exceptions</strong>: Some headers may conflict with functionality</p></li>
+</ol>
+</section>
+<section id="for-developers">
+<h3>For Developers<a class="headerlink" href="#for-developers" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Automate Checks</strong>: Integrate into CI/CD pipelines</p></li>
+<li><p><strong>Set Thresholds</strong>: Fail builds below minimum scores</p></li>
+<li><p><strong>Monitor Dependencies</strong>: Check third-party service domains</p></li>
+<li><p><strong>Test Locally</strong>: Use DQIX before production deployment</p></li>
+</ol>
+</section>
+</section>
+<section id="limitations-and-considerations">
+<h2>Limitations and Considerations<a class="headerlink" href="#limitations-and-considerations" title="Link to this heading"></a></h2>
+<section id="what-dqix-measures">
+<h3>What DQIX Measures<a class="headerlink" href="#what-dqix-measures" title="Link to this heading"></a></h3>
+<p>✅ External security configuration
+✅ Industry best practices
+✅ Technical implementation quality
+✅ Compliance indicators</p>
+</section>
+<section id="what-dqix-doesnt-measure">
+<h3>What DQIX Doesn’t Measure<a class="headerlink" href="#what-dqix-doesnt-measure" title="Link to this heading"></a></h3>
+<p>❌ Application vulnerabilities
+❌ Internal security controls
+❌ Business logic flaws
+❌ User authentication strength</p>
+</section>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h2>
+<p>DQIX measurements are community-driven. To contribute:</p>
+<ol class="arabic simple">
+<li><p><strong>Report False Positives</strong>: Open issues for incorrect scores</p></li>
+<li><p><strong>Suggest Improvements</strong>: Propose new measurement criteria</p></li>
+<li><p><strong>Add Probes</strong>: Implement additional security checks</p></li>
+<li><p><strong>Share Results</strong>: Contribute to transparency database</p></li>
+</ol>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>DQIX provides objective, transparent domain quality measurements that reveal the true state of Internet security. By showing that even major sites have room for improvement, we encourage continuous security enhancement across the web.</p>
+<p>Remember: <strong>Perfect scores are rare, improvement is always possible.</strong></p>
+<hr class="docutils" />
+<p><em>For technical implementation details, see <a class="reference internal" href="#POLYGLOT_ARCHITECTURE.md"><span class="xref myst">ARCHITECTURE.md</span></a></em>
+<em>For language-specific benchmarks, see <a class="reference internal" href="#BENCHMARK_REPORT.md"><span class="xref myst">BENCHMARK_REPORT.md</span></a></em></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

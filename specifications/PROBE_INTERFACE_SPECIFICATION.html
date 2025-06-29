@@ -1,0 +1,1025 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DQIX Probe Interface Specification &mdash; DQIX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DQIX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">DQIX Probe Interface Specification</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#core-probe-interface">Core Probe Interface</a><ul>
+<li><a class="reference internal" href="#universal-probe-contract">Universal Probe Contract</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#language-specific-implementations">Language-Specific Implementations</a><ul>
+<li><a class="reference internal" href="#python-reference-implementation">Python (Reference Implementation)</a></li>
+<li><a class="reference internal" href="#go-implementation">Go Implementation</a></li>
+<li><a class="reference internal" href="#rust-implementation">Rust Implementation</a></li>
+<li><a class="reference internal" href="#haskell-implementation">Haskell Implementation</a></li>
+<li><a class="reference internal" href="#bash-implementation">Bash Implementation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#probe-registration-and-discovery">Probe Registration and Discovery</a><ul>
+<li><a class="reference internal" href="#registry-interface">Registry Interface</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#standard-probe-implementations">Standard Probe Implementations</a><ul>
+<li><a class="reference internal" href="#tls-probe-specification">TLS Probe Specification</a></li>
+<li><a class="reference internal" href="#dns-probe-specification">DNS Probe Specification</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#error-handling-standards">Error Handling Standards</a><ul>
+<li><a class="reference internal" href="#error-categories">Error Categories</a></li>
+<li><a class="reference internal" href="#standard-error-codes">Standard Error Codes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing-standards">Testing Standards</a><ul>
+<li><a class="reference internal" href="#probe-unit-tests">Probe Unit Tests</a></li>
+<li><a class="reference internal" href="#test-domain-requirements">Test Domain Requirements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#migration-and-versioning">Migration and Versioning</a><ul>
+<li><a class="reference internal" href="#probe-version-compatibility">Probe Version Compatibility</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DQIX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DQIX Probe Interface Specification</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/specifications/PROBE_INTERFACE_SPECIFICATION.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="dqix-probe-interface-specification">
+<h1>DQIX Probe Interface Specification<a class="headerlink" href="#dqix-probe-interface-specification" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This document defines the standardized probe interface that ALL language implementations MUST follow. This ensures consistent behavior, easy extension, and maintainable code across the polyglot architecture.</p>
+</section>
+<section id="core-probe-interface">
+<h2>Core Probe Interface<a class="headerlink" href="#core-probe-interface" title="Link to this heading"></a></h2>
+<section id="universal-probe-contract">
+<h3>Universal Probe Contract<a class="headerlink" href="#universal-probe-contract" title="Link to this heading"></a></h3>
+<p>Every probe implementation across all languages MUST implement this interface:</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="c1">// TypeScript/JavaScript pseudo-interface</span>
+<span class="kd">interface</span><span class="w"> </span><span class="nx">Probe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Metadata</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">                    </span><span class="c1">// Unique probe identifier (e.g., &quot;tls&quot;, &quot;dns&quot;)</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">                  </span><span class="c1">// Human-readable name</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">           </span><span class="c1">// Detailed description</span>
+<span class="w">  </span><span class="nx">category</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeCategory</span><span class="p">;</span><span class="w">       </span><span class="c1">// security|infrastructure|performance|compliance</span>
+<span class="w">  </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">               </span><span class="c1">// Probe version for compatibility</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// Configuration</span>
+<span class="w">  </span><span class="nx">default_config</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeConfig</span><span class="p">;</span><span class="w">   </span><span class="c1">// Default configuration</span>
+<span class="w">  </span><span class="nx">config_schema</span><span class="o">:</span><span class="w"> </span><span class="kt">ConfigSchema</span><span class="p">;</span><span class="w">   </span><span class="c1">// Configuration validation schema</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// Core Methods</span>
+<span class="w">  </span><span class="nx">execute</span><span class="p">(</span><span class="nx">domain</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeConfig</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">ProbeResult</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">validate_config</span><span class="p">(</span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeConfig</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">ValidationResult</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">get_requirements</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span><span class="w">   </span><span class="c1">// External dependencies (e.g., &quot;openssl&quot;)</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// Optional Methods</span>
+<span class="w">  </span><span class="nx">supports_batch</span><span class="o">?</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span><span class="w">     </span><span class="c1">// Can handle multiple domains</span>
+<span class="w">  </span><span class="nx">get_metrics</span><span class="o">?</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nx">ProbeMetrics</span><span class="p">;</span><span class="w">   </span><span class="c1">// Performance/diagnostic metrics</span>
+<span class="p">}</span>
+
+<span class="c1">// Supporting Types</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">ProbeCategory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;security&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;infrastructure&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;performance&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;compliance&quot;</span><span class="p">;</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">ProbeConfig</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">timeout</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="p">[</span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span><span class="w">  </span><span class="c1">// Probe-specific configuration</span>
+<span class="p">}</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">ProbeResult</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">category</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeCategory</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">score</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 0-100</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeStatus</span><span class="p">;</span><span class="w">           </span><span class="c1">// pass|warn|fail|error</span>
+<span class="w">  </span><span class="nx">details</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">               </span><span class="c1">// Human-readable summary</span>
+<span class="w">  </span><span class="nx">metrics</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Detailed measurements</span>
+<span class="w">  </span><span class="nx">recommendations</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span><span class="w">     </span><span class="c1">// Specific remediation advice</span>
+<span class="w">  </span><span class="nx">execution_time_ms</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w">     </span><span class="c1">// Performance tracking</span>
+<span class="w">  </span><span class="nx">timestamp</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">             </span><span class="c1">// ISO 8601 timestamp</span>
+<span class="w">  </span><span class="nx">error?</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeError</span><span class="p">;</span><span class="w">           </span><span class="c1">// Error details if status = error</span>
+<span class="p">}</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="nx">ProbeStatus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;pass&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;warn&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;fail&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="p">;</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">ProbeError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">details?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="language-specific-implementations">
+<h2>Language-Specific Implementations<a class="headerlink" href="#language-specific-implementations" title="Link to this heading"></a></h2>
+<section id="python-reference-implementation">
+<h3>Python (Reference Implementation)<a class="headerlink" href="#python-reference-implementation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ProbeCategory</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">SECURITY</span> <span class="o">=</span> <span class="s2">&quot;security&quot;</span>
+    <span class="n">INFRASTRUCTURE</span> <span class="o">=</span> <span class="s2">&quot;infrastructure&quot;</span>
+    <span class="n">PERFORMANCE</span> <span class="o">=</span> <span class="s2">&quot;performance&quot;</span>
+    <span class="n">COMPLIANCE</span> <span class="o">=</span> <span class="s2">&quot;compliance&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ProbeStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">PASS</span> <span class="o">=</span> <span class="s2">&quot;pass&quot;</span>
+    <span class="n">WARN</span> <span class="o">=</span> <span class="s2">&quot;warn&quot;</span>
+    <span class="n">FAIL</span> <span class="o">=</span> <span class="s2">&quot;fail&quot;</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProbeResult</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">ProbeCategory</span>
+    <span class="n">score</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 0-100</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">ProbeStatus</span>
+    <span class="n">details</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">metrics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">recommendations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">execution_time_ms</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProbeConfig</span><span class="p">:</span>
+    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>
+    
+<span class="k">class</span><span class="w"> </span><span class="nc">Probe</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_id</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_name</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_description</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_category</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_version</span><span class="p">()</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_category</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProbeCategory</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ProbeConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProbeResult</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ProbeConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_requirements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</section>
+<section id="go-implementation">
+<h3>Go Implementation<a class="headerlink" href="#go-implementation" title="Link to this heading"></a></h3>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">probes</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;context&quot;</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">ProbeCategory</span><span class="w"> </span><span class="kt">string</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="nx">CategorySecurity</span><span class="w">       </span><span class="nx">ProbeCategory</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;security&quot;</span>
+<span class="w">    </span><span class="nx">CategoryInfrastructure</span><span class="w"> </span><span class="nx">ProbeCategory</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;infrastructure&quot;</span>
+<span class="w">    </span><span class="nx">CategoryPerformance</span><span class="w">    </span><span class="nx">ProbeCategory</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;performance&quot;</span>
+<span class="w">    </span><span class="nx">CategoryCompliance</span><span class="w">     </span><span class="nx">ProbeCategory</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;compliance&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">ProbeStatus</span><span class="w"> </span><span class="kt">string</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="nx">StatusPass</span><span class="w">  </span><span class="nx">ProbeStatus</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;pass&quot;</span>
+<span class="w">    </span><span class="nx">StatusWarn</span><span class="w">  </span><span class="nx">ProbeStatus</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;warn&quot;</span>
+<span class="w">    </span><span class="nx">StatusFail</span><span class="w">  </span><span class="nx">ProbeStatus</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;fail&quot;</span>
+<span class="w">    </span><span class="nx">StatusError</span><span class="w"> </span><span class="nx">ProbeStatus</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;error&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">ProbeConfig</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Enabled</span><span class="w"> </span><span class="kt">bool</span><span class="w">          </span><span class="s">`json:&quot;enabled&quot;`</span>
+<span class="w">    </span><span class="nx">Timeout</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="w"> </span><span class="s">`json:&quot;timeout&quot;`</span>
+<span class="w">    </span><span class="nx">Extra</span><span class="w">   </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span><span class="w"> </span><span class="s">`json:&quot;extra,omitempty&quot;`</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">ProbeResult</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ID</span><span class="w">              </span><span class="kt">string</span><span class="w">                 </span><span class="s">`json:&quot;id&quot;`</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w">            </span><span class="kt">string</span><span class="w">                 </span><span class="s">`json:&quot;name&quot;`</span>
+<span class="w">    </span><span class="nx">Category</span><span class="w">        </span><span class="nx">ProbeCategory</span><span class="w">          </span><span class="s">`json:&quot;category&quot;`</span>
+<span class="w">    </span><span class="nx">Score</span><span class="w">           </span><span class="kt">int</span><span class="w">                    </span><span class="s">`json:&quot;score&quot;`</span>
+<span class="w">    </span><span class="nx">Status</span><span class="w">          </span><span class="nx">ProbeStatus</span><span class="w">            </span><span class="s">`json:&quot;status&quot;`</span>
+<span class="w">    </span><span class="nx">Details</span><span class="w">         </span><span class="kt">string</span><span class="w">                 </span><span class="s">`json:&quot;details&quot;`</span>
+<span class="w">    </span><span class="nx">Metrics</span><span class="w">         </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span><span class="w"> </span><span class="s">`json:&quot;metrics&quot;`</span>
+<span class="w">    </span><span class="nx">Recommendations</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w">               </span><span class="s">`json:&quot;recommendations&quot;`</span>
+<span class="w">    </span><span class="nx">ExecutionTimeMs</span><span class="w"> </span><span class="kt">int64</span><span class="w">                  </span><span class="s">`json:&quot;execution_time_ms&quot;`</span>
+<span class="w">    </span><span class="nx">Timestamp</span><span class="w">       </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w">              </span><span class="s">`json:&quot;timestamp&quot;`</span>
+<span class="w">    </span><span class="nx">Error</span><span class="w">           </span><span class="o">*</span><span class="nx">ProbeError</span><span class="w">            </span><span class="s">`json:&quot;error,omitempty&quot;`</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">ProbeError</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Code</span><span class="w">    </span><span class="kt">string</span><span class="w">      </span><span class="s">`json:&quot;code&quot;`</span>
+<span class="w">    </span><span class="nx">Message</span><span class="w"> </span><span class="kt">string</span><span class="w">      </span><span class="s">`json:&quot;message&quot;`</span>
+<span class="w">    </span><span class="nx">Details</span><span class="w"> </span><span class="kd">interface</span><span class="p">{}</span><span class="w"> </span><span class="s">`json:&quot;details,omitempty&quot;`</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">Probe</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ID</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Name</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Description</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Category</span><span class="p">()</span><span class="w"> </span><span class="nx">ProbeCategory</span>
+<span class="w">    </span><span class="nx">Version</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">Execute</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">domain</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">config</span><span class="w"> </span><span class="nx">ProbeConfig</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">ProbeResult</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">ValidateConfig</span><span class="p">(</span><span class="nx">config</span><span class="w"> </span><span class="nx">ProbeConfig</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span>
+<span class="w">    </span><span class="nx">GetRequirements</span><span class="p">()</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">SupportsBatch</span><span class="p">()</span><span class="w"> </span><span class="kt">bool</span>
+<span class="p">}</span>
+
+<span class="c1">// Base probe implementation</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">BaseProbe</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">id</span><span class="w">          </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">name</span><span class="w">        </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">description</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">category</span><span class="w">    </span><span class="nx">ProbeCategory</span>
+<span class="w">    </span><span class="nx">version</span><span class="w">     </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">ID</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">Name</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">Description</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">description</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">Category</span><span class="p">()</span><span class="w"> </span><span class="nx">ProbeCategory</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">category</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">Version</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">version</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">GetRequirements</span><span class="p">()</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{}</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">SupportsBatch</span><span class="p">()</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">BaseProbe</span><span class="p">)</span><span class="w"> </span><span class="nx">ValidateConfig</span><span class="p">(</span><span class="nx">config</span><span class="w"> </span><span class="nx">ProbeConfig</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">config</span><span class="p">.</span><span class="nx">Timeout</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;timeout must be positive&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="rust-implementation">
+<h3>Rust Implementation<a class="headerlink" href="#rust-implementation" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">async_trait</span><span class="p">::</span><span class="n">async_trait</span><span class="p">;</span>
+<span class="k">use</span><span class="w"> </span><span class="n">serde</span><span class="p">::{</span><span class="n">Deserialize</span><span class="p">,</span><span class="w"> </span><span class="n">Serialize</span><span class="p">};</span>
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">collections</span><span class="p">::</span><span class="n">HashMap</span><span class="p">;</span>
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">time</span><span class="p">::{</span><span class="n">Duration</span><span class="p">,</span><span class="w"> </span><span class="n">SystemTime</span><span class="p">};</span>
+
+<span class="cp">#[derive(Debug, Clone, Serialize, Deserialize)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">ProbeCategory</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;security&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Security</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;infrastructure&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Infrastructure</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;performance&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Performance</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;compliance&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Compliance</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[derive(Debug, Clone, Serialize, Deserialize)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">ProbeStatus</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;pass&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Pass</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;warn&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Warn</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;fail&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Fail</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(rename = </span><span class="s">&quot;error&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Error</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[derive(Debug, Clone, Serialize, Deserialize)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ProbeConfig</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">enabled</span><span class="p">:</span><span class="w"> </span><span class="kt">bool</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">timeout</span><span class="p">:</span><span class="w"> </span><span class="nc">Duration</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(flatten)]</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">extra</span><span class="p">:</span><span class="w"> </span><span class="nc">HashMap</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">serde_json</span><span class="p">::</span><span class="n">Value</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[derive(Debug, Serialize, Deserialize)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ProbeResult</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">category</span><span class="p">:</span><span class="w"> </span><span class="nc">ProbeCategory</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">score</span><span class="p">:</span><span class="w"> </span><span class="kt">u8</span><span class="p">,</span><span class="w"> </span><span class="c1">// 0-100</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">ProbeStatus</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">details</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">metrics</span><span class="p">:</span><span class="w"> </span><span class="nc">HashMap</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">serde_json</span><span class="p">::</span><span class="n">Value</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">recommendations</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">execution_time_ms</span><span class="p">:</span><span class="w"> </span><span class="kt">u64</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">timestamp</span><span class="p">:</span><span class="w"> </span><span class="nc">SystemTime</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(skip_serializing_if = </span><span class="s">&quot;Option::is_none&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">ProbeError</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[derive(Debug, Serialize, Deserialize)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ProbeError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">code</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">message</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="cp">#[serde(skip_serializing_if = </span><span class="s">&quot;Option::is_none&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">details</span><span class="p">:</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">serde_json</span><span class="p">::</span><span class="n">Value</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[async_trait]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">Probe</span><span class="p">:</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">;</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">;</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">;</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">category</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">ProbeCategory</span><span class="p">;</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">domain</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">ProbeConfig</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">ProbeResult</span><span class="p">,</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">ProbeConfig</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">get_requirements</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">supports_batch</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">BaseProbe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">description</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">category</span><span class="p">:</span><span class="w"> </span><span class="nc">ProbeCategory</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">version</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">BaseProbe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">category</span><span class="p">:</span><span class="w"> </span><span class="nc">ProbeCategory</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">Self</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="bp">Self</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">category</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#[async_trait]</span>
+<span class="k">impl</span><span class="w"> </span><span class="n">Probe</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">BaseProbe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">description</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">category</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">ProbeCategory</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">category</span><span class="p">.</span><span class="n">clone</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">version</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">_domain</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span><span class="w"> </span><span class="n">_config</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">ProbeConfig</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">ProbeResult</span><span class="p">,</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">unimplemented!</span><span class="p">(</span><span class="s">&quot;Base probe cannot be executed directly&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">ProbeConfig</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">config</span><span class="p">.</span><span class="n">timeout</span><span class="p">.</span><span class="n">as_secs</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nb">Err</span><span class="p">(</span><span class="s">&quot;Timeout must be greater than 0&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">())</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="haskell-implementation">
+<h3>Haskell Implementation<a class="headerlink" href="#haskell-implementation" title="Link to this heading"></a></h3>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="cm">{-# LANGUAGE OverloadedStrings #-}</span>
+<span class="cm">{-# LANGUAGE DeriveGeneric #-}</span>
+
+<span class="kr">module</span><span class="w"> </span><span class="nn">DQIX.Probes.Interface</span><span class="w"> </span><span class="kr">where</span>
+
+<span class="kr">import</span><span class="w"> </span><span class="nn">Data.Aeson</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">Data.Time</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">GHC.Generics</span>
+<span class="kr">import</span><span class="w"> </span><span class="k">qualified</span><span class="w"> </span><span class="nn">Data.Map.Strict</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">Map</span>
+<span class="kr">import</span><span class="w"> </span><span class="k">qualified</span><span class="w"> </span><span class="nn">Data.Text</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">T</span>
+
+<span class="c1">-- Core Types</span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">ProbeCategory</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Security</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Infrastructure</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Performance</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Compliance</span>
+<span class="w">    </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">,</span><span class="w"> </span><span class="kt">Eq</span><span class="p">,</span><span class="w"> </span><span class="kt">Generic</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">ToJSON</span><span class="w"> </span><span class="kt">ProbeCategory</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Security</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;security&quot;</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Infrastructure</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;infrastructure&quot;</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Performance</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;performance&quot;</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Compliance</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;compliance&quot;</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">ProbeStatus</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Pass</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Warn</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Fail</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Error</span>
+<span class="w">    </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">,</span><span class="w"> </span><span class="kt">Eq</span><span class="p">,</span><span class="w"> </span><span class="kt">Generic</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">ToJSON</span><span class="w"> </span><span class="kt">ProbeStatus</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Pass</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;pass&quot;</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Warn</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;warn&quot;</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Fail</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;fail&quot;</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="kt">Error</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;error&quot;</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">ProbeConfig</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">ProbeConfig</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Map</span><span class="o">.</span><span class="kt">Map</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span><span class="w"> </span><span class="kt">Value</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">,</span><span class="w"> </span><span class="kt">Generic</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">ToJSON</span><span class="w"> </span><span class="kt">ProbeConfig</span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">FromJSON</span><span class="w"> </span><span class="kt">ProbeConfig</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">ProbeResult</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">ProbeResult</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">resultId</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultCategory</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ProbeCategory</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultScore</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultStatus</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ProbeStatus</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultDetails</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultMetrics</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Map</span><span class="o">.</span><span class="kt">Map</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span><span class="w"> </span><span class="kt">Value</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultRecommendations</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span><span class="p">]</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultExecutionTimeMs</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultTimestamp</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">UTCTime</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">resultError</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">ProbeError</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">,</span><span class="w"> </span><span class="kt">Generic</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">ToJSON</span><span class="w"> </span><span class="kt">ProbeResult</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">genericToJSON</span><span class="w"> </span><span class="n">defaultOptions</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="n">fieldLabelModifier</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">case</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">of</span>
+<span class="w">            </span><span class="s">&quot;resultId&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;id&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultName&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;name&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultCategory&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;category&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultScore&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;score&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultStatus&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;status&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultDetails&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;details&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultMetrics&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;metrics&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultRecommendations&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;recommendations&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultExecutionTimeMs&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;execution_time_ms&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultTimestamp&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;timestamp&quot;</span>
+<span class="w">            </span><span class="s">&quot;resultError&quot;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;error&quot;</span>
+<span class="w">            </span><span class="kr">_</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">x</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">ProbeError</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">ProbeError</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">errorCode</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">errorMessage</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">errorDetails</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Value</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">,</span><span class="w"> </span><span class="kt">Generic</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">ToJSON</span><span class="w"> </span><span class="kt">ProbeError</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">toJSON</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">genericToJSON</span><span class="w"> </span><span class="n">defaultOptions</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="n">fieldLabelModifier</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">drop</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">}</span>
+
+<span class="c1">-- Probe Interface</span>
+<span class="kr">class</span><span class="w"> </span><span class="kt">Probe</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">probeId</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="n">probeName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="n">probeDescription</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span><span class="n">probeCategory</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ProbeCategory</span>
+<span class="w">    </span><span class="n">probeVersion</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">execute</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ProbeConfig</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">ProbeResult</span>
+<span class="w">    </span><span class="n">validateConfig</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ProbeConfig</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Either</span><span class="w"> </span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span><span class="w"> </span><span class="nb">()</span>
+<span class="w">    </span><span class="n">getRequirements</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">T</span><span class="o">.</span><span class="kt">Text</span><span class="p">]</span>
+<span class="w">    </span><span class="n">supportsBatch</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">-- Default implementations</span>
+<span class="w">    </span><span class="n">getRequirements</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">    </span><span class="n">supportsBatch</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+<span class="w">    </span><span class="n">validateConfig</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">        </span><span class="kr">if</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">            </span><span class="kr">then</span><span class="w"> </span><span class="kt">Left</span><span class="w"> </span><span class="s">&quot;Timeout must be positive&quot;</span>
+<span class="w">            </span><span class="kr">else</span><span class="w"> </span><span class="kt">Right</span><span class="w"> </span><span class="nb">()</span>
+</pre></div>
+</div>
+</section>
+<section id="bash-implementation">
+<h3>Bash Implementation<a class="headerlink" href="#bash-implementation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bash Probe Interface (functional approach)</span>
+
+<span class="c1"># Probe metadata functions (each probe must implement these)</span>
+probe_id<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="c1"># Return unique probe identifier</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;unknown&quot;</span>
+<span class="o">}</span>
+
+probe_name<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="c1"># Return human-readable name</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Unknown Probe&quot;</span>
+<span class="o">}</span>
+
+probe_description<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="c1"># Return detailed description</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;No description available&quot;</span>
+<span class="o">}</span>
+
+probe_category<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="c1"># Return category: security|infrastructure|performance|compliance</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;security&quot;</span>
+<span class="o">}</span>
+
+probe_version<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="c1"># Return probe version</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
+<span class="o">}</span>
+
+<span class="c1"># Core probe functions (each probe must implement execute)</span>
+probe_execute<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">domain</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">config_file</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Parse configuration</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span>enabled
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span>timeout
+<span class="w">    </span><span class="nv">enabled</span><span class="o">=</span><span class="k">$(</span>probe_config_get<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$config_file</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;enabled&quot;</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="k">)</span>
+<span class="w">    </span><span class="nv">timeout</span><span class="o">=</span><span class="k">$(</span>probe_config_get<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$config_file</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;timeout&quot;</span><span class="w"> </span><span class="s2">&quot;30&quot;</span><span class="k">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Validate configuration</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>!<span class="w"> </span>probe_validate_config<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$config_file</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>probe_result_error<span class="w"> </span><span class="s2">&quot;invalid_config&quot;</span><span class="w"> </span><span class="s2">&quot;Configuration validation failed&quot;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="m">1</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Check if probe is enabled</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$enabled</span><span class="s2">&quot;</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>probe_result_skip<span class="w"> </span><span class="s2">&quot;Probe disabled in configuration&quot;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Execute probe logic (to be implemented by specific probes)</span>
+<span class="w">    </span>probe_execute_impl<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$domain</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$timeout</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+
+probe_validate_config<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">config_file</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span>timeout
+<span class="w">    </span><span class="nv">timeout</span><span class="o">=</span><span class="k">$(</span>probe_config_get<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$config_file</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;timeout&quot;</span><span class="w"> </span><span class="s2">&quot;30&quot;</span><span class="k">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Validate timeout is positive integer</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>!<span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$timeout</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span>^<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span>+$<span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$timeout</span><span class="s2">&quot;</span><span class="w"> </span>-le<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="m">1</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span>
+<span class="o">}</span>
+
+probe_get_requirements<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="c1"># Return list of external dependencies (one per line)</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="o">}</span>
+
+probe_supports_batch<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="c1"># Return true if probe can handle multiple domains</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;false&quot;</span>
+<span class="o">}</span>
+
+<span class="c1"># Utility functions for probe results</span>
+probe_result_success<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">score</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">details</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">shift</span><span class="w"> </span><span class="m">2</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">recommendations</span><span class="o">=(</span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="o">)</span>
+<span class="w">    </span>
+<span class="w">    </span>probe_output_result<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_id<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_name<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_category<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="s2">&quot;</span><span class="nv">$score</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;pass&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$details</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">recommendations</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+
+probe_result_warning<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">score</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">details</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">shift</span><span class="w"> </span><span class="m">2</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">recommendations</span><span class="o">=(</span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="o">)</span>
+<span class="w">    </span>
+<span class="w">    </span>probe_output_result<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_id<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_name<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_category<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="s2">&quot;</span><span class="nv">$score</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;warn&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$details</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">recommendations</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+
+probe_result_failure<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">score</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">details</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">shift</span><span class="w"> </span><span class="m">2</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">recommendations</span><span class="o">=(</span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="o">)</span>
+<span class="w">    </span>
+<span class="w">    </span>probe_output_result<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_id<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_name<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_category<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="s2">&quot;</span><span class="nv">$score</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;fail&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$details</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">recommendations</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+
+probe_result_error<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">error_code</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">error_message</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span>
+<span class="w">    </span>probe_output_result<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_id<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_name<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>probe_category<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="s2">&quot;0&quot;</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="w"> </span><span class="s2">&quot;Error: </span><span class="nv">$error_message</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="c1"># Configuration helpers</span>
+probe_config_get<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">config_file</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">key</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">default</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$config_file</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="c1"># Simple YAML parser for basic key-value pairs</span>
+<span class="w">        </span>grep<span class="w"> </span><span class="s2">&quot;^</span><span class="si">${</span><span class="nv">key</span><span class="si">}</span><span class="s2">:&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$config_file</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39;:&#39;</span><span class="w"> </span>-f2-<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$default</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$default</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="probe-registration-and-discovery">
+<h2>Probe Registration and Discovery<a class="headerlink" href="#probe-registration-and-discovery" title="Link to this heading"></a></h2>
+<section id="registry-interface">
+<h3>Registry Interface<a class="headerlink" href="#registry-interface" title="Link to this heading"></a></h3>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="kd">interface</span><span class="w"> </span><span class="nx">ProbeRegistry</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">register</span><span class="p">(</span><span class="nx">probe</span><span class="o">:</span><span class="w"> </span><span class="kt">Probe</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">unregister</span><span class="p">(</span><span class="nx">probeId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">get</span><span class="p">(</span><span class="nx">probeId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Probe</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">list</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nx">Probe</span><span class="p">[];</span>
+<span class="w">    </span><span class="nx">listByCategory</span><span class="p">(</span><span class="nx">category</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeCategory</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Probe</span><span class="p">[];</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Plugin support</span>
+<span class="w">    </span><span class="nx">loadPlugin</span><span class="p">(</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">loadPluginsFromDirectory</span><span class="p">(</span><span class="nx">directory</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Validation</span>
+<span class="w">    </span><span class="nx">validateAll</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nx">ValidationResult</span><span class="p">[];</span>
+<span class="w">    </span><span class="nx">checkDependencies</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nx">DependencyResult</span><span class="p">[];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="standard-probe-implementations">
+<h2>Standard Probe Implementations<a class="headerlink" href="#standard-probe-implementations" title="Link to this heading"></a></h2>
+<section id="tls-probe-specification">
+<h3>TLS Probe Specification<a class="headerlink" href="#tls-probe-specification" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tls&quot;</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TLS</span><span class="nv"> </span><span class="s">Security</span><span class="nv"> </span><span class="s">Analysis&quot;</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Comprehensive</span><span class="nv"> </span><span class="s">TLS/SSL</span><span class="nv"> </span><span class="s">security</span><span class="nv"> </span><span class="s">assessment&quot;</span>
+<span class="nt">category</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;security&quot;</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.0.0&quot;</span>
+
+<span class="nt">configuration</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">timeout</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;integer&quot;</span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TLS</span><span class="nv"> </span><span class="s">connection</span><span class="nv"> </span><span class="s">timeout</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">seconds&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">min_tls_version</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;string&quot;</span>
+<span class="w">    </span><span class="nt">enum</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;1.0&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;1.1&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;1.2&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;1.3&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.2&quot;</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Minimum</span><span class="nv"> </span><span class="s">acceptable</span><span class="nv"> </span><span class="s">TLS</span><span class="nv"> </span><span class="s">version&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">comprehensive_analysis</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;boolean&quot;</span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Enable</span><span class="nv"> </span><span class="s">SSL</span><span class="nv"> </span><span class="s">Labs-style</span><span class="nv"> </span><span class="s">comprehensive</span><span class="nv"> </span><span class="s">analysis&quot;</span>
+
+<span class="nt">output_metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;protocol_version&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;cipher_suite&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;key_size&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;certificate_validity&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;certificate_chain_length&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;supported_protocols&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;vulnerability_status&quot;</span>
+
+<span class="nt">scoring_algorithm</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">protocol_version</span><span class="p">:</span>
+<span class="w">    </span><span class="s">&quot;1.3&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">    </span><span class="s">&quot;1.2&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">85</span>
+<span class="w">    </span><span class="s">&quot;1.1&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="w">    </span><span class="s">&quot;1.0&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="w">    </span><span class="s">&quot;ssl3&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">key_size</span><span class="p">:</span>
+<span class="w">    </span><span class="s">&quot;&gt;=4096&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">    </span><span class="s">&quot;&gt;=2048&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">85</span>
+<span class="w">    </span><span class="s">&quot;&gt;=1024&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="w">    </span><span class="s">&quot;&lt;1024&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">vulnerabilities</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">heartbleed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-80</span>
+<span class="w">    </span><span class="nt">poodle</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-60</span>
+<span class="w">    </span><span class="nt">crime</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-40</span>
+<span class="w">    </span><span class="nt">beast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-30</span>
+</pre></div>
+</div>
+</section>
+<section id="dns-probe-specification">
+<h3>DNS Probe Specification<a class="headerlink" href="#dns-probe-specification" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dns&quot;</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DNS</span><span class="nv"> </span><span class="s">Security</span><span class="nv"> </span><span class="s">Analysis&quot;</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DNS</span><span class="nv"> </span><span class="s">configuration</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">security</span><span class="nv"> </span><span class="s">assessment&quot;</span>
+<span class="nt">category</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;infrastructure&quot;</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.0.0&quot;</span>
+
+<span class="nt">configuration</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nameservers</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;array&quot;</span>
+<span class="w">    </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;string&quot;</span>
+<span class="w">      </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ipv4&quot;</span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;8.8.8.8&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;1.1.1.1&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">check_dnssec</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;boolean&quot;</span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">check_caa</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;boolean&quot;</span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">output_metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;resolution_time&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;dnssec_status&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;caa_records&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;spf_records&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;dmarc_records&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;mx_records&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;ipv6_support&quot;</span>
+
+<span class="nt">scoring_algorithm</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dnssec_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+30</span>
+<span class="w">  </span><span class="nt">caa_configured</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+20</span>
+<span class="w">  </span><span class="nt">spf_configured</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+15</span>
+<span class="w">  </span><span class="nt">dmarc_configured</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+15</span>
+<span class="w">  </span><span class="nt">ipv6_support</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+10</span>
+<span class="w">  </span><span class="nt">mx_records</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+10</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="error-handling-standards">
+<h2>Error Handling Standards<a class="headerlink" href="#error-handling-standards" title="Link to this heading"></a></h2>
+<section id="error-categories">
+<h3>Error Categories<a class="headerlink" href="#error-categories" title="Link to this heading"></a></h3>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="kd">enum</span><span class="w"> </span><span class="nx">ProbeErrorCategory</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">CONFIGURATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;configuration&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">NETWORK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;network&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="nx">TIMEOUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;timeout&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">DEPENDENCY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dependency&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">VALIDATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;validation&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">INTERNAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;internal&quot;</span>
+<span class="p">}</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">StandardProbeError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">category</span><span class="o">:</span><span class="w"> </span><span class="kt">ProbeErrorCategory</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">details?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">recoverable</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">retry_after?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="c1">// seconds</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="standard-error-codes">
+<h3>Standard Error Codes<a class="headerlink" href="#standard-error-codes" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">error_codes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">configuration</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;INVALID_TIMEOUT&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;MISSING_REQUIRED_FIELD&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;INVALID_FORMAT&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">network</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;DNS_RESOLUTION_FAILED&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;CONNECTION_REFUSED&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;HOST_UNREACHABLE&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">timeout</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;CONNECT_TIMEOUT&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;READ_TIMEOUT&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;TOTAL_TIMEOUT&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">dependency</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;MISSING_BINARY&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;INCOMPATIBLE_VERSION&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;PERMISSION_DENIED&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">validation</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;INVALID_DOMAIN&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;MALFORMED_RESPONSE&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;UNEXPECTED_FORMAT&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">internal</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;MEMORY_ERROR&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;PROCESSING_ERROR&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;UNKNOWN_ERROR&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-standards">
+<h2>Testing Standards<a class="headerlink" href="#testing-standards" title="Link to this heading"></a></h2>
+<section id="probe-unit-tests">
+<h3>Probe Unit Tests<a class="headerlink" href="#probe-unit-tests" title="Link to this heading"></a></h3>
+<p>Every probe implementation MUST include:</p>
+<ol class="arabic simple">
+<li><p><strong>Configuration Validation Tests</strong></p>
+<ul class="simple">
+<li><p>Valid configuration acceptance</p></li>
+<li><p>Invalid configuration rejection</p></li>
+<li><p>Default value handling</p></li>
+</ul>
+</li>
+<li><p><strong>Execution Tests</strong></p>
+<ul class="simple">
+<li><p>Successful execution with known-good domain</p></li>
+<li><p>Error handling with unreachable domain</p></li>
+<li><p>Timeout handling</p></li>
+<li><p>Result format validation</p></li>
+</ul>
+</li>
+<li><p><strong>Scoring Tests</strong></p>
+<ul class="simple">
+<li><p>Score calculation accuracy</p></li>
+<li><p>Edge case handling</p></li>
+<li><p>Boundary value testing</p></li>
+</ul>
+</li>
+<li><p><strong>Integration Tests</strong></p>
+<ul class="simple">
+<li><p>Real domain testing</p></li>
+<li><p>Cross-language result consistency</p></li>
+<li><p>Performance benchmarking</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="test-domain-requirements">
+<h3>Test Domain Requirements<a class="headerlink" href="#test-domain-requirements" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">test_domains</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">good_config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;github.com&quot;</span>
+<span class="w">    </span><span class="nt">expected_score_range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">70</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">expected_status</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;pass&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;warn&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">poor_config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;badssl.com&quot;</span>
+<span class="w">    </span><span class="nt">expected_score_range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">40</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">expected_status</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;fail&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;warn&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">timeout_test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;httpbin.org/delay/30&quot;</span>
+<span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">expected_status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;error&quot;</span>
+<span class="w">    </span><span class="nt">expected_error_code</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CONNECT_TIMEOUT&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="migration-and-versioning">
+<h2>Migration and Versioning<a class="headerlink" href="#migration-and-versioning" title="Link to this heading"></a></h2>
+<section id="probe-version-compatibility">
+<h3>Probe Version Compatibility<a class="headerlink" href="#probe-version-compatibility" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">compatibility_matrix</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">probe_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.0.0&quot;</span>
+<span class="w">  </span><span class="nt">supported_engines</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;python&quot;</span>
+<span class="w">      </span><span class="nt">min_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.0.0&quot;</span>
+<span class="w">      </span><span class="nt">max_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.x.x&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;go&quot;</span>
+<span class="w">      </span><span class="nt">min_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.0.0&quot;</span>
+<span class="w">      </span><span class="nt">max_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.x.x&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rust&quot;</span>
+<span class="w">      </span><span class="nt">min_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.0.0&quot;</span>
+<span class="w">      </span><span class="nt">max_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.x.x&quot;</span>
+
+<span class="nt">migration_guide</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">from_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2.x.x&quot;</span>
+<span class="w">  </span><span class="nt">breaking_changes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Config</span><span class="nv"> </span><span class="s">field</span><span class="nv"> </span><span class="s">&#39;ssl_version&#39;</span><span class="nv"> </span><span class="s">renamed</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">&#39;min_tls_version&#39;&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Result</span><span class="nv"> </span><span class="s">field</span><span class="nv"> </span><span class="s">&#39;score_details&#39;</span><span class="nv"> </span><span class="s">moved</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">&#39;metrics&#39;&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">migration_steps</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Update</span><span class="nv"> </span><span class="s">configuration</span><span class="nv"> </span><span class="s">files&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Modify</span><span class="nv"> </span><span class="s">result</span><span class="nv"> </span><span class="s">parsing</span><span class="nv"> </span><span class="s">logic&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Run</span><span class="nv"> </span><span class="s">migration</span><span class="nv"> </span><span class="s">validation</span><span class="nv"> </span><span class="s">tests&quot;</span>
+</pre></div>
+</div>
+<p>This standardized probe interface ensures that:</p>
+<ol class="arabic simple">
+<li><p><strong>Consistent Behavior</strong>: All probes behave the same way across languages</p></li>
+<li><p><strong>Easy Extension</strong>: New probes can be added following the same pattern</p></li>
+<li><p><strong>Type Safety</strong>: Strong typing where supported by the language</p></li>
+<li><p><strong>Error Handling</strong>: Standardized error reporting and recovery</p></li>
+<li><p><strong>Testing</strong>: Comprehensive test requirements for reliability</p></li>
+<li><p><strong>Maintenance</strong>: Clear versioning and migration paths</p></li>
+</ol>
+<p>The interface is designed to be language-idiomatic while maintaining functional equivalence across all implementations.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Your Organization.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
