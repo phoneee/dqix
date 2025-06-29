@@ -1,0 +1,189 @@
+# DQIX Universal Test Specification
+# Language-neutral test definitions for all implementations
+# Version: 2.0.0
+
+metadata:
+  version: "2.0.0"
+  created: "2025-06-29"
+  description: "Language-neutral test specification for DQIX polyglot architecture"
+  
+# Test Categories
+test_categories:
+  core_functionality:
+    description: "Core domain assessment functionality"
+    weight: 1.0
+    required: true
+    
+  probe_accuracy:
+    description: "Individual probe accuracy and consistency"
+    weight: 1.0
+    required: true
+    
+  output_format:
+    description: "Output format consistency across languages"
+    weight: 0.8
+    required: true
+    
+  performance:
+    description: "Performance benchmarks and resource usage"
+    weight: 0.6
+    required: false
+    
+  error_handling:
+    description: "Error handling and edge cases"
+    weight: 0.8
+    required: true
+
+# Test Domains with Expected Behaviors
+test_domains:
+  basic_functionality:
+    - domain: "example.com"
+      expected_probes: ["tls", "dns", "https", "security_headers"]
+      min_score: 0.3
+      max_score: 0.8
+      required_fields: ["overall_score", "probe_results", "timestamp"]
+      
+    - domain: "google.com"
+      expected_probes: ["tls", "dns", "https", "security_headers"]
+      min_score: 0.7
+      max_score: 1.0
+      should_have_https: true
+      should_have_tls: true
+      
+    - domain: "github.com"
+      expected_probes: ["tls", "dns", "https", "security_headers"]
+      min_score: 0.8
+      max_score: 1.0
+      should_have_security_headers: true
+      
+  error_conditions:
+    - domain: "nonexistent-domain-12345.invalid"
+      expected_behavior: "graceful_failure"
+      should_return_result: true
+      max_score: 0.1
+      
+    - domain: "expired.badssl.com"
+      expected_behavior: "tls_failure"
+      tls_should_fail: true
+      min_score: 0.0
+      max_score: 0.5
+
+# Expected Output Schema
+output_schema:
+  required_fields:
+    - "domain"
+    - "overall_score"
+    - "grade"
+    - "timestamp"
+    - "probe_results"
+    - "metadata"
+    
+  probe_result_fields:
+    - "probe_id"
+    - "score"
+    - "status"
+    - "details"
+    - "execution_time"
+    
+  score_constraints:
+    min_value: 0.0
+    max_value: 1.0
+    precision: 3  # decimal places
+    
+  grade_values:
+    - "A+"
+    - "A"
+    - "B"
+    - "C"
+    - "D"
+    - "E"
+    - "F"
+
+# Cross-Language Consistency Requirements
+consistency_requirements:
+  score_variance:
+    max_difference: 0.05  # 5% max difference between implementations
+    
+  probe_count:
+    min_probes: 4
+    max_probes: 10
+    
+  execution_time:
+    max_timeout: 30  # seconds
+    
+  output_format:
+    json_required: true
+    human_readable_optional: true
+
+# Test Commands by Language
+test_commands:
+  python:
+    install: "uv sync --dev"
+    test: "uv run python -m dqix-python"
+    format: "uv run ruff format"
+    lint: "uv run ruff check"
+    
+  go:
+    install: "go mod tidy"
+    test: "./dqix"
+    format: "go fmt ./..."
+    lint: "golangci-lint run"
+    build: "go build -o dqix ./cmd/dqix/"
+    
+  rust:
+    install: "cargo fetch"
+    test: "cargo run --release --"
+    format: "cargo fmt"
+    lint: "cargo clippy"
+    build: "cargo build --release"
+    
+  haskell:
+    install: "cabal update && cabal install --dependencies-only"
+    test: "cabal run dqix --"
+    format: "ormolu --mode inplace"
+    lint: "hlint"
+    build: "cabal build"
+    
+  bash:
+    install: "chmod +x ./dqix-cli/dqix*"
+    test: "./dqix-cli/dqix"
+    format: "shfmt -w"
+    lint: "shellcheck"
+
+# Performance Benchmarks
+performance_benchmarks:
+  single_domain:
+    domains: ["example.com", "google.com", "github.com"]
+    max_time_per_domain: 15  # seconds
+    memory_limit: "512MB"
+    
+  batch_processing:
+    domain_count: 5
+    max_total_time: 60  # seconds
+    parallel_allowed: true
+    
+  stress_test:
+    domain_count: 20
+    max_total_time: 300  # seconds
+    concurrent_limit: 4
+
+# Validation Rules
+validation_rules:
+  output_consistency:
+    - "All implementations must return valid JSON"
+    - "Score must be between 0.0 and 1.0"
+    - "Grade must match score thresholds from shared-config.yaml"
+    - "Probe results must include required fields"
+    
+  functional_consistency:
+    - "Same domain should yield similar scores (±5%)"
+    - "TLS probe should detect SSL/TLS configuration"
+    - "DNS probe should resolve domain records"
+    - "HTTPS probe should test accessibility"
+    - "Security headers probe should analyze HTTP headers"
+    
+  error_handling:
+    - "Invalid domains should not crash the program"
+    - "Network timeouts should be handled gracefully"
+    - "TLS errors should be reported appropriately"
+    - "DNS resolution failures should not prevent other probes"
