@@ -10,9 +10,8 @@ readonly SCRIPT_NAME="$(basename "$0")"
 readonly VERSION="4.0.0-unified"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Load Libraries
-source "$SCRIPT_DIR/lib/core.sh"
-source "$SCRIPT_DIR/lib/output.sh"
+# Load Single Optimized Library
+source "$SCRIPT_DIR/lib/dqix.sh"
 
 # Global Configuration
 OUTPUT_FORMAT="pretty"
