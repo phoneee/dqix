@@ -1,3 +1,6 @@
+# DQIX Universal .gitignore - Consolidated
+# Eliminates duplication across language implementations
+
 # Python
 __pycache__/
 *.py[cod]
@@ -33,32 +36,58 @@ env.bak/
 venv.bak/
 .python-version
 
-# Go
-# Binaries for programs and plugins
+# Go - Consolidated build artifacts
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-dqix-go/dqix
+dqix-go/dqix*
 dqix-go/bin/
 dqix-go/pkg/
 dqix-go/src/
 go.work
 go.work.sum
 
-# Rust
+# Rust - Consolidated build artifacts  
 target/
 Cargo.lock
 **/*.rs.bk
 *.pdb
 dqix-rust/target/
 
+# Haskell - Build artifacts
+dist-newstyle/
+cabal-install/
+*.hi
+*.o
+*.dyn_hi
+*.dyn_o
+.hpc/
+.hsenv/
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+.stack-work/
+
+# C++/Emscripten - Build artifacts
+*.wasm
+*.js.map
+emscripten-cache/
+build/
+cmake-build-*/
+*.o
+*.obj
+*.a
+*.lib
+
 # IDEs and editors
 .vscode/
 .idea/
 *.swp
-*.swo
+*.swo  
 *~
 .cursor/
 .qodo/
@@ -95,29 +124,32 @@ docs/.doctrees/
 ehthumbs.db
 Thumbs.db
 
-# Project specific
-uv.lock
+# DQIX Consolidated Artifacts
+# Generated reports (consolidated)
+dqix_export_*.json
+dqix_export_*.report  
+dqix_report_*.html
+dqix_report_*.pdf
+dqix_report_*.json
+dqix-reports/*.json
+
+# Assessment data (consolidated)
+.dqix_assessments/
+assessments/
+bulk_assessments/
+visualizations/
+
+# Temporary and build files (consolidated)
+*.tmp
+*.temp
+*.log
 temp/
 tmp/
+uv.lock
+.build/
+Dockerfile.tmp
 
-# DQIX specific temporary files
-dqix_export_*.json
-dqix_export_*.report
-.dqix_assessments/
-*.log
-benchmarks/results/
-benchmarks/output/
-
-# Deployment and infrastructure temp files
-cloudflare-worker-*.js
-dns-zone-*.txt
-nginx-*.conf
-verify-*.sh
-deploy_*.py
-create_*.py
-perfect_security_*.md
-
-# Generated documentation
+# Generated documentation (consolidated)
 *_SUMMARY.md
 *_ANALYSIS.md
 *_IMPLEMENTATION_*.md
@@ -125,115 +157,17 @@ perfect_security_*.md
 *_ARCHITECTURE*.md
 *_PRODUCTION_*.md
 
-# Build artifacts
-Dockerfile.tmp
-*.tmp
-.build/
-
-# Git directories to ignore
-.git/
-.github/
-
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Virtual environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# DQIX specific
-# Generated reports
-dqix_report_*.html
-dqix_report_*.pdf
-dqix_report_*.json
-
-# Assessment data
-.dqix_assessments/
-assessments/
-bulk_assessments/
-visualizations/
-
-# Temporary files
-*.tmp
-*.temp
-*.log
-
-# Kubernetes secrets
+# Infrastructure temp files (consolidated)
+cloudflare-worker-*.js
+dns-zone-*.txt
+nginx-*.conf
+verify-*.sh
+deploy_*.py
+create_*.py
+perfect_security_*.md
 kubernetes/secrets/
 
-# Docker
-.dockerignore
-
-# Development files
+# Development files (consolidated)
 scratch/
-tmp/
-temp/
 notes.md
 todo.md
-dqix-reports/*.json

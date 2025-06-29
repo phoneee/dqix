@@ -143,7 +143,12 @@ Changelog = "https://github.com/phoneee/dqix/blob/main/CHANGELOG.md"
 dqix = "dqix.interfaces.cli:main"
 
 [tool.setuptools]
-packages = ["dqix"]
+package-dir = {"dqix" = "dqix-python"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dqix-python*"]
+namespaces = false
 
 [tool.setuptools.package-data]
 dqix = ["py.typed", "templates/*.html", "static/**/*"]
